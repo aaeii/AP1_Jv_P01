@@ -20,7 +20,7 @@ public class Room {
     public Room(){
         grid_i = 0;
         grid_j = 0;
-        this.sector = 0;
+        this.sector = -1;
         connections = new Room[4];
         doors = new Position[4];
         top_left = new Position();

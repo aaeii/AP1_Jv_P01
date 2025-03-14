@@ -15,7 +15,6 @@ public class Main {
         Level level = new Level();
         level.generate_level();
         Map map = new Map();
-
         map.level_to_map(level, map);
         for (int i=0; i < MAP_HEIGHT; i++ ) {
             for (int j = 0; j < MAP_WIDTH; j++) {
@@ -23,6 +22,15 @@ public class Main {
             }
             System.out.println();
         }
+        Print printStep = new Print();
+        printStep.setField(map.getPlayground());
+//        printStep.printField();
+//        for (int i=0; i < MAP_HEIGHT; i++ ) {
+//            for (int j = 0; j < MAP_WIDTH; j++) {
+//                System.out.print(map.playground[i][j]);
+//            }
+//            System.out.println();
+//        }
 //        Print print1 = new Print(map.getPlayground());
 //        print1.printField();
     }

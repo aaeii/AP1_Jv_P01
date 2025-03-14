@@ -34,26 +34,24 @@ public class Map {
      public void rooms_to_map(Level level, Map map){
          for (int i = 0; i < level.getRoom_cnt(); i++){
              Position top_room_corner = level.getRoomsSequence(i).getTop_left();
-             System.out.println(top_room_corner.getX());
              Position bot_room_corner = level.getRoomsSequence(i).getBot_right();
-             playground[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
-             int j = top_room_corner.getX() + 1;
-             for (;j < bot_room_corner.getX(); j++)
-                 playground[top_room_corner.getY()][j] = WALL_CHAR;
-             playground[top_room_corner.getY()][j] = WALL_CHAR;
+             if (bot_room_corner.getY()!=0 && top_room_corner.getX()!=0) {
+                 playground[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR1;
+                 int j = top_room_corner.getX() + 1;
+                 for (; j < bot_room_corner.getX(); j++)
+                     playground[top_room_corner.getY()][j] = WALL_CHAR2;
+                 playground[top_room_corner.getY()][j] = WALL_CHAR3;
 
-             for (j = top_room_corner.getY() + 1; j < bot_room_corner.getY(); j++)
-             {
-                 playground[j][top_room_corner.getX()] = WALL_CHAR;
-                 playground[j][bot_room_corner.getX()] = WALL_CHAR;
+                 for (j = top_room_corner.getY() + 1; j < bot_room_corner.getY(); j++) {
+                     playground[j][top_room_corner.getX()] = WALL_CHAR4;
+                     playground[j][bot_room_corner.getX()] = WALL_CHAR5;
+                 }
+                 playground[bot_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR6;
+                 j = top_room_corner.getX() + 1;
+                 for (; j < bot_room_corner.getX(); j++)
+                     playground[bot_room_corner.getY()][j] = WALL_CHAR7;
+                 playground[bot_room_corner.getY()][j] = WALL_CHAR8;
              }
-
-             playground[bot_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
-             j = top_room_corner.getX() + 1;
-             for (;j <bot_room_corner.getX(); j++)
-                 playground[bot_room_corner.getY()][j] = WALL_CHAR;
-            playground[bot_room_corner.getY()][j] = WALL_CHAR;
-
          }
      }
 //             Position top_room_corner = level.getRoomsSequence(i).getTop_left();

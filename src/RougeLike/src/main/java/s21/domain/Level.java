@@ -59,6 +59,10 @@ public class Level {
         return roomsSequence.get(i);
     }
 
+    public void setRoomsSequence(int i, Room room) {
+        this.roomsSequence.set(i, room);
+    }
+
     public List<Corridor> getCorridors() {
         return corridors;
     }
@@ -88,15 +92,14 @@ public class Level {
             for (int i = 0; i < ROOMS_PER_SIDE ; i++){
                 for (int j = 0; j < ROOMS_PER_SIDE; j++, sector++){
                     if (Math.random() < ROOM_CHANCE &&
-                            rooms[i][j].getSector() == 0 ){
+                            rooms[i][j].getSector() == -1 ){
                             rooms[i][j] = new Room(i, j, sector);
-                            roomsSequence.add(rooms[i][j]);
+                            setRoomsSequence(room_cnt, rooms[i][j]);
                             room_cnt++;
                     }
                 }
             }
         }
-
         roomsSequence.sort(new RoomsComparator());
     }
 
@@ -109,25 +112,35 @@ public class Level {
 
 
     public void generate_rooms_geometry(){
+        int count = 0;
         for (int i = 0; i < ROOMS_PER_SIDE ; i++)
             for (int j = 0; j < ROOMS_PER_SIDE; j++)
-                if (rooms[i][j].getSector() != 0)
+                if (rooms[i][j].getSector() != -1)
                 {
                     generate_corners(rooms[i][j], (i) * SECTOR_HEIGHT, (j) * SECTOR_WIDTH);
+                    for (int k = 0; k < roomsSequence.size(); k++){
+                        if (roomsSequence.get(k).getSector() == rooms[i][j].getSector()){
+                            roomsSequence.get(k).setBot_right(rooms[i][j].getBot_right());
+                            roomsSequence.get(k).setTop_left(rooms[i][j].getTop_left());
+                        }
+                    }
 //                    generate_doors(&dungeon->rooms[i][j]);
                 }
+
+
 
     }
 
     public void generate_corners(Room room, int offset_y, int offset_x)
     {
-        int top_leftY = (int) ((Math.random() * (double) ((MAP_HEIGHT / 3) - 6) / 2) + offset_y + 1);
-        int top_leftX = (int) ((Math.random() * (double) (MAP_WIDTH / 3 - 6) / 2) + offset_x + 1);
+        int top_leftY = (int) ((Math.random() * (double) (SECTOR_HEIGHT - 6) / 2) + offset_y + 1);
+        int top_leftX = (int) ((Math.random() * (double) (SECTOR_WIDTH - 6) / 2) + offset_x + 1);
+        System.out.println("sector" +room.getSector() + "Y" + top_leftY + "X" + top_leftX);
         Position Top_left = new Position(top_leftX, top_leftY);
         room.setTop_left(Top_left);
-        System.out.println(room.getTop_left().getX());
-        int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - 5)) + 4);
-        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - 5)) +4);
+        int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2)) + 3);
+        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2)) + 3 );
+        System.out.println("sector" +room.getSector() + "Yb" + bot_rightY + "Xb" + bot_rightX);
         Position Bot_right = new Position(bot_rightX, bot_rightY);
         room.setBot_right(Bot_right);
     }

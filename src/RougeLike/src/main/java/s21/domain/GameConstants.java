@@ -6,8 +6,8 @@ public class GameConstants {
 
     public static final int CONNECTED = 0;
     public static final int NOT_CONNECTED = 1;
-    public static final int MAP_HEIGHT = 30;
-    public static final int MAP_WIDTH  = 90;
+    public static final int MAP_HEIGHT = 24;
+    public static final int MAP_WIDTH  = 80;
     public static final int ROOMS_PER_SIDE  = 3;
     public static final int SECTOR_WIDTH = MAP_WIDTH / ROOMS_PER_SIDE;
     public static final int SECTOR_HEIGHT = MAP_HEIGHT / ROOMS_PER_SIDE;
@@ -46,8 +46,16 @@ public class GameConstants {
     public static final int ENEMY = 2;
     public static final int ITEM = 3;
 
-    public static final int  WALL_CHAR = '#';
+    public static final int  WALL_CHAR1 = '#';
+    public static final int  WALL_CHAR2 = '*';
+    public static final int  WALL_CHAR3 = '3';
+    public static final int  WALL_CHAR4 = '4';
+    public static final int  WALL_CHAR5 = '5';
+    public static final int  WALL_CHAR6 = '6';
+    public static final int  WALL_CHAR7 = '7';
+    public static final int  WALL_CHAR8 = '8';
     public static final int CORRIDOR_CHAR = '+';
+
     public static final int  OUTER_AREA_CHAR = '.';
     public static final int  INNER_AREA_CHAR = ' ';
     public static final int EMPTY_CHAR = ' ';
