@@ -46,14 +46,7 @@ public class GameConstants {
     public static final int ENEMY = 2;
     public static final int ITEM = 3;
 
-    public static final int  WALL_CHAR1 = '#';
-    public static final int  WALL_CHAR2 = '*';
-    public static final int  WALL_CHAR3 = '3';
-    public static final int  WALL_CHAR4 = '4';
-    public static final int  WALL_CHAR5 = '5';
-    public static final int  WALL_CHAR6 = '6';
-    public static final int  WALL_CHAR7 = '7';
-    public static final int  WALL_CHAR8 = '8';
+    public static final int  WALL_CHAR = '#';
     public static final int CORRIDOR_CHAR = '+';
 
     public static final int  OUTER_AREA_CHAR = '.';

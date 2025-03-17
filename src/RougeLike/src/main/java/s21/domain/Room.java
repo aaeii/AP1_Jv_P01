@@ -75,6 +75,10 @@ public class Room {
         return connections;
     }
 
+    public Room getConnections(int i) {
+        return connections[i];
+    }
+
     public void setConnections(Room room, int i) {
         this.connections[i] = room;
     }
