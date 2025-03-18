@@ -29,6 +29,7 @@ public class Map {
 
      public void level_to_map ( Level level, Map map){
          rooms_to_map(level, map);
+         doors_to_map(level, map);
      }
 
      public void rooms_to_map(Level level, Map map){
@@ -82,6 +83,18 @@ public class Map {
 //
 //                 map->playground[(int)cur_entity.pos.y][(int)cur_entity.pos.x] = cur_entity.symbol;
 //             }
+        public void doors_to_map(Level level, Map map){
+            for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
+                if (level.getRoomsSequence(i).getSector() != -1) {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (level.getRoomsSequence(i).getDoors(j)!=null)
+                            playground[level.getRoomsSequence(i).getDoors(j).getY()][level.getRoomsSequence(i).getDoors(j).getX()] = CORRIDOR_CHAR;
+                    }
+                }
+            }
+
+        }
 
 
  }

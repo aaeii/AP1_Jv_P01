@@ -34,8 +34,7 @@ public class Room {
         this.sector = sector;
         connections = new Room[4];
         for (int k = 0; k < 4; k++){
-            Room currentRoom = new Room();
-            connections[i] = currentRoom;
+            connections[i] = null;
         }
         doors = new Position[4];
         for (int k = 0; k < 4; k++){
@@ -101,6 +100,10 @@ public class Room {
 
     public Position getTop_left() {
         return  top_left;
+    }
+
+    public Position getDoors(int i) {
+        return doors[i];
     }
 
     public void setBot_right (Position position) {

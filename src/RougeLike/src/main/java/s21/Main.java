@@ -16,15 +16,15 @@ public class Main {
         level.generate_level();
         Map map = new Map();
         map.level_to_map(level, map);
-//        for (int i=0; i < MAP_HEIGHT; i++ ) {
-//            for (int j = 0; j < MAP_WIDTH; j++) {
-//                System.out.print(map.playground[i][j]);
-//            }
-//            System.out.println();
-//        }
+        for (int i=0; i < MAP_HEIGHT; i++ ) {
+            for (int j = 0; j < MAP_WIDTH; j++) {
+                System.out.print(map.playground[i][j]);
+            }
+            System.out.println();
+        }
         Print printStep = new Print();
         printStep.setField(map.getPlayground());
-        printStep.printField();
+//        printStep.printField();
 //        for (int i=0; i < MAP_HEIGHT; i++ ) {
 //            for (int j = 0; j < MAP_WIDTH; j++) {
 //                System.out.print(map.playground[i][j]);
