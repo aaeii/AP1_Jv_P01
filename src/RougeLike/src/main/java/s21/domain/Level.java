@@ -31,7 +31,6 @@ public class Level {
                 rooms[i][j] = currentRoom;
                 for (int k = 0; k < 4; k++)
                 {
-                    Room room = new Room();
                     rooms[i][j].setConnections(null, k);
                     Position pos = new Position(UNINITIALIZED, UNINITIALIZED);
                     rooms[i][j].setDoors(pos, k);
@@ -63,9 +62,10 @@ public class Level {
         this.roomsSequence.set(i, room);
     }
 
-    public List<Corridor> getCorridors() {
-        return corridors;
+    public Corridor getCorridors(int i) {
+        return corridors.get(i);
     }
+
 
     public int getRoom_cnt() {
         return room_cnt;
@@ -75,12 +75,17 @@ public class Level {
         return corridors_cnt;
     }
 
-    public void generate_level()
-    {
-        generate_sectors();
-        generate_connections();
-        generate_rooms_geometry();
-        generate_corridors_geometry();
+    public void generate_level(){
+        int connection = 1;
+        while (connection != CONNECTED){
+//            Level();
+            generate_sectors();
+            generate_connections();
+            generate_rooms_geometry();
+            generate_corridors_geometry();
+            connection = check_connectivity();
+        }
+        System.out.println(check_connectivity());
     }
 
     public void generate_sectors()
@@ -145,7 +150,6 @@ public class Level {
             int xDoor = (int) (Math.random() * (double) ((room.getBot_right().getX()-room.getTop_left().getX() - 1)) + room.getTop_left().getX()+1);
             Position doorPos = new Position(xDoor, room.getTop_left().getY());
             room.setDoors(doorPos, TOP);
-
         }
 
         if (room.getConnections(RIGHT) != null)
@@ -167,8 +171,6 @@ public class Level {
             Position doorPos = new Position(room.getTop_left().getX(), yDoor);
             room.setDoors(doorPos, LEFT);
         }
-
-
     }
 
     void generate_connections()
@@ -249,18 +251,70 @@ public class Level {
 //        }
 //    }
 
-    public void generate_corridors_geometry(){
+    private void generate_corridors_geometry(){
         for (int i = 0; i < ROOMS_PER_SIDE; i++){
             for (int j = 0; j < ROOMS_PER_SIDE; j++)
             {
-                Room current = rooms[i][j];
-
-                if (current.getConnections(RIGHT) != null && current.getConnections(RIGHT).getConnections(LEFT) == current)
-                    System.out.println(current.getSector());
-//                generate_left_to_right_corridor(dungeon, cur_room, cur_room->connections[RIGHT], &dungeon->corridors[dungeon->corridors_cnt++]);
-
+                if (rooms[i][j].getConnections(RIGHT) != null && rooms[i][j].getConnections(RIGHT).getConnections(LEFT) == rooms[i][j])
+                    generate_left_to_right_corridor(rooms[i][j], rooms[i][j].getConnections(RIGHT), corridors_cnt);
+                if (rooms[i][j].getConnections(BOTTOM) != null)
+                    generate_top_to_bottom_corridor(rooms[i][j], rooms[i][j].getConnections(BOTTOM), corridors_cnt);
             }
         }
+    }
+
+    private void generate_left_to_right_corridor(Room left_room, Room right_room, int corr_cnt) {
+        corridors.get(corr_cnt).setType(LEFT_TO_RIGHT_CORRIDOR);
+        corridors.get(corr_cnt).setPoints(left_room.getDoors(RIGHT), 0);
+        int x_min = left_room.getDoors(RIGHT).getX();
+        int x_max = right_room.getDoors(LEFT).getX();
+        int random_center_x = (int) (Math.random() * (double)(x_max - x_min - 2) + x_min + 1);
+        Position second_point = new Position(random_center_x, left_room.getDoors(RIGHT).getY());
+        Position third_point  = new Position(random_center_x, right_room.getDoors(LEFT).getY());
+        corridors.get(corr_cnt).setPoints(second_point, 1);
+        corridors.get(corr_cnt).setPoints(third_point, 2);
+        corridors.get(corr_cnt).setPoints(right_room.getDoors(LEFT), 3);
+        corridors_cnt++;
+    }
+
+    private void generate_top_to_bottom_corridor(Room top_room, Room bottom_room, int corr_cnt){
+        corridors.get(corr_cnt).setType(TOP_TO_BOTTOM_CORRIDOR);
+        corridors.get(corr_cnt).setPoints(top_room.getDoors(BOTTOM), 0);
+        int y_min = top_room.getDoors(BOTTOM).getY();
+        int y_max = bottom_room.getDoors(TOP).getY();
+        int random_center_y = (int) (Math.random() * (double)(y_max - y_min - 2) + y_min + 1);
+        Position second_point = new Position(top_room.getDoors(BOTTOM).getX(), random_center_y);
+        Position third_point  = new Position(bottom_room.getDoors(TOP).getX(), random_center_y);
+        corridors.get(corr_cnt).setPoints(second_point, 1);
+        corridors.get(corr_cnt).setPoints(third_point, 2);
+        corridors.get(corr_cnt).setPoints(bottom_room.getDoors(TOP), 3);
+        corridors_cnt++;
+    }
+
+    public int check_connectivity()
+    {
+        int rc = CONNECTED;
+        int [] visited = new int[9];
+        int j = 0;
+        while (getRoomsSequence(j).getSector() == -1)
+            ++j;
+        int visited_count = depth_first_search(getRoomsSequence(j), visited);
+        if (visited_count != room_cnt)
+            rc = NOT_CONNECTED;
+        return rc;
+    }
+
+    private int depth_first_search(Room room, int [] visited)
+    {
+        int visited_count = 1;
+
+        visited[room.getSector()] = 1;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (room.getConnections(i) != null && visited[room.getConnections(i).getSector()] == 0)
+            visited_count += depth_first_search(room.getConnections(i), visited);}
+        return visited_count;
     }
 
 }

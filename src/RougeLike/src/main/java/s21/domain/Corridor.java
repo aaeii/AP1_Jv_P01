@@ -8,7 +8,7 @@ public class Corridor {
     private int type;
 
     public Corridor() {
-        this.points_cnt = 0;
+        this.points_cnt = 4;
         points = new Position[4];
         type = UNINITIALIZED;
     }
@@ -19,4 +19,21 @@ public class Corridor {
         type = UNINITIALIZED;
     }
 
+    public void setType(int type){
+        this.type=type;
+    }
+
+    public void setPoints(Position point, int i){
+        this.points[i] = point;
+    }
+
+    public int getType()
+    {
+        return type;
+    }
+
+    public Position getPoints(int i)
+    {
+        return points[i];
+    }
 }

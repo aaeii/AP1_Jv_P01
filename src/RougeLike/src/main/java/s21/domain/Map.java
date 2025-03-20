@@ -2,7 +2,7 @@ package s21.domain;
 
 import static s21.domain.GameConstants.*;
 
- //отображение для печати
+//отображение для печати
 public class Map {
      public char [][] playground;
      private Entity player_spawn;
@@ -29,7 +29,8 @@ public class Map {
 
      public void level_to_map ( Level level, Map map){
          rooms_to_map(level, map);
-         doors_to_map(level, map);
+         corridors_to_map(level, map);
+
      }
 
      public void rooms_to_map(Level level, Map map){
@@ -83,18 +84,44 @@ public class Map {
 //
 //                 map->playground[(int)cur_entity.pos.y][(int)cur_entity.pos.x] = cur_entity.symbol;
 //             }
-        public void doors_to_map(Level level, Map map){
+        public void corridors_to_map(Level level, Map map){
+
             for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
                 if (level.getRoomsSequence(i).getSector() != -1) {
-                    for (int j = 0; j < 4; j++)
+                    for (int k = 0; k < level.getCorridors_cnt(); k++)
                     {
-                        if (level.getRoomsSequence(i).getDoors(j)!=null)
-                            playground[level.getRoomsSequence(i).getDoors(j).getY()][level.getRoomsSequence(i).getDoors(j).getX()] = CORRIDOR_CHAR;
+                        switch (level.getCorridors(k).getType())
+                        {
+                            case LEFT_TO_RIGHT_CORRIDOR:
+                                horizontal_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                vertical_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                horizontal_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                                break;
+                            case LEFT_TURN_CORRIDOR:
+                                vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                break;
+                            case TOP_TO_BOTTOM_CORRIDOR:
+                                vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                vertical_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                        }
                     }
                 }
             }
-
         }
 
+     private void horizontal_corridor(Position first_point, Position second_point){
+         int y = first_point.getY();
+         for (int x = Math.min(first_point.getX(), second_point.getX()); x <= Math.max(first_point.getX(), second_point.getX()); x++)
+             playground[y][x] = CORRIDOR_CHAR;
+     }
+
+     private void vertical_corridor(Position first_point, Position second_point){
+         int x = first_point.getX();
+         for (int y = Math.min(first_point.getY(), second_point.getY()); y <= Math.max(first_point.getY(), second_point.getY()); y++) {
+             playground[y][x] = CORRIDOR_CHAR;
+         }
+     }
 
  }

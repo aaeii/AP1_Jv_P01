@@ -23,7 +23,7 @@ public class GameConstants {
     public static final int MAX_ENEMIES_TOTAL = MAX_ENEMIES_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_ITEMS_TOTAL = MAX_ITEMS_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_ENTITIES_TOTAL = MAX_ENEMIES_TOTAL + MAX_ITEMS_TOTAL + 2;
-    public static final int  ENEMY_POOL_LEN  = 26;
+    public static final int ENEMY_POOL_LEN  = 26;
     public static final int ITEM_POOL_LEN  = 5;
 
     public static final int TOP = 0;
@@ -48,8 +48,10 @@ public class GameConstants {
 
     public static final int  WALL_CHAR = '#';
     public static final int CORRIDOR_CHAR = '+';
+    public static final int CORRIDOR_CHAR2 = '1';
 
-    public static final int  OUTER_AREA_CHAR = '.';
+
+    public static final int  OUTER_AREA_CHAR = ' ';
     public static final int  INNER_AREA_CHAR = ' ';
     public static final int EMPTY_CHAR = ' ';
 
