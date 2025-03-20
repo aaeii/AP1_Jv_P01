@@ -17,8 +17,8 @@ public class GameConstants {
     public static final int CORNER_HOR_RANGE = (SECTOR_WIDTH - 6) / 2; // для 3д графики
     public static final double ROOM_CHANCE = 0.5;
     public static final double SPAWN_SET_CHANCE = 0.5;
-    public static final int MAX_ENEMIES_PER_ROOM = 5;
-    public static final int MAX_ITEMS_PER_ROOM = 5;
+    public static final int MAX_ENEMIES_PER_ROOM = 2;
+    public static final int MAX_ITEMS_PER_ROOM = 2;
     public static final int MAX_ENTITIES_PER_ROOM = MAX_ENEMIES_PER_ROOM + MAX_ITEMS_PER_ROOM + 2;
     public static final int MAX_ENEMIES_TOTAL = MAX_ENEMIES_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_ITEMS_TOTAL = MAX_ITEMS_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
@@ -41,10 +41,10 @@ public class GameConstants {
 
     public static final int  PLAYER = 0;
     public static final int PLAYER_CHAR = '@';
+    public static final int ENEMY_CHAR = 'X';
     public static final int EXIT = 1;
     public static final int EXIT_CHAR  = '|';
-    public static final int ENEMY = 2;
-    public static final int ITEM = 3;
+    public static final int ITEM = 2;
 
     public static final int  WALL_CHAR = '#';
     public static final int CORRIDOR_CHAR = '+';
@@ -54,6 +54,19 @@ public class GameConstants {
     public static final int  OUTER_AREA_CHAR = ' ';
     public static final int  INNER_AREA_CHAR = ' ';
     public static final int EMPTY_CHAR = ' ';
+
+
+    //TYPE OF ENEMIES
+    public static final int ZOMBIE = 3;
+    public static final int ZOMBIE_CHAR = 'Z';
+    public static final int VAMPIRE = 4;
+    public static final int VAMPIRE_CHAR = 'V';
+    public static final int GHOST = 5;
+    public static final int GHOST_CHAR = 'G';
+    public static final int OGRE = 6;
+    public static final int OGRE_CHAR = 'O';
+    public static final int SNAKE = 7;
+    public static final int SNAKE_CHAR = 'S';
 
 //            #define IS_OUTER    0
 //            #define IS_INNER    1

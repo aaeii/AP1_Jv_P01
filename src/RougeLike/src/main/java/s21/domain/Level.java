@@ -15,7 +15,6 @@ public class Level {
     private Room[][] rooms; //[ROOMS_PER_SIDE + 2][ROOMS_PER_SIDE + 2]
     private int room_cnt;
     private int  corridors_cnt;
-//    private boolean roomsConnectivity;
 
     public Level() {
         roomsSequence = new ArrayList<>();
@@ -23,7 +22,6 @@ public class Level {
         rooms = new Room[ROOMS_PER_SIDE][ROOMS_PER_SIDE];
         room_cnt = 0;
         corridors_cnt = 0;
-//        roomsConnectivity = false;
 
         for (int i = 0; i < ROOMS_PER_SIDE; i++)
             for (int j = 0; j < ROOMS_PER_SIDE; j++)
@@ -35,7 +33,7 @@ public class Level {
                     Position pos = new Position(UNINITIALIZED, UNINITIALIZED);
                     rooms[i][j].setDoors(pos, k);
                 }
-                rooms[i][j].setEntities(0);
+                rooms[i][j].setEntities_cnt(0);
             }
         roomsSequence = new ArrayList<>();
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
@@ -47,8 +45,37 @@ public class Level {
             Corridor corr = new Corridor();
             corridors.add(corr);
         }
-
 }
+    public void refreshLevel() {
+        roomsSequence = new ArrayList<>();
+        corridors = new ArrayList<>();
+        rooms = new Room[ROOMS_PER_SIDE][ROOMS_PER_SIDE];
+        room_cnt = 0;
+        corridors_cnt = 0;
+        for (int i = 0; i < ROOMS_PER_SIDE; i++)
+            for (int j = 0; j < ROOMS_PER_SIDE; j++)
+            { Room currentRoom = new Room();
+                rooms[i][j] = currentRoom;
+                for (int k = 0; k < 4; k++)
+                {
+                    rooms[i][j].setConnections(null, k);
+                    Position pos = new Position(UNINITIALIZED, UNINITIALIZED);
+                    rooms[i][j].setDoors(pos, k);
+                }
+                rooms[i][j].setEntities_cnt(0);
+            }
+        roomsSequence = new ArrayList<>();
+        for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
+            Room room = new Room();
+            roomsSequence.add(room);
+        }
+        corridors = new ArrayList<>();
+        for (int i = 0; i < MAX_CORRIDORS_NUMBER; i++){
+            Corridor corr = new Corridor();
+            corridors.add(corr);
+        }
+    }
+
 
     public List<Room> getRoomsSequence() {
         return roomsSequence;
@@ -77,15 +104,19 @@ public class Level {
 
     public void generate_level(){
         int connection = 1;
+        int i=0;
+        Entity entity = new Entity();
         while (connection != CONNECTED){
-//            Level();
+            refreshLevel();
             generate_sectors();
             generate_connections();
             generate_rooms_geometry();
             generate_corridors_geometry();
             connection = check_connectivity();
+            System.out.println(check_connectivity());
+            i++;
         }
-        System.out.println(check_connectivity());
+        System.out.println(i);
     }
 
     public void generate_sectors()

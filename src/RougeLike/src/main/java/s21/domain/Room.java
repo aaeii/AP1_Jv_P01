@@ -2,6 +2,7 @@ package s21.domain;
 
 import java.util.List;
 
+import static s21.domain.GameConstants.MAX_ENTITIES_PER_ROOM;
 import static s21.domain.GameConstants.UNINITIALIZED;
 
 public class Room {
@@ -14,7 +15,7 @@ public class Room {
     private Position bot_right;
 //    private boolean playerExit;
 //    private boolean playerSpawn;
-//    private Entity [] entities; //MAX_ENTITIES_PER_ROOM
+    private Entity [] entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
 
     public Room(){
@@ -25,6 +26,7 @@ public class Room {
         doors = new Position[4];
         top_left = new Position();
         bot_right = new Position();
+        entities = new Entity[MAX_ENTITIES_PER_ROOM];
         entities_cnt = 0;
     }
 
@@ -39,7 +41,12 @@ public class Room {
         doors = new Position[4];
         for (int k = 0; k < 4; k++){
             Position currentPosition = new Position();
-            doors[i] = currentPosition;
+            doors[k] = currentPosition;
+        }
+
+        entities = new Entity[MAX_ENTITIES_PER_ROOM];
+        for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++){
+            entities[k] = null;
         }
         top_left = new Position();
         bot_right = new Position();
@@ -78,6 +85,14 @@ public class Room {
         return connections[i];
     }
 
+    public int getEntities_cnt(){
+        return entities_cnt;
+    }
+
+    public void setEntities_cnt(int entities_cnt) {
+        this.entities_cnt = entities_cnt;
+    }
+
     public void setConnections(Room room, int i) {
         this.connections[i] = room;
     }
@@ -90,8 +105,13 @@ public class Room {
         this.connections = connections;
     }
 
-    public void setEntities(int entities_cnt) {
-        this.entities_cnt = entities_cnt;
+    public void setEntities(Entity entity) {
+        this.entities[entities_cnt] = entity;
+        this.entities_cnt++;
+    }
+
+    public Entity getEntities(int i) {
+        return entities[i];
     }
 
     public void setTop_left(Position position) {
