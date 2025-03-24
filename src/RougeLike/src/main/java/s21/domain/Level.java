@@ -348,5 +348,11 @@ public class Level {
         return visited_count;
     }
 
+//    public void moveEntity(Position position){
+//        for (Room room : roomsSequence) {
+//            if (room.checkInRoomEnemies(position)) room.moveEnemies(position);
+//        }
+//    }
+
 }
 

@@ -51,7 +51,7 @@ public class GameConstants {
     public static final int CORRIDOR_CHAR2 = '1';
 
 
-    public static final int  OUTER_AREA_CHAR = ' ';
+    public static final int  OUTER_AREA_CHAR = '.';
     public static final int  INNER_AREA_CHAR = ' ';
     public static final int EMPTY_CHAR = ' ';
 

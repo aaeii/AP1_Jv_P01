@@ -2,8 +2,7 @@ package s21.domain;
 
 import java.util.List;
 
-import static s21.domain.GameConstants.MAX_ENTITIES_PER_ROOM;
-import static s21.domain.GameConstants.UNINITIALIZED;
+import static s21.domain.GameConstants.*;
 
 public class Room {
     private  int sector;
@@ -132,6 +131,18 @@ public class Room {
 
     public Position getBot_right() {
         return bot_right;
+    }
+
+    public boolean checkInRoomEnemies(Position position){
+        for (Entity entity : entities) {
+            if (entity.getPosition().getX() == position.getX() && entity.getPosition().getX()== position.getY() && entity.getType() == ENEMY_POOL_LEN)
+                return true;
+        }
+        return false;
+    }
+
+    public void moveEnemies(){
+
     }
 
 }
