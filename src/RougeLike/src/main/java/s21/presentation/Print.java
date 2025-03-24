@@ -6,7 +6,6 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import s21.controller.UserInput;
 
 import java.io.IOException;
 
@@ -17,12 +16,22 @@ public class Print {
     private char[][] field;
 //    private Character player;
 
-    public  Print() {
+    public Print() {
         field = new char[MAP_HEIGHT][MAP_WIDTH];
     }
 
     public void setField(char[][] playground) {
         this.field = playground;
+    }
+
+    public Terminal createTerminal() throws IOException {
+        Terminal terminal = new DefaultTerminalFactory().createTerminal();
+        TerminalSize screenSize = terminal.getTerminalSize();
+        terminal.setCursorVisible(false);
+
+        terminal.flush();
+
+        return terminal;
     }
 
 //    public void printField() throws IOException {
@@ -57,29 +66,38 @@ public class Print {
 //        screen.stopScreen();
 //    }
 
-public Terminal printField() throws IOException {
-    Terminal terminal = new DefaultTerminalFactory().createTerminal();
-    TerminalSize screenSize = terminal.getTerminalSize();
-    terminal.setCursorVisible(false);
+    public Terminal printField() throws IOException {
+        Terminal terminal = new DefaultTerminalFactory().createTerminal();
+        TerminalSize screenSize = terminal.getTerminalSize();
+        terminal.setCursorVisible(false);
 //    Screen screen = new TerminalScreen(terminal);
 //    screen.startScreen();
 //    screen.clear();
 //    UserInput Action = new UserInput();
 //    Action.waitForInput(terminal);
 //    System.out.println((Action.getAction()));
-    for (int i=0; i < MAP_HEIGHT; i++ ){
-        for (int j=0; j < MAP_WIDTH; j++ )
-            terminal.putCharacter(field[i][j]);
-    }
-    terminal.flush();
+        for (int i = 0; i < MAP_HEIGHT; i++) {
+            for (int j = 0; j < MAP_WIDTH; j++)
+                terminal.putCharacter(field[i][j]);
+        }
+        terminal.flush();
 //    screen.refresh();
 //    screen.readInput();
 //    screen.stopScreen();
-    return terminal;
-}
+        return terminal;
+    }
+
+    public void printOnlyField(Terminal terminal) throws IOException {
+        terminal.clearScreen();
+        for (int i = 0; i < MAP_HEIGHT; i++) {
+            for (int j = 0; j < MAP_WIDTH; j++)
+                terminal.putCharacter(field[i][j]);
+        }
+        terminal.flush();
+    }
 
 
-    private void  printStartMenu(Terminal terminal) throws IOException {
+    private void printStartMenu(Terminal terminal) throws IOException {
         Screen screen = new TerminalScreen(terminal);
         screen.startScreen();
         screen.setCursorPosition(null);
@@ -91,14 +109,8 @@ public Terminal printField() throws IOException {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.fillRectangle(labelBoxTopLeft, labelBoxSize, ' ');
 
-        textGraphics.drawLine(
-                labelBoxTopLeft.withRelativeColumn(1),
-                labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 2),
-                Symbols.DOUBLE_LINE_HORIZONTAL);
-        textGraphics.drawLine(
-                labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(1),
-                labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(labelBoxSize.getColumns() - 2),
-                Symbols.DOUBLE_LINE_HORIZONTAL);
+        textGraphics.drawLine(labelBoxTopLeft.withRelativeColumn(1), labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 2), Symbols.DOUBLE_LINE_HORIZONTAL);
+        textGraphics.drawLine(labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(1), labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(labelBoxSize.getColumns() - 2), Symbols.DOUBLE_LINE_HORIZONTAL);
         textGraphics.putString(labelBoxTopLeft.withRelative(1, 1), sizeLabel);
         textGraphics.setCharacter(labelBoxTopLeft, Symbols.DOUBLE_LINE_TOP_LEFT_CORNER);
         textGraphics.setCharacter(labelBoxTopLeft.withRelativeRow(1), Symbols.DOUBLE_LINE_VERTICAL);
@@ -110,15 +122,16 @@ public Terminal printField() throws IOException {
         screen.readInput();
         screen.stopScreen();
     }
+
     public void printRules(Terminal terminal) throws IOException {
-        final  TextGraphics textGraphics = terminal.newTextGraphics();
+        final TextGraphics textGraphics = terminal.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
         textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2-2, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2-1, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2, "Press N to start", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2+1, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2+2, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "Press N to start", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
         terminal.flush();
     }
 }
