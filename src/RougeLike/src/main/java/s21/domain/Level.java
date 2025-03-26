@@ -39,13 +39,13 @@ public class Level {
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
             Room room = new Room();
             roomsSequence.add(room);
-            }
+        }
         corridors = new ArrayList<>();
         for (int i = 0; i < MAX_CORRIDORS_NUMBER; i++){
             Corridor corr = new Corridor();
             corridors.add(corr);
         }
-}
+    }
     public void refreshLevel() {
         roomsSequence = new ArrayList<>();
         corridors = new ArrayList<>();
@@ -128,9 +128,9 @@ public class Level {
                 for (int j = 0; j < ROOMS_PER_SIDE; j++, sector++){
                     if (Math.random() < ROOM_CHANCE &&
                             rooms[i][j].getSector() == -1 ){
-                            rooms[i][j] = new Room(i, j, sector);
-                            setRoomsSequence(room_cnt, rooms[i][j]);
-                            room_cnt++;
+                        rooms[i][j] = new Room(i, j, sector);
+                        setRoomsSequence(room_cnt, rooms[i][j]);
+                        room_cnt++;
                     }
                 }
             }
@@ -219,7 +219,7 @@ public class Level {
                     if ((i > 0))
                     {
                         if ((rooms[i - 1][j].getSector() != UNINITIALIZED) && (rooms[i - 1][j] != null))
-                        rooms[i][j].setConnections( rooms[i - 1][j], TOP );
+                            rooms[i][j].setConnections( rooms[i - 1][j], TOP );
                     }
                     if (j < (ROOMS_PER_SIDE - 1) )
                     {
@@ -234,8 +234,8 @@ public class Level {
                             rooms[i][j].setConnections(rooms[i + 1][j], BOTTOM);
                     }
                     if (j > 0) {
-                    if ((rooms[i][j - 1].getSector() != UNINITIALIZED) && (rooms[i][j - 1]!= null))
-                        rooms[i][j].setConnections(rooms[i][j - 1], LEFT);
+                        if ((rooms[i][j - 1].getSector() != UNINITIALIZED) && (rooms[i][j - 1]!= null))
+                            rooms[i][j].setConnections(rooms[i][j - 1], LEFT);
                     }
                 }
 
@@ -338,15 +338,36 @@ public class Level {
     private int depth_first_search(Room room, int [] visited)
     {
         int visited_count = 1;
-
         visited[room.getSector()] = 1;
-
         for (int i = 0; i < 4; i++)
         {
             if (room.getConnections(i) != null && visited[room.getConnections(i).getSector()] == 0)
-            visited_count += depth_first_search(room.getConnections(i), visited);}
+                visited_count += depth_first_search(room.getConnections(i), visited);}
         return visited_count;
     }
 
+    public void moveEntity(Position position){
+//        int offset = 0 ;
+//        while (roomsSequence.get(offset).getSector() == -1)
+//            ++offset;
+//        for (int i = offset; i < roomsSequence.size(); i++) {
+//                if (roomsSequence.get(i).checkInRoomEntities(position))
+////                    roomsSequence.get(i).moveEnemies(position);
+//
+//        }
+    }
+
+
+    public boolean isItExit(Position position){
+        int offset = 0 ;
+        while (roomsSequence.get(offset).getSector() == -1)
+            ++offset;
+        for (int i = offset; i < roomsSequence.size(); i++) {
+            if (roomsSequence.get(i).checkIsItExit(position)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

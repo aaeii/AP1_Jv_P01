@@ -2,8 +2,7 @@ package s21.domain;
 
 import java.util.List;
 
-import static s21.domain.GameConstants.MAX_ENTITIES_PER_ROOM;
-import static s21.domain.GameConstants.UNINITIALIZED;
+import static s21.domain.GameConstants.*;
 
 public class Room {
     private  int sector;
@@ -13,10 +12,14 @@ public class Room {
     private Position[] doors; //4
     private Position top_left;
     private Position bot_right;
-//    private boolean playerExit;
+    //    private boolean playerExit;
 //    private boolean playerSpawn;
-    private Entity [] entities; //MAX_ENTITIES_PER_ROOM
+    private final Entity [] entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
+    private final Enemy [] enemies;
+    private int enemies_cnt;
+
+
 
     public Room(){
         grid_i = 0;
@@ -28,6 +31,8 @@ public class Room {
         bot_right = new Position();
         entities = new Entity[MAX_ENTITIES_PER_ROOM];
         entities_cnt = 0;
+        enemies = new Enemy[MAX_ENTITIES_PER_ROOM];
+        enemies_cnt=0;
     }
 
     public Room(int i, int j, int sector){
@@ -48,9 +53,14 @@ public class Room {
         for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++){
             entities[k] = null;
         }
+        enemies = new Enemy[MAX_ENTITIES_PER_ROOM];
+        for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++){
+            enemies[k] = null;
+        }
         top_left = new Position();
         bot_right = new Position();
         entities_cnt = 0;
+        enemies_cnt=0;
     }
 
     public int getSector() {
@@ -113,6 +123,21 @@ public class Room {
     public Entity getEntities(int i) {
         return entities[i];
     }
+    //Enemy
+    public void setEnemies(Enemy enemy) {
+        this.enemies[entities_cnt] = enemy;
+        this.entities_cnt++;
+    }
+    public Enemy getEnemies(int i) {
+        return enemies[i];
+    }
+    public int getEnemies_cnt(){
+        return enemies_cnt;
+    }
+
+    public void setEnemies_cnt(int enemies_cnt) {
+        this.enemies_cnt = enemies_cnt;
+    }
 
     public void setTop_left(Position position) {
         this.top_left = position;
@@ -132,6 +157,27 @@ public class Room {
 
     public Position getBot_right() {
         return bot_right;
+    }
+
+    public boolean checkInRoomEntities(Position position){
+        for (int i = 0; i < entities_cnt; i++) {
+            if (entities[i].getPosition().getX() == position.getX() && entities[i].getPosition().getY() == position.getY())
+                return true;
+        }
+        return false;
+    }
+
+    public boolean checkIsItExit(Position position){
+        for (int i = 0; i < entities_cnt; i++) {
+            if (entities[i].getPosition().getX() == position.getX() && entities[i].getPosition().getY() == position.getY() && entities[i].getType() == EXIT)
+                return true;
+        }
+        return false;
+    }
+
+
+    public void moveEnemies(){
+
     }
 
 }
