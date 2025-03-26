@@ -65,24 +65,28 @@ public class Character {
         this.strength = this.strength + value;
     }
 
+    public int getGold() {
+        return gold;
+    }
+
     public void move(char [][] field, int direction, Level level){
         int x = position.getX();
         int y = position.getY();
         switch (direction){
             case (TOP):
-                if (field[y - 1][x] == ' ' || field[y - 1][x] == '+')
+                if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR)
                     position.setNew(x, y - 1);
                 break;
             case (RIGHT):
-                if (field[y][x + 1] == ' ' || field[y][x + 1] == '+')
+                if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR)
                     position.setNew(x + 1, y);
             break;
             case (BOTTOM):
-                if (field[y + 1][x] == ' ' || field[y + 1][x] == '+')
+                if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR)
                     position.setNew(x , y + 1);
                 break;
             case (LEFT):
-                if (field[y][x - 1] == ' ' || field[y][x - 1] == '+')
+                if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR)
                     position.setNew(x - 1, y);
                 break;
                 }

@@ -23,7 +23,7 @@ public class GameSession {
 
 
 public GameSession() {
-    levels = new ArrayList<>(); // Инициализация списка уровней
+    levels = new ArrayList<>(MAX_LEVEL_NUMBER); // Инициализация списка уровней
     this.inGame = true;
     this.win = false;
     this.readyToStart = false;
@@ -53,22 +53,18 @@ public GameSession() {
         return inGame;
     }
 
+    public int getCurrentLevelNumber() {
+        return currentLevelNumber;
+    }
+
     public boolean isReadyToStart() {
         return readyToStart;
     }
 
-//    public void gameLoop () throws IOException {
-//    currentLevel.generate_level();
-//    generate_entities();
-//    level_to_field(currentLevel);
-//    for (int i=0; i < MAP_HEIGHT; i++ ) {
-//        for (int j = 0; j < MAP_WIDTH; j++) {
-//            System.out.print(field[i][j]);
-//        }
-//        System.out.println();
-//    }
-//
-//}
+    public Character getPlayer(){
+    return player;
+    }
+
     public void waitForStart(int input) {
         if (input == 'N' || input == 'n') this.readyToStart = true;
         if (input == 'Q' || input == 'q') {
@@ -96,10 +92,6 @@ public GameSession() {
         Position player_pos = new Position();
         player_pos = player_entity.generate_entity_coords(player_room);
         player.setPosition(player_pos);
-        player_entity.setSymbol(PLAYER_CHAR);
-        player_entity.setType(PLAYER);
-        player_entity.setPosition(player_pos);
-        player_room.setEntities(player_entity);
     }
 
     public void generate_exit(){
@@ -124,7 +116,7 @@ public GameSession() {
             int offset = 0 ;
             while (currentLevel.getRoomsSequence(offset).getSector() == -1)
                 ++offset;
-            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM + currentLevelNumber) + 1);
+            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
             int enemy_type = -1;
 
             for (int j = 0; j < enemies_cnt; j++){
@@ -245,22 +237,27 @@ public GameSession() {
 
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
-//            currentLevel.moveEntity(player.getPosition());// обработка встречи с врагом/элексиром/выходом
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
-//            currentLevel.moveEntity(player.getPosition());
         }
         if (action == 's' || action == 'S') {
             player.move(field, BOTTOM, currentLevel);
-//            currentLevel.moveEntity(player.getPosition());
         }
         if (action == 'a' || action == 'A') {
             player.move(field, LEFT, currentLevel);
-//            currentLevel.moveEntity(player.getPosition());
         }
+        if (currentLevel.isItExit(player.getPosition())) {
+            generate_next_level();
+            System.out.println("new level " + currentLevelNumber);
+        }
+        else
+            currentLevel.moveEntity(player.getPosition());
+//        checkInGame();
+        if (action == 'Q' || action == 'q') inGame = false;
         map_refresh();
         level_to_field(currentLevel);
+
     }
 
     public void map_refresh(){
@@ -269,6 +266,17 @@ public GameSession() {
                 field[i][j] = OUTER_AREA_CHAR;
             }
         }
+    }
+
+    public void generate_next_level(){
+        currentLevelNumber++;
+        if (currentLevelNumber < 21) {
+            levels.get(currentLevelNumber).generate_level();
+            currentLevel = levels.get(currentLevelNumber);
+            generate_entities();
+            level_to_field(currentLevel);
+        }
+        else win = true;
     }
 
 }

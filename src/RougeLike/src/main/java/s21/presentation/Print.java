@@ -6,7 +6,7 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import s21.controller.UserInput;
+import s21.domain.GameSession;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class Print {
     private char[][] field;
 //    private Character player;
 
-    public  Print() {
+    public Print() {
         field = new char[MAP_HEIGHT][MAP_WIDTH];
     }
 
@@ -25,61 +25,31 @@ public class Print {
         this.field = playground;
     }
 
-//    public void printField() throws IOException {
-//        Terminal terminal = new DefaultTerminalFactory().createTerminal();
-////        terminal.setBackgroundColor(TextColor.ANSI.BLUE);
-////        terminal.setForegroundColor(TextColor.ANSI.YELLOW);
-//        Screen screen = new TerminalScreen(terminal);
-//        screen.startScreen();
-//        screen.setCursorPosition(null);
-//        screen.clear();
-//        TerminalPosition startPosition = terminal.getCursorPosition();
-//        for (int i=0; i < MAP_HEIGHT; i++ ){
-//            for (int j=0; j < MAP_WIDTH; j++ ) {
-//                if (field[i][j] == WALL_CHAR) {
-//                    screen.setCharacter(j, i, new TextCharacter(
-//                            ' ',
-//                            TextColor.ANSI.DEFAULT,
-//                            TextColor.ANSI.BLUE));
-//                }
-//                else if ( field[i][j] == CORRIDOR_CHAR){
-//                    screen.setCharacter(j, i, new TextCharacter(
-//                            ' ',
-//                            TextColor.ANSI.DEFAULT,
-//                            TextColor.ANSI.WHITE));
-//                }
-//                else screen.setCharacter(j, i, new TextCharacter(field[i][j]));
-//            }
-//        }
-////        printStartMenu(terminal);
-//        screen.refresh();
-//        screen.readInput();
-//        screen.stopScreen();
-//    }
+    public Terminal createTerminal() throws IOException {
+        Terminal terminal = new DefaultTerminalFactory().createTerminal();
+        TerminalSize screenSize = terminal.getTerminalSize();
+        terminal.setCursorVisible(false);
 
-public Terminal printField() throws IOException {
-    Terminal terminal = new DefaultTerminalFactory().createTerminal();
-    TerminalSize screenSize = terminal.getTerminalSize();
-    terminal.setCursorVisible(false);
-//    Screen screen = new TerminalScreen(terminal);
-//    screen.startScreen();
-//    screen.clear();
-//    UserInput Action = new UserInput();
-//    Action.waitForInput(terminal);
-//    System.out.println((Action.getAction()));
-    for (int i=0; i < MAP_HEIGHT; i++ ){
-        for (int j=0; j < MAP_WIDTH; j++ )
-            terminal.putCharacter(field[i][j]);
+        terminal.flush();
+
+        return terminal;
     }
-    terminal.flush();
-//    screen.refresh();
-//    screen.readInput();
-//    screen.stopScreen();
-    return terminal;
-}
 
+    public void printOnlyField(Terminal terminal) throws IOException {
+        terminal.clearScreen();
+        for (int i = 0; i < MAP_HEIGHT; i++) {
+            for (int j = 0; j < MAP_WIDTH; j++)
+                terminal.putCharacter(field[i][j]);
+        }
+        terminal.flush();
+    }
 
-    private void  printStartMenu(Terminal terminal) throws IOException {
+    public void printGame(Terminal terminal, GameSession game) throws IOException {
+     printOnlyField(terminal);
+     printInfo(terminal, game);
+    }
+
+    private void printStartMenu(Terminal terminal) throws IOException {
         Screen screen = new TerminalScreen(terminal);
         screen.startScreen();
         screen.setCursorPosition(null);
@@ -91,14 +61,8 @@ public Terminal printField() throws IOException {
         TextGraphics textGraphics = screen.newTextGraphics();
         textGraphics.fillRectangle(labelBoxTopLeft, labelBoxSize, ' ');
 
-        textGraphics.drawLine(
-                labelBoxTopLeft.withRelativeColumn(1),
-                labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 2),
-                Symbols.DOUBLE_LINE_HORIZONTAL);
-        textGraphics.drawLine(
-                labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(1),
-                labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(labelBoxSize.getColumns() - 2),
-                Symbols.DOUBLE_LINE_HORIZONTAL);
+        textGraphics.drawLine(labelBoxTopLeft.withRelativeColumn(1), labelBoxTopLeft.withRelativeColumn(labelBoxSize.getColumns() - 2), Symbols.DOUBLE_LINE_HORIZONTAL);
+        textGraphics.drawLine(labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(1), labelBoxTopLeft.withRelativeRow(2).withRelativeColumn(labelBoxSize.getColumns() - 2), Symbols.DOUBLE_LINE_HORIZONTAL);
         textGraphics.putString(labelBoxTopLeft.withRelative(1, 1), sizeLabel);
         textGraphics.setCharacter(labelBoxTopLeft, Symbols.DOUBLE_LINE_TOP_LEFT_CORNER);
         textGraphics.setCharacter(labelBoxTopLeft.withRelativeRow(1), Symbols.DOUBLE_LINE_VERTICAL);
@@ -110,17 +74,38 @@ public Terminal printField() throws IOException {
         screen.readInput();
         screen.stopScreen();
     }
+
     public void printRules(Terminal terminal) throws IOException {
-        final  TextGraphics textGraphics = terminal.newTextGraphics();
+        final TextGraphics textGraphics = terminal.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
         textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2-2, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2-1, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2, "Press N to start", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2+1, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH/2-10, MAP_HEIGHT/2+2, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "Press N to start", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "                ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
         terminal.flush();
     }
-}
 
+    public void printInfo(Terminal terminal, GameSession game) throws IOException {
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
+        textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
+        textGraphics.putString(1, 0, "Level  " + (game.getCurrentLevelNumber()+1), SGR.UNDERLINE);
+        terminal.flush();
+    }
+    public void printResultOfGame(Terminal terminal, GameSession game) throws IOException {
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
+        textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "  Game is Over  ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "Your level: " + game.getCurrentLevelNumber(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "Your health: " + game.getPlayer().getHealth(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getHealth(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
+        terminal.flush();
+    }
+
+
+}
 

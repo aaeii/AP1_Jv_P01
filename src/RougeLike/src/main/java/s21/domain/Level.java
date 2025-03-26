@@ -338,9 +338,7 @@ public class Level {
     private int depth_first_search(Room room, int [] visited)
     {
         int visited_count = 1;
-
         visited[room.getSector()] = 1;
-
         for (int i = 0; i < 4; i++)
         {
             if (room.getConnections(i) != null && visited[room.getConnections(i).getSector()] == 0)
@@ -348,11 +346,28 @@ public class Level {
         return visited_count;
     }
 
-//    public void moveEntity(Position position){
-//        for (Room room : roomsSequence) {
-//            if (room.checkInRoomEnemies(position)) room.moveEnemies(position);
+    public void moveEntity(Position position){
+//        int offset = 0 ;
+//        while (roomsSequence.get(offset).getSector() == -1)
+//            ++offset;
+//        for (int i = offset; i < roomsSequence.size(); i++) {
+//                if (roomsSequence.get(i).checkInRoomEntities(position))
+////                    roomsSequence.get(i).moveEnemies(position);
+//
 //        }
-//    }
+    }
 
+
+    public boolean isItExit(Position position){
+        int offset = 0 ;
+        while (roomsSequence.get(offset).getSector() == -1)
+            ++offset;
+        for (int i = offset; i < roomsSequence.size(); i++) {
+            if (roomsSequence.get(i).checkIsItExit(position)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

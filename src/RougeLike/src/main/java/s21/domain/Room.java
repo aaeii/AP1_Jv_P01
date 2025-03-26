@@ -14,7 +14,7 @@ public class Room {
     private Position bot_right;
 //    private boolean playerExit;
 //    private boolean playerSpawn;
-    private Entity [] entities; //MAX_ENTITIES_PER_ROOM
+    private final Entity [] entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
 
     public Room(){
@@ -133,9 +133,17 @@ public class Room {
         return bot_right;
     }
 
-    public boolean checkInRoomEnemies(Position position){
-        for (Entity entity : entities) {
-            if (entity.getPosition().getX() == position.getX() && entity.getPosition().getX()== position.getY() && entity.getType() == ENEMY_POOL_LEN)
+    public boolean checkInRoomEntities(Position position){
+            for (int i = 0; i < entities_cnt; i++) {
+                if (entities[i].getPosition().getX() == position.getX() && entities[i].getPosition().getY() == position.getY())
+                    return true;
+            }
+        return false;
+    }
+
+    public boolean checkIsItExit(Position position){
+        for (int i = 0; i < entities_cnt; i++) {
+            if (entities[i].getPosition().getX() == position.getX() && entities[i].getPosition().getY() == position.getY() && entities[i].getType() == EXIT)
                 return true;
         }
         return false;
