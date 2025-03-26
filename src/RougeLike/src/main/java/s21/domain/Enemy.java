@@ -12,10 +12,13 @@ public class Enemy extends Entity {
     private int strength;
     private int hostility;
     private int type;
+    //    private char symbol;
     private int symbol;
+
     Position position;
 
     public Enemy(int type) {
+        super();
         this.type = type;
         switch (type) {
             case ZOMBIE:
@@ -23,75 +26,39 @@ public class Enemy extends Entity {
                 this.agility = LOW_LVL;
                 this.strength = MEDIUM_LVL;
                 this.hostility = MEDIUM_LVL;
+                setSymbol(ZOMBIE_CHAR);
                 break;
             case VAMPIRE:
                 this.health = HIGH_LVL;
                 this.agility = HIGH_LVL;
                 this.strength = MEDIUM_LVL;
                 this.hostility = HIGH_LVL;
+                setSymbol(VAMPIRE_CHAR);
                 break;
             case GHOST:
                 this.health = LOW_LVL;
                 this.agility = HIGH_LVL;
                 this.strength = LOW_LVL;
                 this.hostility = LOW_LVL;
+                setSymbol(GHOST_CHAR);
                 break;
             case OGRE:
                 this.health = VERY_HIGH_LVL;
                 this.agility = LOW_LVL;
                 this.strength = VERY_HIGH_LVL;
                 this.hostility = MEDIUM_LVL;
+                setSymbol(OGRE_CHAR);
                 break;
             case SNAKE:
-                this.health = LOW_LVL;//?
+                this.health = LOW_LVL;
                 this.agility = VERY_HIGH_LVL;
-                this.strength = LOW_LVL;//?
+                this.strength = LOW_LVL;
                 this.hostility = HIGH_LVL;
+                setSymbol(SNAKE_CHAR);
                 break;
             default:
                 break;
         }
-    }
-
-    public char getDisplayChar() {
-        switch (type) {
-            case ZOMBIE:
-                return ZOMBIE_CHAR;
-            case VAMPIRE:
-                return VAMPIRE_CHAR;
-            case GHOST:
-                return GHOST_CHAR;
-            case OGRE:
-                return OGRE_CHAR;
-            case SNAKE:
-                return SNAKE_CHAR;
-            default:
-                return '?';
-        }
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public void setSymbol(int symbol) {
-        this.symbol = symbol;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public int getSymbol() {
-        return symbol;
     }
 
     public int getHealth() {
@@ -108,7 +75,6 @@ public class Enemy extends Entity {
 
 
     public int getStrength() {
-
         return strength;
     }
 
@@ -118,8 +84,10 @@ public class Enemy extends Entity {
 
     public void attack(Character character) {
         switch (type) {
+            case ZOMBIE:
+                break;
             case VAMPIRE:
-                return;
+                break;
             case GHOST:
                 break;
             case OGRE:
@@ -131,28 +99,54 @@ public class Enemy extends Entity {
         }
     }
 
-//    public Position generate_entity_coords(Room room){
-//        Position pos  = new Position();
-//        do {
-//            int x = (int) ((Math.random() * (room.getBot_right().getX() - room.getTop_left().getX() - 1)) + room.getTop_left().getX() + 1);
-//            int y = (int) ((Math.random() * (room.getBot_right().getY() - room.getTop_left().getY() - 1)) + room.getTop_left().getY() + 1);
-//            pos.setNew(x,y);
-//        }
-//        while (check_unoccupied(room, pos) == OCCUPIED);
-//        return pos;
-//    }
-//
-//    private int check_unoccupied(Room room, Position pos)
-//    {
-//        int status = UNOCCUPIED;
-//
-//        for (int i = 0; i < room.getEnemies_cnt() && status == UNOCCUPIED; i++)
-//            if (room.getEnemies(i).position.getX() == pos.getX() && room.getEnemies(i).position.getY() == pos.getY())
-//                status = OCCUPIED;
-//
-//        return status;
-//    }
+    public void moveOgre(int[][] field, int direction) {
+        int x = position.getX(), y = position.getY();
+        int newX = x, newY = y;
 
+        switch (direction) {
+            case TOP:
+                newY = y - 1;
+                break;
+            case RIGHT:
+                newX = x + 1;
+                break;
+            case BOTTOM:
+                newY = y + 1;
+                break;
+            case LEFT:
+                newX = x - 1;
+                break;
+        }
+        if (isWall(field, newX, newY)) {
+            changeDirection(direction);
+        } else {
+            position.setNew(newX, newY);
+        }
+    }
+
+    private boolean isWall(int[][] field, int x, int y) {
+        if (y < 0 || y >= field.length || x < 0 || x >= field[0].length) {
+            return true;
+        }
+        return field[y][x] == WALL_CHAR;
+    }
+
+    private void changeDirection(int direction) {
+        switch (direction) {
+            case TOP:
+                direction = RIGHT;
+                break;
+            case RIGHT:
+                direction = BOTTOM;
+                break;
+            case BOTTOM:
+                direction = LEFT;
+                break;
+            case LEFT:
+                direction = TOP;
+                break;
+        }
+    }
 }
 
 
