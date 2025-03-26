@@ -2,7 +2,7 @@ package s21.domain;
 
 import static s21.domain.GameConstants.*;
 
-public class Enemy {
+public class Enemy extends Entity {
     public static final int VERY_HIGH_LVL = 100;
     public static final int HIGH_LVL = 75;
     public static final int MEDIUM_LVL = 50;
@@ -37,7 +37,7 @@ public class Enemy {
                 this.hostility = LOW_LVL;
                 break;
             case OGRE:
-            this.health = VERY_HIGH_LVL;
+                this.health = VERY_HIGH_LVL;
                 this.agility = LOW_LVL;
                 this.strength = VERY_HIGH_LVL;
                 this.hostility = MEDIUM_LVL;
@@ -131,27 +131,27 @@ public class Enemy {
         }
     }
 
-    public Position generate_entity_coords(Room room){
-        Position pos  = new Position();
-        do {
-            int x = (int) ((Math.random() * (room.getBot_right().getX() - room.getTop_left().getX() - 1)) + room.getTop_left().getX() + 1);
-            int y = (int) ((Math.random() * (room.getBot_right().getY() - room.getTop_left().getY() - 1)) + room.getTop_left().getY() + 1);
-            pos.setNew(x,y);
-        }
-        while (check_unoccupied(room, pos) == OCCUPIED);
-        return pos;
-    }
-
-    private int check_unoccupied(Room room, Position pos)
-    {
-        int status = UNOCCUPIED;
-
-        for (int i = 0; i < room.getEnemies_cnt() && status == UNOCCUPIED; i++)
-            if (room.getEnemies(i).position.getX() == pos.getX() && room.getEnemies(i).position.getY() == pos.getY())
-                status = OCCUPIED;
-
-        return status;
-    }
+//    public Position generate_entity_coords(Room room){
+//        Position pos  = new Position();
+//        do {
+//            int x = (int) ((Math.random() * (room.getBot_right().getX() - room.getTop_left().getX() - 1)) + room.getTop_left().getX() + 1);
+//            int y = (int) ((Math.random() * (room.getBot_right().getY() - room.getTop_left().getY() - 1)) + room.getTop_left().getY() + 1);
+//            pos.setNew(x,y);
+//        }
+//        while (check_unoccupied(room, pos) == OCCUPIED);
+//        return pos;
+//    }
+//
+//    private int check_unoccupied(Room room, Position pos)
+//    {
+//        int status = UNOCCUPIED;
+//
+//        for (int i = 0; i < room.getEnemies_cnt() && status == UNOCCUPIED; i++)
+//            if (room.getEnemies(i).position.getX() == pos.getX() && room.getEnemies(i).position.getY() == pos.getY())
+//                status = OCCUPIED;
+//
+//        return status;
+//    }
 
 }
 

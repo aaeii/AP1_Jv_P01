@@ -119,17 +119,14 @@ public class GameSession {
             int enemies_cnt = (int) (Math.random() * (MAX_ENEMIES_PER_ROOM + currentLevelNumber) + 1);
 
             for (int j = 0; j < enemies_cnt; j++) {
-                int enemy_type = (int) (Math.random() * (GameConstants.SNAKE - GameConstants.ZOMBIE + 1)) + GameConstants.ZOMBIE;
+                int enemy_type = (int) (Math.random() * (GameConstants.SNAKE - GameConstants.ZOMBIE)) + (GameConstants.ZOMBIE+1);
                 Enemy enemy = new Enemy(enemy_type);
                 enemy.setSymbol(enemy.getDisplayChar());
-
-
+                System.out.println("enemy_type="+enemy_type);
                 Position enemy_pos = new Position();
-                enemy.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
-                enemy.position = enemy_pos;
-
-                // Добавляем врага в комнату
-                currentLevel.getRoomsSequence(offset + i).setEnemies(enemy);
+                enemy_pos = enemy.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));//нужна случайная генерация
+                enemy.setPosition(enemy_pos);
+                currentLevel.getRoomsSequence(offset + i).setEntities(enemy);
             }
         }
     }
