@@ -30,7 +30,7 @@ public class Level {
                 for (int k = 0; k < 4; k++)
                 {
                     rooms[i][j].setConnections(null, k);
-                    Position pos = new Position(UNINITIALIZED, UNINITIALIZED);
+                    Position pos = new Position(UNINITIALIZED, UNINITIALIZED, false);
                     rooms[i][j].setDoors(pos, k);
                 }
                 rooms[i][j].setEntities_cnt(0);
@@ -59,7 +59,7 @@ public class Level {
                 for (int k = 0; k < 4; k++)
                 {
                     rooms[i][j].setConnections(null, k);
-                    Position pos = new Position(UNINITIALIZED, UNINITIALIZED);
+                    Position pos = new Position(UNINITIALIZED, UNINITIALIZED, false);
                     rooms[i][j].setDoors(pos, k);
                 }
                 rooms[i][j].setEntities_cnt(0);
@@ -167,11 +167,11 @@ public class Level {
     {
         int top_leftY = (int) ((Math.random() * (double) (SECTOR_HEIGHT - 6) / 2) + offset_y + 1);
         int top_leftX = (int) ((Math.random() * (double) (SECTOR_WIDTH - 6) / 2) + offset_x + 1);
-        Position Top_left = new Position(top_leftX, top_leftY);
+        Position Top_left = new Position(top_leftX, top_leftY, false);
         room.setTop_left(Top_left);
         int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2)) + 3);
         int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2)) + 3 );
-        Position Bot_right = new Position(bot_rightX, bot_rightY);
+        Position Bot_right = new Position(bot_rightX, bot_rightY, false);
         room.setBot_right(Bot_right);
     }
 
@@ -179,27 +179,27 @@ public class Level {
         if (room.getConnections(TOP) != null)
         {
             int xDoor = (int) (Math.random() * (double) ((room.getBot_right().getX()-room.getTop_left().getX() - 1)) + room.getTop_left().getX()+1);
-            Position doorPos = new Position(xDoor, room.getTop_left().getY());
+            Position doorPos = new Position(xDoor, room.getTop_left().getY(), false);
             room.setDoors(doorPos, TOP);
         }
 
         if (room.getConnections(RIGHT) != null)
         {
             int yDoor = (int) (Math.random() * (double) ((room.getBot_right().getY()-room.getTop_left().getY() - 1)) + room.getTop_left().getY()+1);
-            Position doorPos = new Position(room.getBot_right().getX(), yDoor);
+            Position doorPos = new Position(room.getBot_right().getX(), yDoor, false);
             room.setDoors(doorPos, RIGHT);
         }
 
         if (room.getConnections(BOTTOM) != null)
         {
             int xDoor = (int) (Math.random() * (double) ((room.getBot_right().getX()-room.getTop_left().getX() - 1)) + room.getTop_left().getX()+1);
-            Position doorPos = new Position(xDoor, room.getBot_right().getY());
+            Position doorPos = new Position(xDoor, room.getBot_right().getY(), false);
             room.setDoors(doorPos, BOTTOM);
         }
         if (room.getConnections(LEFT) != null)
         {
             int yDoor = (int) (Math.random() * (double) ((room.getBot_right().getY()-room.getTop_left().getY() - 1)) + room.getTop_left().getY()+1);
-            Position doorPos = new Position(room.getTop_left().getX(), yDoor);
+            Position doorPos = new Position(room.getTop_left().getX(), yDoor, false);
             room.setDoors(doorPos, LEFT);
         }
     }
@@ -300,8 +300,8 @@ public class Level {
         int x_min = left_room.getDoors(RIGHT).getX();
         int x_max = right_room.getDoors(LEFT).getX();
         int random_center_x = (int) (Math.random() * (double)(x_max - x_min - 2) + x_min + 1);
-        Position second_point = new Position(random_center_x, left_room.getDoors(RIGHT).getY());
-        Position third_point  = new Position(random_center_x, right_room.getDoors(LEFT).getY());
+        Position second_point = new Position(random_center_x, left_room.getDoors(RIGHT).getY(), false);
+        Position third_point  = new Position(random_center_x, right_room.getDoors(LEFT).getY(), false);
         corridors.get(corr_cnt).setPoints(second_point, 1);
         corridors.get(corr_cnt).setPoints(third_point, 2);
         corridors.get(corr_cnt).setPoints(right_room.getDoors(LEFT), 3);
@@ -314,8 +314,8 @@ public class Level {
         int y_min = top_room.getDoors(BOTTOM).getY();
         int y_max = bottom_room.getDoors(TOP).getY();
         int random_center_y = (int) (Math.random() * (double)(y_max - y_min - 2) + y_min + 1);
-        Position second_point = new Position(top_room.getDoors(BOTTOM).getX(), random_center_y);
-        Position third_point  = new Position(bottom_room.getDoors(TOP).getX(), random_center_y);
+        Position second_point = new Position(top_room.getDoors(BOTTOM).getX(), random_center_y, false);
+        Position third_point  = new Position(bottom_room.getDoors(TOP).getX(), random_center_y, false);
         corridors.get(corr_cnt).setPoints(second_point, 1);
         corridors.get(corr_cnt).setPoints(third_point, 2);
         corridors.get(corr_cnt).setPoints(bottom_room.getDoors(TOP), 3);
@@ -346,15 +346,15 @@ public class Level {
         return visited_count;
     }
 
-    public void moveEntity(Position position){
-//        int offset = 0 ;
-//        while (roomsSequence.get(offset).getSector() == -1)
-//            ++offset;
-//        for (int i = offset; i < roomsSequence.size(); i++) {
-//                if (roomsSequence.get(i).checkInRoomEntities(position))
-////                    roomsSequence.get(i).moveEnemies(position);
-//
-//        }
+    public void moveEnemies(Position position){
+        int offset = 0 ;
+        while (roomsSequence.get(offset).getSector() == -1)
+            ++offset;
+        for (int i = offset; i < roomsSequence.size(); i++) {
+                if (roomsSequence.get(i).checkInRoomEntities(position))
+                    roomsSequence.get(i).moveEnemiesInRoom(position);
+
+        }
     }
 
 
@@ -368,6 +368,36 @@ public class Level {
             }
         }
         return false;
+    }
+
+    public void changeVisibility(Position player_position){
+        int offset = 0 ;
+        while (roomsSequence.get(offset).getSector() == -1)
+            ++offset;
+        for (int i = offset; i < roomsSequence.size(); i++){
+            if (roomsSequence.get(i).checkRoom(player_position)) {
+                roomsSequence.get(i).makeVisible();
+            } else {
+                roomsSequence.get(i).makeInvisible();
+            }
+        }
+        for (int i = 0; i < getCorridors_cnt(); i++){
+            if (corridors.get(i).checkCorridor(player_position))
+                for (int k=0; k < 4; k++){
+                    corridors.get(i).getPoints(k).setVisibility(true);;
+                }
+        }
+
+    }
+
+    public void RoomVisit(Position player_position){
+        int offset = 0 ;
+        while (roomsSequence.get(offset).getSector() == -1)
+            ++offset;
+        for (int i = offset; i < roomsSequence.size(); i++){
+            if (roomsSequence.get(i).checkPlayerInRoom(player_position))
+                roomsSequence.get(i).setVisited(true);
+        }
     }
 }
 

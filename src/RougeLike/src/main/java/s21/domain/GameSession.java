@@ -91,6 +91,7 @@ public GameSession() {
         Entity player_entity = new Entity();
         Position player_pos = new Position();
         player_pos = player_entity.generate_entity_coords(player_room);
+        player_room.setVisited(true);
         player.setPosition(player_pos);
     }
 
@@ -146,10 +147,12 @@ public GameSession() {
     }
 
     private void rooms_to_field(Level level) {
+        currentLevel.changeVisibility(player.getPosition());
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
             Position top_room_corner = level.getRoomsSequence(i).getTop_left();
             Position bot_room_corner = level.getRoomsSequence(i).getBot_right();
-            if (bot_room_corner.getY() != 0 && top_room_corner.getX() != 0) {
+            if (bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && top_room_corner.isVisibility()
+                    || bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && level.getRoomsSequence(i).isVisited()) {
                 field[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
                 int j = top_room_corner.getX() + 1;
                 for (; j < bot_room_corner.getX(); j++)
@@ -165,7 +168,14 @@ public GameSession() {
                 for (; j < bot_room_corner.getX(); j++)
                     field[bot_room_corner.getY()][j] = WALL_CHAR;
                 field[bot_room_corner.getY()][j] = WALL_CHAR;
-                fill_inner_area(top_room_corner, bot_room_corner);
+                if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
+                    fill_inner_area(top_room_corner, bot_room_corner);
+                for (int k=0; k < 4; k++){
+                    int xDoor = level.getRoomsSequence(i).getDoors(k).getX();
+                    int yDoor = level.getRoomsSequence(i).getDoors(k).getY();
+                    if (xDoor != 0 )
+                        field[yDoor][xDoor] = CORRIDOR_CHAR;
+            }
             }
         }
     }
@@ -183,21 +193,22 @@ public GameSession() {
             if (level.getRoomsSequence(i).getSector() != -1) {
                 for (int k = 0; k < level.getCorridors_cnt(); k++)
                 {
-                    switch (level.getCorridors(k).getType())
-                    {
-                        case LEFT_TO_RIGHT_CORRIDOR:
-                            horizontal_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
-                            vertical_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
-                            horizontal_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
-                            break;
-                        case LEFT_TURN_CORRIDOR:
-                            vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
-                            horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
-                            break;
-                        case TOP_TO_BOTTOM_CORRIDOR:
-                            vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
-                            horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
-                            vertical_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                    if (level.getCorridors(k).getPoints(0).isVisibility()) {
+                        switch (level.getCorridors(k).getType()) {
+                            case LEFT_TO_RIGHT_CORRIDOR:
+                                horizontal_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                vertical_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                horizontal_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                                break;
+                            case LEFT_TURN_CORRIDOR:
+                                vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                break;
+                            case TOP_TO_BOTTOM_CORRIDOR:
+                                vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                vertical_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                        }
                     }
                 }
             }
@@ -222,7 +233,7 @@ public GameSession() {
             if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
             for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
                 Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                if (cur_entity.getType() != PLAYER)
+                if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility())
                      field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
             }
             }
@@ -237,6 +248,7 @@ public GameSession() {
 
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
+            currentLevel.moveEnemies(player.getPosition());
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
@@ -252,9 +264,14 @@ public GameSession() {
             System.out.println("new level " + currentLevelNumber);
         }
         else
-            currentLevel.moveEntity(player.getPosition());
+            currentLevel.moveEnemies(player.getPosition());
 //        checkInGame();
-        if (action == 'Q' || action == 'q') inGame = false;
+        if (action == 'Q' || action == 'q')
+        {
+            inGame = false;
+            readyToStart = false;
+        }
+        currentLevel.RoomVisit(player.getPosition());
         map_refresh();
         level_to_field(currentLevel);
 

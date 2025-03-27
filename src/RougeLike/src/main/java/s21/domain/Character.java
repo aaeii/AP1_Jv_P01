@@ -75,19 +75,19 @@ public class Character {
         switch (direction){
             case (TOP):
                 if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR)
-                    position.setNew(x, y - 1);
+                    position.setNew(x, y - 1, true);
                 break;
             case (RIGHT):
                 if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR)
-                    position.setNew(x + 1, y);
+                    position.setNew(x + 1, y, true);
             break;
             case (BOTTOM):
                 if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR)
-                    position.setNew(x , y + 1);
+                    position.setNew(x , y + 1, true);
                 break;
             case (LEFT):
                 if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR)
-                    position.setNew(x - 1, y);
+                    position.setNew(x - 1, y, true);
                 break;
                 }
 

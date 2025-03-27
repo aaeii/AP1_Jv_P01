@@ -26,7 +26,12 @@ public class Main {
             print.printGame(terminal, newGame);
             terminal.flush();
         }
-        print.printResultOfGame(terminal, newGame);
+            print.printResultOfGame(terminal, newGame);
+            userInput.waitForResumeOrExit(terminal);
+//        if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
+//            print.printResultTable();
+//            userInput.waitForExit();
+//        }
         terminal.flush();
         terminal.close();
     }

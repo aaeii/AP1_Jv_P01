@@ -16,7 +16,7 @@ public class Entity {
     public Entity(int type, int symbol, Position position) {
         this.type = type;
         this.symbol = symbol;
-        this.position = new Position(position.getX(), position.getY());
+        this.position = new Position(position.getX(), position.getY(), false);
     }
 
     public int getType() {
@@ -48,7 +48,7 @@ public class Entity {
         do {
             int x = (int) ((Math.random() * (room.getBot_right().getX() - room.getTop_left().getX() - 1)) + room.getTop_left().getX() + 1);
             int y = (int) ((Math.random() * (room.getBot_right().getY() - room.getTop_left().getY() - 1)) + room.getTop_left().getY() + 1);
-            pos.setNew(x,y);
+            pos.setNew(x, y, false);
         }
         while (check_unoccupied(room, pos) == OCCUPIED);
         return pos;
@@ -63,6 +63,12 @@ public class Entity {
                 status = OCCUPIED;
 
         return status;
+    }
+
+    public void move(Position player_pos, Position  top_left, Position bot_right){
+
+
+
     }
 
 }

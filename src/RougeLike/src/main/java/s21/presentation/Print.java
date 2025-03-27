@@ -27,7 +27,6 @@ public class Print {
 
     public Terminal createTerminal() throws IOException {
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
-        TerminalSize screenSize = terminal.getTerminalSize();
         terminal.setCursorVisible(false);
 
         terminal.flush();
@@ -96,13 +95,14 @@ public class Print {
     }
     public void printResultOfGame(Terminal terminal, GameSession game) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();
-        textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
-        textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "  Game is Over  ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "Your level: " + game.getCurrentLevelNumber(), SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "Your health: " + game.getPlayer().getHealth(), SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getHealth(), SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+        textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "                        ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "      Game is Over      ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "     Your level:  " + game.getCurrentLevelNumber() + "     ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "    Your health: " + game.getPlayer().getHealth() + "     ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getGold(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                        ", SGR.BOLD);
         terminal.flush();
     }
 
