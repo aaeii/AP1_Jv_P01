@@ -100,7 +100,11 @@ public GameSession() {
         int offset = 0 ;
         while (currentLevel.getRoomsSequence(offset).getSector() == -1)
             ++offset;
-        Room exit_room = currentLevel.getRoomsSequence(offset + room_index - 1);
+        Room exit_room = new Room();
+        do {
+             exit_room = currentLevel.getRoomsSequence(offset + room_index - 1);
+        }
+        while (exit_room.checkPlayerInRoom(player.getPosition()));
         Entity exit = new Entity();
         Position exit_pos = new Position();
         exit_pos = exit.generate_entity_coords(exit_room);
