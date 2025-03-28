@@ -1,5 +1,7 @@
 package s21.domain;
 
+import java.util.Random;
+
 import static s21.domain.GameConstants.*;
 
 public class Enemy extends Entity {
@@ -82,6 +84,124 @@ public class Enemy extends Entity {
         return hostility;
     }
 
+    private int initialDirection = TOP;
+
+    /**
+     * Движение по диагонали
+     */
+    public void moveSnake(char[][] field) {
+        int x = position.getX();
+        int y = position.getY();
+        int newX = x, newY = y;
+        Random random = new Random();
+        int randomNumber = 0;
+        for (int i = 0; i < 4; i++) {
+            switch (initialDirection) {
+                case TOP:
+                    randomNumber = random.nextInt(1 + 1);
+                    newY = y - 1;
+                    newX = randomNumber == 0 ? x + 1 : x - 1;
+                    break;
+                case RIGHT:
+                    newX = x + 1;
+                    randomNumber = random.nextInt(1 + 1);
+                    newY = randomNumber == 0 ? y + 1 : y - 1;
+                    break;
+                case BOTTOM:
+                    newY = y + 1;
+                    randomNumber = random.nextInt(1 + 1);
+                    newX = randomNumber == 0 ? x + 1 : x - 1;
+                    break;
+                case LEFT:
+                    randomNumber = random.nextInt(1 + 1);
+                    newX = x - 1;
+                    newY = randomNumber == 0 ? y + 1 : y - 1;
+                    break;
+                default:
+                    return;
+            }
+            System.out.println("dir=" + initialDirection);
+            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != '+') {
+                position.setNew(newX, newY);
+
+            } else {
+                initialDirection = (initialDirection + 1) % 4;
+            }
+        }
+    }
+
+    /**
+     * Движение по вверх-вниз
+     */
+    public void moveZombie(char[][] field) {
+        int x = position.getX();
+        int y = position.getY();
+        int newX = x, newY = y;
+        for (int i = 0; i < 4; i++) {
+            switch (initialDirection) {
+                case TOP:
+                    newY = y - 1;
+                    break;
+
+                case BOTTOM:
+                    newY = y + 1;
+                    break;
+                default:
+                    return;
+            }
+//            System.out.println("L=" + field.length);
+//            System.out.println("C=" + field[0].length);
+//            System.out.println("dir=" + initialDirection);
+
+            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
+                position.setNew(newX, newY);
+
+            } else {
+                initialDirection = (initialDirection + 2) % 4;
+            }
+
+        }
+    }
+
+    /**
+     * Движение по кругу
+     */
+    public void moveOgre(char[][] field) {
+
+        int x = position.getX();
+        int y = position.getY();
+        int newX, newY;
+        for (int i = 0; i < 4; i++) {
+            switch (initialDirection) {
+                case TOP:
+                    newX = x;
+                    newY = y - 1;
+                    break;
+                case RIGHT:
+                    newX = x + 1;
+                    newY = y;
+                    break;
+                case BOTTOM:
+                    newX = x;
+                    newY = y + 1;
+                    break;
+                case LEFT:
+                    newX = x - 1;
+                    newY = y;
+                    break;
+                default:
+                    return;
+            }
+//            System.out.println("dir=" + initialDirection);
+            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
+                position.setNew(newX, newY);
+
+            } else {
+                initialDirection = (initialDirection + 1) % 4;
+            }
+        }
+    }
+
     public void attack(Character character) {
         switch (type) {
             case ZOMBIE:
@@ -99,54 +219,7 @@ public class Enemy extends Entity {
         }
     }
 
-    public void moveOgre(int[][] field, int direction) {
-        int x = position.getX(), y = position.getY();
-        int newX = x, newY = y;
 
-        switch (direction) {
-            case TOP:
-                newY = y - 1;
-                break;
-            case RIGHT:
-                newX = x + 1;
-                break;
-            case BOTTOM:
-                newY = y + 1;
-                break;
-            case LEFT:
-                newX = x - 1;
-                break;
-        }
-        if (isWall(field, newX, newY)) {
-            changeDirection(direction);
-        } else {
-            position.setNew(newX, newY);
-        }
-    }
-
-    private boolean isWall(int[][] field, int x, int y) {
-        if (y < 0 || y >= field.length || x < 0 || x >= field[0].length) {
-            return true;
-        }
-        return field[y][x] == WALL_CHAR;
-    }
-
-    private void changeDirection(int direction) {
-        switch (direction) {
-            case TOP:
-                direction = RIGHT;
-                break;
-            case RIGHT:
-                direction = BOTTOM;
-                break;
-            case BOTTOM:
-                direction = LEFT;
-                break;
-            case LEFT:
-                direction = TOP;
-                break;
-        }
-    }
 }
 
 
