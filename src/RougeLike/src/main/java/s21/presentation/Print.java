@@ -6,6 +6,8 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.TextColor.RGB;
+
 import s21.domain.GameSession;
 
 import java.io.IOException;
@@ -38,10 +40,24 @@ public class Print {
     public void printOnlyField(Terminal terminal) throws IOException {
         terminal.clearScreen();
         for (int i = 0; i < MAP_HEIGHT; i++) {
-            for (int j = 0; j < MAP_WIDTH; j++)
+            for (int j = 0; j < MAP_WIDTH; j++) {
+                setColorEnemy(terminal, i, j);
                 terminal.putCharacter(field[i][j]);
+            }
         }
         terminal.flush();
+    }
+
+    private void setColorEnemy(Terminal terminal, int i, int j) throws IOException {
+        if (field[i][j] == ZOMBIE_CHAR) {
+            terminal.setForegroundColor(TextColor.ANSI.GREEN);
+        } else if (field[i][j] == VAMPIRE_CHAR) {
+            terminal.setForegroundColor(TextColor.ANSI.RED);
+        } else if (field[i][j] == OGRE_CHAR) {
+            terminal.setForegroundColor(new RGB(239, 255, 0));
+        } else {
+            terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
+        }
     }
 
     public void printGame(Terminal terminal, GameSession game) throws IOException {
@@ -91,9 +107,10 @@ public class Print {
         final TextGraphics textGraphics = terminal.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
         textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
-        textGraphics.putString(1, 0, "Level  " + (game.getCurrentLevelNumber()+1), SGR.UNDERLINE);
+        textGraphics.putString(1, 0, "Level  " + (game.getCurrentLevelNumber() + 1), SGR.UNDERLINE);
         terminal.flush();
     }
+
     public void printResultOfGame(Terminal terminal, GameSession game) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
