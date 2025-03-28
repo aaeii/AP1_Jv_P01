@@ -122,7 +122,7 @@ public class Enemy extends Entity {
             }
             System.out.println("dir=" + initialDirection);
             if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != '+') {
-                position.setNew(newX, newY);
+                position.setNew(newX, newY,false);
 
             } else {
                 initialDirection = (initialDirection + 1) % 4;
@@ -154,7 +154,7 @@ public class Enemy extends Entity {
 //            System.out.println("dir=" + initialDirection);
 
             if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
-                position.setNew(newX, newY);
+                position.setNew(newX, newY,false);
 
             } else {
                 initialDirection = (initialDirection + 2) % 4;
@@ -194,7 +194,7 @@ public class Enemy extends Entity {
             }
 //            System.out.println("dir=" + initialDirection);
             if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
-                position.setNew(newX, newY);
+                position.setNew(newX, newY,false);
 
             } else {
                 initialDirection = (initialDirection + 1) % 4;

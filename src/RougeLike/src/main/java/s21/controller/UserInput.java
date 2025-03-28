@@ -23,8 +23,7 @@ public class UserInput {
         try {
             KeyStroke keyStroke = terminal.readInput();
             Action = (int) keyStroke.getCharacter();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -32,6 +31,21 @@ public class UserInput {
     public int getAction() {
         return Action;
     }
+
+    public void waitForResumeOrExit(Terminal terminal) throws IOException {
+        try {
+            KeyStroke keyStroke = terminal.readInput();
+            Action = (int) keyStroke.getCharacter();
+            while (Action != 'Q' && Action != 'q' && Action != 'n' && Action != 'N') {
+                keyStroke = terminal.readInput();
+                Action = (int) keyStroke.getCharacter();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //    public void waitForExit() {
 //        InputChar inputChar = Toolkit.readCharacter();

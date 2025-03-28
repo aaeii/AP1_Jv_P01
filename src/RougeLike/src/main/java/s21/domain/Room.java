@@ -12,14 +12,10 @@ public class Room {
     private Position[] doors; //4
     private Position top_left;
     private Position bot_right;
-    //    private boolean playerExit;
 //    private boolean playerSpawn;
     private final Entity [] entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
-    private final Enemy [] enemies;
-    private int enemies_cnt;
-
-
+    private boolean visited;
 
     public Room(){
         grid_i = 0;
@@ -31,8 +27,7 @@ public class Room {
         bot_right = new Position();
         entities = new Entity[MAX_ENTITIES_PER_ROOM];
         entities_cnt = 0;
-        enemies = new Enemy[MAX_ENTITIES_PER_ROOM];
-        enemies_cnt=0;
+        visited = false;
     }
 
     public Room(int i, int j, int sector){
@@ -53,14 +48,10 @@ public class Room {
         for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++){
             entities[k] = null;
         }
-        enemies = new Enemy[MAX_ENTITIES_PER_ROOM];
-        for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++){
-            enemies[k] = null;
-        }
         top_left = new Position();
         bot_right = new Position();
         entities_cnt = 0;
-        enemies_cnt=0;
+        visited = false;
     }
 
     public int getSector() {
@@ -99,6 +90,14 @@ public class Room {
         return entities_cnt;
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
     public void setEntities_cnt(int entities_cnt) {
         this.entities_cnt = entities_cnt;
     }
@@ -123,21 +122,6 @@ public class Room {
     public Entity getEntities(int i) {
         return entities[i];
     }
-    //Enemy
-    public void setEnemies(Enemy enemy) {
-        this.enemies[entities_cnt] = enemy;
-        this.entities_cnt++;
-    }
-    public Enemy getEnemies(int i) {
-        return enemies[i];
-    }
-    public int getEnemies_cnt(){
-        return enemies_cnt;
-    }
-
-    public void setEnemies_cnt(int enemies_cnt) {
-        this.enemies_cnt = enemies_cnt;
-    }
 
     public void setTop_left(Position position) {
         this.top_left = position;
@@ -160,10 +144,12 @@ public class Room {
     }
 
     public boolean checkInRoomEntities(Position position){
-        for (int i = 0; i < entities_cnt; i++) {
-            if (entities[i].getPosition().getX() == position.getX() && entities[i].getPosition().getY() == position.getY())
-                return true;
-        }
+            for (int i = 0; i < entities_cnt; i++) {
+                if (entities[i].getPosition().getX() == position.getX() &&
+                        entities[i].getPosition().getY() == position.getY() &&
+                        (entities[i].getType() <= ZOMBIE && entities[i].getType() >= SNAKE))
+                    return true;
+            }
         return false;
     }
 
@@ -175,9 +161,45 @@ public class Room {
         return false;
     }
 
+    public boolean checkPlayerInRoom(Position position){
+            if (position.getX() >= top_left.getX()
+                    && position.getX() <= bot_right.getX()
+                    && position.getY() >= top_left.getY()
+                    && position.getY() <= bot_right.getY())
+                return true;
+        return false;
+    }
 
-    public void moveEnemies(){
+    public void moveEnemiesInRoom(Position position){
+
+        for (int i = 0; i < entities_cnt; i++) {
+            entities[i].move(position, top_left, bot_right);
+            }
+    }
+
+    public boolean checkRoom(Position player_position){
+            if (player_position.getX() >= top_left.getX()
+                    && player_position.getX() <= bot_right.getX()
+                    && player_position.getY() >= top_left.getY()
+                    && player_position.getY() <= bot_right.getY())
+                return true;
+        return false;
+    }
+
+    public void makeVisible (){
+        top_left.setVisibility(true);
+        bot_right.setVisibility(true);
+        for (int i = 0; i < entities_cnt; i++) {
+            entities[i].getPosition().setVisibility(true);
+        }
 
     }
 
+    public void makeInvisible (){
+        top_left.setVisibility(false);
+        bot_right.setVisibility(false);
+        for (int i = 0; i < entities_cnt; i++) {
+            entities[i].getPosition().setVisibility(false);
+        }
+    }
 }

@@ -22,28 +22,29 @@ public class GameSession {
     private boolean readyToStart;
 
 
-    public GameSession() {
-        levels = new ArrayList<>(MAX_LEVEL_NUMBER);  // инициализация списка уровней
-        this.inGame = true;
-        this.win = false;
-        this.readyToStart = false;
-        this.currentLevelNumber = 0;
-        field = new char[MAP_HEIGHT][MAP_WIDTH]; // Заполняем поле пустотой
-        for (int i = 0; i < MAP_HEIGHT; i++) {
-            for (int j = 0; j < MAP_WIDTH; j++) {
-                field[i][j] = OUTER_AREA_CHAR;
-            }
+
+public GameSession() {
+    levels = new ArrayList<>(MAX_LEVEL_NUMBER); // инициализация списка уровней
+    this.inGame = true;
+    this.win = false;
+    this.readyToStart = false;
+    this.currentLevelNumber = 0;
+    field = new char[MAP_HEIGHT][MAP_WIDTH]; // Заполняем поле пустотой
+    for (int i = 0; i < MAP_HEIGHT; i++) {
+        for (int j = 0; j < MAP_WIDTH; j++) {
+            field[i][j] = OUTER_AREA_CHAR;
         }
-        for (int i = 0; i < 21; i++) {
-            levels.add(new Level());
-        }
-        Position StartPoint = new Position();
-        this.player = new Character(StartPoint);
-        levels.get(currentLevelNumber).generate_level();
-        this.currentLevel = levels.get(currentLevelNumber);
-        generate_entities();
-        level_to_field(currentLevel);
     }
+    for (int i = 0; i < 21; i++) {
+        levels.add(new Level());
+    }
+    Position StartPoint = new Position();
+    this.player = new Character(StartPoint);
+    levels.get(currentLevelNumber).generate_level();
+    this.currentLevel = levels.get(currentLevelNumber);
+    generate_entities();
+    level_to_field(currentLevel);
+}
 
     public char[][] getField() {
         return field;
@@ -57,13 +58,12 @@ public class GameSession {
         return currentLevelNumber;
     }
 
-
     public boolean isReadyToStart() {
         return readyToStart;
     }
 
-    public Character getPlayer() {
-        return player;
+    public Character getPlayer(){
+    return player;
     }
 
     public void waitForStart(int input) {
@@ -74,7 +74,9 @@ public class GameSession {
         }
     }
 
-    public void generate_entities() {
+    public void  generate_entities()
+
+    {
         generate_player_pos();
         generate_exit();
         generate_enemies();
@@ -90,6 +92,7 @@ public class GameSession {
         Entity player_entity = new Entity();
         Position player_pos = new Position();
         player_pos = player_entity.generate_entity_coords(player_room);
+        player_room.setVisited(true);
         player.setPosition(player_pos);
     }
 
@@ -98,7 +101,11 @@ public class GameSession {
         int offset = 0;
         while (currentLevel.getRoomsSequence(offset).getSector() == -1)
             ++offset;
-        Room exit_room = currentLevel.getRoomsSequence(offset + room_index - 1);
+        Room exit_room = new Room();
+        do {
+             exit_room = currentLevel.getRoomsSequence(offset + room_index - 1);
+        }
+        while (exit_room.checkPlayerInRoom(player.getPosition()));
         Entity exit = new Entity();
         Position exit_pos = new Position();
         exit_pos = exit.generate_entity_coords(exit_room);
@@ -113,7 +120,6 @@ public class GameSession {
             int offset = 0;
             while (currentLevel.getRoomsSequence(offset).getSector() == -1)
                 ++offset;
-
             int enemies_cnt = (int) (Math.random() * (MAX_ENEMIES_PER_ROOM + currentLevelNumber) + 1);
 
             for (int j = 0; j < enemies_cnt; j++) {
@@ -139,10 +145,12 @@ public class GameSession {
     }
 
     private void rooms_to_field(Level level) {
+        currentLevel.changeVisibility(player.getPosition());
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
             Position top_room_corner = level.getRoomsSequence(i).getTop_left();
             Position bot_room_corner = level.getRoomsSequence(i).getBot_right();
-            if (bot_room_corner.getY() != 0 && top_room_corner.getX() != 0) {
+            if (bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && top_room_corner.isVisibility()
+                    || bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && level.getRoomsSequence(i).isVisited()) {
                 field[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
                 int j = top_room_corner.getX() + 1;
                 for (; j < bot_room_corner.getX(); j++)
@@ -158,12 +166,20 @@ public class GameSession {
                 for (; j < bot_room_corner.getX(); j++)
                     field[bot_room_corner.getY()][j] = WALL_CHAR;
                 field[bot_room_corner.getY()][j] = WALL_CHAR;
-                fill_inner_area(top_room_corner, bot_room_corner);
+                if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
+                    fill_inner_area(top_room_corner, bot_room_corner);
+                for (int k=0; k < 4; k++){
+                    int xDoor = level.getRoomsSequence(i).getDoors(k).getX();
+                    int yDoor = level.getRoomsSequence(i).getDoors(k).getY();
+                    if (xDoor != 0 )
+                        field[yDoor][xDoor] = CORRIDOR_CHAR;
+            }
             }
         }
     }
 
-    private void fill_inner_area(Position top, Position bot) {
+
+    private void fill_inner_area(Position top, Position bot){
         for (int i = top.getY() + 1; i < bot.getY(); i++)
             for (int j = top.getX() + 1; j < bot.getX(); j++)
                 field[i][j] = INNER_AREA_CHAR;
@@ -174,21 +190,24 @@ public class GameSession {
 
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
             if (level.getRoomsSequence(i).getSector() != -1) {
-                for (int k = 0; k < level.getCorridors_cnt(); k++) {
-                    switch (level.getCorridors(k).getType()) {
-                        case LEFT_TO_RIGHT_CORRIDOR:
-                            horizontal_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
-                            vertical_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
-                            horizontal_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
-                            break;
-                        case LEFT_TURN_CORRIDOR:
-                            vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
-                            horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
-                            break;
-                        case TOP_TO_BOTTOM_CORRIDOR:
-                            vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
-                            horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
-                            vertical_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                for (int k = 0; k < level.getCorridors_cnt(); k++)
+                {
+                    if (level.getCorridors(k).getPoints(0).isVisibility()) {
+                        switch (level.getCorridors(k).getType()) {
+                            case LEFT_TO_RIGHT_CORRIDOR:
+                                horizontal_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                vertical_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                horizontal_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                                break;
+                            case LEFT_TURN_CORRIDOR:
+                                vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                break;
+                            case TOP_TO_BOTTOM_CORRIDOR:
+                                vertical_corridor(level.getCorridors(k).getPoints(0), level.getCorridors(k).getPoints(1));
+                                horizontal_corridor(level.getCorridors(k).getPoints(1), level.getCorridors(k).getPoints(2));
+                                vertical_corridor(level.getCorridors(k).getPoints(2), level.getCorridors(k).getPoints(3));
+                        }
                     }
                 }
             }
@@ -208,26 +227,28 @@ public class GameSession {
         }
     }
 
-    private void entities_to_field(Level level) {
+    private void entities_to_field(Level level){
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
-            if (level.getRoomsSequence(i).getSector() != UNINITIALIZED) {
-                for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
-                    Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                    if (cur_entity.getType() != PLAYER)
-                        field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
-                }
+            if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
+            for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
+                Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
+                if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility())
+                     field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
+            }
             }
         }
     }
 
-    private void player_to_field(Level level) {
+
+    private void player_to_field(Level level){
         field[player.getPosition().getY()][player.getPosition().getX()] = PLAYER_CHAR;
     }
 
-    public void gameStep(int action) {
+    public void gameStep(int action){
 
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
+            currentLevel.moveEnemies(player.getPosition());
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
@@ -241,16 +262,22 @@ public class GameSession {
         if (currentLevel.isItExit(player.getPosition())) {
             generate_next_level();
             System.out.println("new level " + currentLevelNumber);
-        } else
-            currentLevel.moveEntity(player.getPosition());
+        }
+        else
+            currentLevel.moveEnemies(player.getPosition());
 //        checkInGame();
-        if (action == 'Q' || action == 'q') inGame = false;
+        if (action == 'Q' || action == 'q')
+        {
+            inGame = false;
+            readyToStart = false;
+        }
+        currentLevel.RoomVisit(player.getPosition());
         map_refresh();
         level_to_field(currentLevel);
 
     }
 
-    public void map_refresh() {
+    public void map_refresh(){
         for (int i = 0; i < MAP_HEIGHT; i++) {
             for (int j = 0; j < MAP_WIDTH; j++) {
                 field[i][j] = OUTER_AREA_CHAR;
@@ -258,14 +285,16 @@ public class GameSession {
         }
     }
 
-    public void generate_next_level() {
+
+    public void generate_next_level(){
         currentLevelNumber++;
         if (currentLevelNumber < 21) {
             levels.get(currentLevelNumber).generate_level();
             currentLevel = levels.get(currentLevelNumber);
             generate_entities();
             level_to_field(currentLevel);
-        } else win = true;
+        }
+        else win = true;
     }
 
 }
