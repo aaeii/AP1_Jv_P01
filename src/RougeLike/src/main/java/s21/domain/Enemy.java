@@ -120,9 +120,9 @@ public class Enemy extends Entity {
                 default:
                     return;
             }
-            System.out.println("dir=" + initialDirection);
+//            System.out.println("dir=" + initialDirection);
             if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != '+') {
-                position.setNew(newX, newY,false);
+                position.setNew(newX, newY, false);
 
             } else {
                 initialDirection = (initialDirection + 1) % 4;
@@ -154,7 +154,7 @@ public class Enemy extends Entity {
 //            System.out.println("dir=" + initialDirection);
 
             if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
-                position.setNew(newX, newY,false);
+                position.setNew(newX, newY, false);
 
             } else {
                 initialDirection = (initialDirection + 2) % 4;
@@ -175,18 +175,18 @@ public class Enemy extends Entity {
             switch (initialDirection) {
                 case TOP:
                     newX = x;
-                    newY = y - 1;
+                    newY = y - 2;
                     break;
                 case RIGHT:
-                    newX = x + 1;
+                    newX = x + 2;
                     newY = y;
                     break;
                 case BOTTOM:
                     newX = x;
-                    newY = y + 1;
+                    newY = y + 2;
                     break;
                 case LEFT:
-                    newX = x - 1;
+                    newX = x - 2;
                     newY = y;
                     break;
                 default:
@@ -194,10 +194,50 @@ public class Enemy extends Entity {
             }
 //            System.out.println("dir=" + initialDirection);
             if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
-                position.setNew(newX, newY,false);
+                position.setNew(newX, newY, false);
 
             } else {
                 initialDirection = (initialDirection + 1) % 4;
+            }
+        }
+    }
+
+    /**
+     * Рандомное передвижение
+     */
+    public void moveGhost(char[][] field, boolean visible) {
+        int x = position.getX();
+        int y = position.getY();
+        int newX = x, newY = y;
+        Random random = new Random();
+        if (visible) {
+            for (int i = 0; i < 4; i++) {
+                int direction = random.nextInt(4);
+                switch (direction) {
+                    case TOP:
+                        newY = y - 1;
+                        newX = x;
+                        break;
+                    case RIGHT:
+                        newX = x + 1;
+                        newY = y;
+                        break;
+                    case BOTTOM:
+                        newY = y + 1;
+                        newX = x;
+                        break;
+                    case LEFT:
+                        newX = x - 1;
+                        newY = y;
+                        break;
+                    default:
+                        return;
+                }
+//                System.out.println("dir=" + direction);
+                if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != '+') {
+                    position.setNew(newX, newY, false);
+
+                }
             }
         }
     }
