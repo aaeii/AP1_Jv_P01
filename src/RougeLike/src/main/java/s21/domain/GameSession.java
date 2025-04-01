@@ -107,7 +107,8 @@ public class GameSession {
             int offset = 0 ;
             while (currentLevel.getRoomsSequence(offset).getSector() == -1)
                 ++offset;
-            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
+//            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
+            int enemies_cnt = 1;
             int enemy_type = -1;
 
             for (int j = 0; j < enemies_cnt; j++){
