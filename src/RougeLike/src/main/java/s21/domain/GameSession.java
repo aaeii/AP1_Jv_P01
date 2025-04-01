@@ -11,6 +11,12 @@ import java.util.List;
 import static s21.controller.UserInput.*;
 import static s21.domain.GameConstants.*;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class GameSession {
     private final char[][] field;
     public List<Level> levels;
@@ -20,31 +26,31 @@ public class GameSession {
     private boolean inGame;
     private boolean win;
     private boolean readyToStart;
+    Enemy enemy;
 
 
-
-public GameSession() {
-    levels = new ArrayList<>(MAX_LEVEL_NUMBER); // инициализация списка уровней
-    this.inGame = true;
-    this.win = false;
-    this.readyToStart = false;
-    this.currentLevelNumber = 0;
-    field = new char[MAP_HEIGHT][MAP_WIDTH]; // Заполняем поле пустотой
-    for (int i = 0; i < MAP_HEIGHT; i++) {
-        for (int j = 0; j < MAP_WIDTH; j++) {
-            field[i][j] = OUTER_AREA_CHAR;
+    public GameSession() {
+        levels = new ArrayList<>(MAX_LEVEL_NUMBER); // инициализация списка уровней
+        this.inGame = true;
+        this.win = false;
+        this.readyToStart = false;
+        this.currentLevelNumber = 0;
+        field = new char[MAP_HEIGHT][MAP_WIDTH]; // Заполняем поле пустотой
+        for (int i = 0; i < MAP_HEIGHT; i++) {
+            for (int j = 0; j < MAP_WIDTH; j++) {
+                field[i][j] = OUTER_AREA_CHAR;
+            }
         }
+        for (int i = 0; i < 21; i++) {
+            levels.add(new Level());
+        }
+        Position StartPoint = new Position();
+        this.player = new Character(StartPoint);
+        levels.get(currentLevelNumber).generate_level();
+        this.currentLevel = levels.get(currentLevelNumber);
+        generate_entities();
+        level_to_field(currentLevel);
     }
-    for (int i = 0; i < 21; i++) {
-        levels.add(new Level());
-    }
-    Position StartPoint = new Position();
-    this.player = new Character(StartPoint);
-    levels.get(currentLevelNumber).generate_level();
-    this.currentLevel = levels.get(currentLevelNumber);
-    generate_entities();
-    level_to_field(currentLevel);
-}
 
     public char[][] getField() {
         return field;
@@ -62,8 +68,8 @@ public GameSession() {
         return readyToStart;
     }
 
-    public Character getPlayer(){
-    return player;
+    public Character getPlayer() {
+        return player;
     }
 
     public void waitForStart(int input) {
@@ -74,14 +80,14 @@ public GameSession() {
         }
     }
 
-    public void  generate_entities()
-
-    {
+    public void generate_entities() {
         generate_player_pos();
         generate_exit();
         generate_enemies();
 //        generate_items();
+
     }
+
 
     public void generate_player_pos() {
         int room_index = (int) (Math.random() * (double) (currentLevel.getRoom_cnt()) + 1);
@@ -103,7 +109,7 @@ public GameSession() {
             ++offset;
         Room exit_room = new Room();
         do {
-             exit_room = currentLevel.getRoomsSequence(offset + room_index - 1);
+            exit_room = currentLevel.getRoomsSequence(offset + room_index - 1);
         }
         while (exit_room.checkPlayerInRoom(player.getPosition()));
         Entity exit = new Entity();
@@ -115,23 +121,26 @@ public GameSession() {
         exit_room.setEntities(exit);
     }
 
+    ;
+
+    private List<Enemy> enemies = new ArrayList<>();
+
     public void generate_enemies() {
         for (int i = 0; i < currentLevel.getRoom_cnt(); i++) {
             int offset = 0;
             while (currentLevel.getRoomsSequence(offset).getSector() == -1)
                 ++offset;
-            int enemies_cnt = (int) (Math.random() * (MAX_ENEMIES_PER_ROOM + currentLevelNumber) + 1);
 
+            int enemies_cnt = (int) (Math.random() * (MAX_ENEMIES_PER_ROOM + currentLevelNumber) + 1);
             for (int j = 0; j < enemies_cnt; j++) {
                 int enemy_type = (int) (Math.random() * (SNAKE - ZOMBIE + 1)) + ZOMBIE;
                 Enemy enemy = new Enemy(enemy_type);
-//                enemy.setEnemyType(enemy_type,enemy);
-//                System.out.println("enemy_type="+enemy_type+"  health="+enemy.getHealth());
+                enemy.setType(enemy_type);
+                Position enemy_pos = enemy.generate_entity_coords(currentLevel.getRoomsSequence(offset + i)); // Генерация координат
+                enemy.setPosition(enemy_pos); // Установка позиции врага
 
-                Position enemy_pos = enemy.generate_entity_coords(currentLevel.getRoomsSequence(offset + i)); // Генерируем координаты
-                enemy.setPosition(enemy_pos); // Устанавливаем позицию врага
-
-                currentLevel.getRoomsSequence(offset + i).setEntities(enemy); // Добавляем врага в комнату
+                enemies.add(enemy); // Добавление врага в список
+                currentLevel.getRoomsSequence(offset + i).setEntities(enemy); // Добавление врага в комнату
             }
         }
     }
@@ -168,18 +177,18 @@ public GameSession() {
                 field[bot_room_corner.getY()][j] = WALL_CHAR;
                 if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
                     fill_inner_area(top_room_corner, bot_room_corner);
-                for (int k=0; k < 4; k++){
+                for (int k = 0; k < 4; k++) {
                     int xDoor = level.getRoomsSequence(i).getDoors(k).getX();
                     int yDoor = level.getRoomsSequence(i).getDoors(k).getY();
-                    if (xDoor != 0 )
+                    if (xDoor != 0)
                         field[yDoor][xDoor] = CORRIDOR_CHAR;
-            }
+                }
             }
         }
     }
 
 
-    private void fill_inner_area(Position top, Position bot){
+    private void fill_inner_area(Position top, Position bot) {
         for (int i = top.getY() + 1; i < bot.getY(); i++)
             for (int j = top.getX() + 1; j < bot.getX(); j++)
                 field[i][j] = INNER_AREA_CHAR;
@@ -190,8 +199,7 @@ public GameSession() {
 
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
             if (level.getRoomsSequence(i).getSector() != -1) {
-                for (int k = 0; k < level.getCorridors_cnt(); k++)
-                {
+                for (int k = 0; k < level.getCorridors_cnt(); k++) {
                     if (level.getCorridors(k).getPoints(0).isVisibility()) {
                         switch (level.getCorridors(k).getType()) {
                             case LEFT_TO_RIGHT_CORRIDOR:
@@ -227,24 +235,24 @@ public GameSession() {
         }
     }
 
-    private void entities_to_field(Level level){
+    private void entities_to_field(Level level) {
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
-            if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
-            for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
-                Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility())
-                     field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
-            }
+            if (level.getRoomsSequence(i).getSector() != UNINITIALIZED) {
+                for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
+                    Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
+                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility())
+                        field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
+                }
             }
         }
     }
 
 
-    private void player_to_field(Level level){
+    private void player_to_field(Level level) {
         field[player.getPosition().getY()][player.getPosition().getX()] = PLAYER_CHAR;
     }
 
-    public void gameStep(int action){
+    public void gameStep(int action) {
 
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
@@ -259,15 +267,18 @@ public GameSession() {
         if (action == 'a' || action == 'A') {
             player.move(field, LEFT, currentLevel);
         }
+        if (action == 'e' || action == 'E') {//для противников
+            for (Enemy enemy : enemies) {
+                enemy.move(enemy.getType(), field, enemy.getPosition());
+            }
+        }
         if (currentLevel.isItExit(player.getPosition())) {
             generate_next_level();
             System.out.println("new level " + currentLevelNumber);
-        }
-        else
+        } else
             currentLevel.moveEnemies(player.getPosition());
 //        checkInGame();
-        if (action == 'Q' || action == 'q')
-        {
+        if (action == 'Q' || action == 'q') {
             inGame = false;
             readyToStart = false;
         }
@@ -277,7 +288,7 @@ public GameSession() {
 
     }
 
-    public void map_refresh(){
+    public void map_refresh() {
         for (int i = 0; i < MAP_HEIGHT; i++) {
             for (int j = 0; j < MAP_WIDTH; j++) {
                 field[i][j] = OUTER_AREA_CHAR;
@@ -286,15 +297,15 @@ public GameSession() {
     }
 
 
-    public void generate_next_level(){
+    public void generate_next_level() {
         currentLevelNumber++;
         if (currentLevelNumber < 21) {
             levels.get(currentLevelNumber).generate_level();
             currentLevel = levels.get(currentLevelNumber);
             generate_entities();
             level_to_field(currentLevel);
-        }
-        else win = true;
+        } else win = true;
     }
+
 
 }

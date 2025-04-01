@@ -14,8 +14,6 @@ public class Enemy extends Entity {
     private int strength;
     private int hostility;
     private int type;
-    //    private char symbol;
-    private int symbol;
 
     Position position;
 
@@ -89,7 +87,7 @@ public class Enemy extends Entity {
     /**
      * Движение по диагонали
      */
-    public void moveSnake(char[][] field) {
+    public void moveSnake(char[][] field, Position position) {
         int x = position.getX();
         int y = position.getY();
         int newX = x, newY = y;
@@ -121,19 +119,23 @@ public class Enemy extends Entity {
                     return;
             }
 //            System.out.println("dir=" + initialDirection);
-            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != '+') {
+            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
                 position.setNew(newX, newY, false);
-
             } else {
                 initialDirection = (initialDirection + 1) % 4;
             }
         }
     }
 
+    public void moveVampire(char[][] field, Position position) {
+       moveSnake(field,position);//доделать
+    }
+
+
     /**
      * Движение по вверх-вниз
      */
-    public void moveZombie(char[][] field) {
+    public void moveZombie(char[][] field, Position position) {
         int x = position.getX();
         int y = position.getY();
         int newX = x, newY = y;
@@ -149,11 +151,7 @@ public class Enemy extends Entity {
                 default:
                     return;
             }
-//            System.out.println("L=" + field.length);
-//            System.out.println("C=" + field[0].length);
-//            System.out.println("dir=" + initialDirection);
-
-            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
+            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
                 position.setNew(newX, newY, false);
 
             } else {
@@ -166,7 +164,7 @@ public class Enemy extends Entity {
     /**
      * Движение по кругу
      */
-    public void moveOgre(char[][] field) {
+    public void moveOgre(char[][] field, Position position) {
 
         int x = position.getX();
         int y = position.getY();
@@ -193,7 +191,7 @@ public class Enemy extends Entity {
                     return;
             }
 //            System.out.println("dir=" + initialDirection);
-            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR) {
+            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
                 position.setNew(newX, newY, false);
 
             } else {
@@ -205,7 +203,7 @@ public class Enemy extends Entity {
     /**
      * Рандомное передвижение
      */
-    public void moveGhost(char[][] field, boolean visible) {
+    public void moveGhost(char[][] field, boolean visible, Position position) {
         int x = position.getX();
         int y = position.getY();
         int newX = x, newY = y;
@@ -234,11 +232,34 @@ public class Enemy extends Entity {
                         return;
                 }
 //                System.out.println("dir=" + direction);
-                if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != '+') {
+                if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
                     position.setNew(newX, newY, false);
 
                 }
             }
+        }
+    }
+
+    public void move(int type, char[][] field, Position position) {
+        this.type = type;
+        switch (type) {
+            case ZOMBIE:
+                moveZombie(field, position);
+                break;
+            case VAMPIRE:
+                moveVampire(field, position);
+                break;
+            case GHOST:
+                moveGhost(field, true, position);
+                break;
+            case OGRE:
+                moveOgre(field, position);
+                break;
+            case SNAKE:
+                moveSnake(field, position);
+                break;
+            default:
+                break;
         }
     }
 

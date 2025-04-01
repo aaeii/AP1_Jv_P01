@@ -12,7 +12,7 @@ public class Room {
     private Position[] doors; //4
     private Position top_left;
     private Position bot_right;
-//    private boolean playerSpawn;
+    //    private boolean playerSpawn;
     private final Entity [] entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
     private boolean visited;
@@ -144,12 +144,12 @@ public class Room {
     }
 
     public boolean checkInRoomEntities(Position position){
-            for (int i = 0; i < entities_cnt; i++) {
-                if (entities[i].getPosition().getX() == position.getX() &&
-                        entities[i].getPosition().getY() == position.getY() &&
-                        (entities[i].getType() <= ZOMBIE && entities[i].getType() >= SNAKE))
-                    return true;
-            }
+        for (int i = 0; i < entities_cnt; i++) {
+            if (entities[i].getPosition().getX() == position.getX() &&
+                    entities[i].getPosition().getY() == position.getY() &&
+                    (entities[i].getType() <= ZOMBIE && entities[i].getType() >= SNAKE))
+                return true;
+        }
         return false;
     }
 
@@ -162,11 +162,11 @@ public class Room {
     }
 
     public boolean checkPlayerInRoom(Position position){
-            if (position.getX() >= top_left.getX()
-                    && position.getX() <= bot_right.getX()
-                    && position.getY() >= top_left.getY()
-                    && position.getY() <= bot_right.getY())
-                return true;
+        if (position.getX() >= top_left.getX()
+                && position.getX() <= bot_right.getX()
+                && position.getY() >= top_left.getY()
+                && position.getY() <= bot_right.getY())
+            return true;
         return false;
     }
 
@@ -174,15 +174,15 @@ public class Room {
 
         for (int i = 0; i < entities_cnt; i++) {
             entities[i].move(position, top_left, bot_right);
-            }
+        }
     }
 
     public boolean checkRoom(Position player_position){
-            if (player_position.getX() >= top_left.getX()
-                    && player_position.getX() <= bot_right.getX()
-                    && player_position.getY() >= top_left.getY()
-                    && player_position.getY() <= bot_right.getY())
-                return true;
+        if (player_position.getX() >= top_left.getX()
+                && player_position.getX() <= bot_right.getX()
+                && player_position.getY() >= top_left.getY()
+                && player_position.getY() <= bot_right.getY())
+            return true;
         return false;
     }
 
