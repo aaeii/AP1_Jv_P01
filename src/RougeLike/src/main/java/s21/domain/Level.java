@@ -10,11 +10,12 @@ import s21.domain.*;
 
 public class Level {
 
-    private List<Room> roomsSequence; //[MAX_ROOMS_NUMBER]
-    private List<Corridor> corridors; //MAX_CORRIDORS_NUMBER
-    private Room[][] rooms; //[ROOMS_PER_SIDE + 2][ROOMS_PER_SIDE + 2]
+    private List<Room> roomsSequence;
+    private List<Corridor> corridors;
+    private Room[][] rooms;
     private int room_cnt;
     private int  corridors_cnt;
+    private Position exit_position;
 
     public Level() {
         roomsSequence = new ArrayList<>();
@@ -22,7 +23,7 @@ public class Level {
         rooms = new Room[ROOMS_PER_SIDE][ROOMS_PER_SIDE];
         room_cnt = 0;
         corridors_cnt = 0;
-
+        exit_position = new Position();
         for (int i = 0; i < ROOMS_PER_SIDE; i++)
             for (int j = 0; j < ROOMS_PER_SIDE; j++)
             { Room currentRoom = new Room();
@@ -52,6 +53,7 @@ public class Level {
         rooms = new Room[ROOMS_PER_SIDE][ROOMS_PER_SIDE];
         room_cnt = 0;
         corridors_cnt = 0;
+        exit_position = new Position();
         for (int i = 0; i < ROOMS_PER_SIDE; i++)
             for (int j = 0; j < ROOMS_PER_SIDE; j++)
             { Room currentRoom = new Room();
@@ -76,11 +78,6 @@ public class Level {
         }
     }
 
-
-    public List<Room> getRoomsSequence() {
-        return roomsSequence;
-    }
-
     public Room getRoomsSequence(int i) {
         return roomsSequence.get(i);
     }
@@ -91,6 +88,10 @@ public class Level {
 
     public Corridor getCorridors(int i) {
         return corridors.get(i);
+    }
+
+    public Position getExit_position(){
+        return exit_position;
     }
 
 
@@ -104,19 +105,15 @@ public class Level {
 
     public void generate_level(){
         int connection = 1;
-        int i=0;
-        Entity entity = new Entity();
         while (connection != CONNECTED){
             refreshLevel();
             generate_sectors();
             generate_connections();
             generate_rooms_geometry();
             generate_corridors_geometry();
+            generate_exit();
             connection = check_connectivity();
-            System.out.println(check_connectivity());
-            i++;
         }
-        System.out.println(i);
     }
 
     public void generate_sectors()
@@ -207,7 +204,6 @@ public class Level {
     void generate_connections()
     {
         generate_primary_connections();
-//        generate_secondary_connections();
     }
 
     void generate_primary_connections()
@@ -241,46 +237,6 @@ public class Level {
 
     }
 
-//    void generate_secondary_connections()
-//    {
-//        for (int i = 0; i < roomsSequence.size() - 1; i++){
-//            if (getRoomsSequence(i).getSector() != UNINITIALIZED)
-//            {
-//                Room current = getRoomsSequence(i);
-//                Room next = getRoomsSequence(i + 1);
-//
-//                if (current.getGrid_i() == next.getGrid_i() && next.getConnections(LEFT) == null)
-//                {
-//                    current.setConnections(next, RIGHT);
-//                    next.setConnections(current, LEFT);
-//                }
-//                else if (current.getGrid_i() - next.getGrid_i() == -1 && current.getConnections(BOTTOM) == null)
-//                {
-//                    if (current.getGrid_j() < next.getGrid_j() && next.getConnections(LEFT) == null)
-//                    {
-//                        current.setConnections(next, BOTTOM);
-//                        next.setConnections(current, LEFT);
-//                    }
-//                    else if (current.getGrid_j() > next.getGrid_j() && next.getConnections(RIGHT) == null)
-//                    {
-//                        current.setConnections(next, BOTTOM);
-//                        next.setConnections(current, RIGHT);
-//                    }
-//                    else if (current.getGrid_j() > next.getGrid_j() && current.getConnections(BOTTOM) == null &&
-//                            i < room_cnt - 2)
-//                    {
-//                        current.setConnections(roomsSequence.get(i + 2), BOTTOM);
-//                        roomsSequence.get(i + 2).setConnections(current, RIGHT);
-//                    }
-//                }
-//                else if (current.getGrid_i() - next.getGrid_i() == -2 && next.getConnections(TOP) == null)
-//                {
-//                    current.setConnections(next, BOTTOM);
-//                    next.setConnections(current, TOP);
-//                }
-//            }
-//        }
-//    }
 
     private void generate_corridors_geometry(){
         for (int i = 0; i < ROOMS_PER_SIDE; i++){
@@ -351,35 +307,45 @@ public class Level {
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++) {
-                if (roomsSequence.get(i).checkInRoomEntities(position))
+                if (roomsSequence.get(i).checkPlayerInRoom(position)){
                     roomsSequence.get(i).moveEnemiesInRoom(position);
-
+                }
         }
     }
 
-
-    public boolean isItExit(Position position){
+    public void generate_exit(){
+        int room_index = (int) (Math.random() * (double) (getRoom_cnt())+1);
         int offset = 0 ;
-        while (roomsSequence.get(offset).getSector() == -1)
+        while (getRoomsSequence(offset).getSector() == -1)
             ++offset;
-        for (int i = offset; i < roomsSequence.size(); i++) {
-            if (roomsSequence.get(i).checkIsItExit(position)){
-                return true;
-            }
-        }
-        return false;
+        Room exit_room = new Room();
+//        do {
+            exit_room = getRoomsSequence(offset + room_index - 1);
+//        }
+//        while (exit_room.checkPlayerInRoom(player.getPosition()));
+        Position exit_coordinate = new Position();
+        exit_coordinate = exit_coordinate.generate_entity_coords(exit_room);
+        exit_position.setNew(exit_coordinate.getX(), exit_coordinate.getY(), false);
+    }
+
+
+    public boolean checkExitInRoom(int number){
+        return roomsSequence.get(number).checkInRoomEntities(exit_position);
     }
 
     public void changeVisibility(Position player_position){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
-        for (int i = offset; i < roomsSequence.size(); i++){
+        for (int i = offset; i < roomsSequence.size(); i++)
+        {
             if (roomsSequence.get(i).checkRoom(player_position)) {
                 roomsSequence.get(i).makeVisible();
             } else {
                 roomsSequence.get(i).makeInvisible();
             }
+            if (roomsSequence.get(i).checkRoom(player_position) && roomsSequence.get(i).checkRoom(exit_position))
+                exit_position.setVisibility(true);
         }
         for (int i = 0; i < getCorridors_cnt(); i++){
             if (corridors.get(i).checkCorridor(player_position))

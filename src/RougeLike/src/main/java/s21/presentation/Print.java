@@ -6,6 +6,7 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.terminal.TerminalFactory;
 import s21.domain.GameSession;
 
 import java.io.IOException;
@@ -15,7 +16,6 @@ import static s21.domain.GameConstants.*;
 
 public class Print {
     private char[][] field;
-//    private Character player;
 
     public Print() {
         field = new char[MAP_HEIGHT][MAP_WIDTH];
@@ -26,21 +26,27 @@ public class Print {
     }
 
     public Terminal createTerminal() throws IOException {
-        Terminal terminal = new DefaultTerminalFactory().createTerminal();
+        TerminalSize size = new TerminalSize(MAP_WIDTH+ 20, MAP_HEIGHT );
+        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(size);
+        Terminal terminal = defaultTerminalFactory.createTerminal();
         terminal.setCursorVisible(false);
-
         terminal.flush();
-
         return terminal;
     }
 
     public void printOnlyField(Terminal terminal) throws IOException {
-        terminal.clearScreen();
-        for (int i = 0; i < MAP_HEIGHT; i++) {
-            for (int j = 0; j < MAP_WIDTH; j++)
-                terminal.putCharacter(field[i][j]);
+        try{
+            terminal.clearScreen();
+            for (int i = 0; i < MAP_HEIGHT; i++) {
+                for (int j = 0; j < MAP_WIDTH; j++) {
+                    terminal.setCursorPosition(j, i);
+                    terminal.putCharacter(field[i][j]);
+                }
+            }
+            terminal.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        terminal.flush();
     }
 
     public void printGame(Terminal terminal, GameSession game) throws IOException {
@@ -76,6 +82,7 @@ public class Print {
 
     public void printRules(Terminal terminal) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();
+        try {
         textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
         textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
         textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "                ", SGR.BOLD);
@@ -84,14 +91,29 @@ public class Print {
         textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "                ", SGR.BOLD);
         textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
         terminal.flush();
+        }
+        catch (IOException e) {
+        e.printStackTrace();
+    }
     }
 
     public void printInfo(Terminal terminal, GameSession game) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();
-        textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
-        textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
-        textGraphics.putString(1, 0, "Level  " + (game.getCurrentLevelNumber()+1), SGR.UNDERLINE);
-        terminal.flush();
+        try {
+            textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+            textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+            textGraphics.putString(MAP_WIDTH + 2, 5, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH + 2, 6, "            ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH + 2, 7, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH + 2, 8, "            ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH + 2, 9, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH + 2, 10, "            ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH + 2, 11, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
+            terminal.flush();
+        }
+        catch (IOException e) {
+        e.printStackTrace();
+    }
     }
     public void printResultOfGame(Terminal terminal, GameSession game) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();

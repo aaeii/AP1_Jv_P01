@@ -172,9 +172,8 @@ public class Room {
     }
 
     public void moveEnemiesInRoom(Position position){
-
         for (int i = 0; i < entities_cnt; i++) {
-            entities[i].move(position, top_left, bot_right);
+                entities[i].move(position, top_left, bot_right);
             }
     }
 
@@ -192,8 +191,9 @@ public class Room {
         bot_right.setVisibility(true);
         for (int i = 0; i < entities_cnt; i++) {
             entities[i].getPosition().setVisibility(true);
+            if (entities[i].getType() == GHOST )
+                entities[i].getPosition().setVisibility(Math.random() > 0.5);
         }
-
     }
 
     public void makeInvisible (){
