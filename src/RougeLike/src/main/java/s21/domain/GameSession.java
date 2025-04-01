@@ -269,7 +269,7 @@ public class GameSession {
         }
         if (action == 'e' || action == 'E') {//для противников
             for (Enemy enemy : enemies) {
-                enemy.move(enemy.getType(), field, enemy.getPosition());
+                enemy.move(enemy.getType(), field, enemy.getPosition(),player.getPosition());
             }
         }
         if (currentLevel.isItExit(player.getPosition())) {

@@ -84,179 +84,164 @@ public class Enemy extends Entity {
 
     private int initialDirection = TOP;
 
-    /**
-     * Движение по диагонали
-     */
-    public void moveSnake(char[][] field, Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    public void moveSnake(char[][] field, Position enemyPosition, Position playerPosition, int hostilityLevel) {
+        int x = enemyPosition.getX();
+        int y = enemyPosition.getY();
         int newX = x, newY = y;
+        int distanceToPlayerX = Math.abs(x - playerPosition.getX());
+        int distanceToPlayerY = Math.abs(y - playerPosition.getY());
+        int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
+        if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
+            int playerX = playerPosition.getX();
+            int playerY = playerPosition.getY();
+            if (x < playerX) {
+                newX++;
+            } else if (x > playerX) {
+                newX--;
+            }
+            if (y < playerY) {
+                newY++;
+            } else if (y > playerY) {
+                newY--;
+            }
+
+            if (isValidMove(newX, newY, field)) {
+                enemyPosition.setNew(newX, newY, false);
+                System.out.println("snake: (" + newX + ", " + newY + ")");
+            }
+        }
+    }
+
+    public void moveVampire(char[][] field, Position enemy, Position player, int hostility) {
+        moveZombie(field, enemy, player, hostility);
+    }
+
+    public void moveZombie(char[][] field, Position zombiePosition, Position playerPosition, int hostilityLevel) {
+        int x = zombiePosition.getX();
+        int y = zombiePosition.getY();
+        int newX = x, newY = y;
+        int distanceToPlayerX = Math.abs(x - playerPosition.getX());
+        int distanceToPlayerY = Math.abs(y - playerPosition.getY());
+        int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
+        if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
+            int playerX = playerPosition.getX();
+            int playerY = playerPosition.getY();
+            if (x < playerX) {
+                x++;
+            } else if (x > playerX) {
+                x--;
+            } else if (y < playerY) {
+                y++;
+            } else if (y > playerY) {
+                y--;
+            }
+
+            if (isValidMove(x, y, field)) {
+                zombiePosition.setNew(x, y, false);
+                System.out.println("zombie: (" + x + ", " + y + ")");
+            }
+        }
+    }
+
+    private int getDistanceForPursuit(int hostilityLevel) {
+        return switch (hostilityLevel) {
+//            case VERY_HIGH_LVL -> 5;
+            case HIGH_LVL -> 5;
+            case MEDIUM_LVL -> 3;
+            case LOW_LVL -> 1;
+            default -> 0;
+        };
+    }
+
+
+    private boolean isValidMove(int newX, int newY, char[][] field) {
+        return field[newY][newX] != WALL_CHAR &&
+                field[newY][newX] != OUTER_AREA_CHAR &&
+                field[newY][newX] != CORRIDOR_CHAR;
+    }
+
+    public void moveOgre(char[][] field, Position enemyPosition, Position playerPosition, int hostilityLevel) {
+        int x = enemyPosition.getX();
+        int y = enemyPosition.getY();
+        int newX = x, newY = y;
+        int distanceToPlayerX = Math.abs(x - playerPosition.getX());
+        int distanceToPlayerY = Math.abs(y - playerPosition.getY());
+        int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
+        if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
+            int playerX = playerPosition.getX();
+            int playerY = playerPosition.getY();
+            if (x < playerX) {
+                x = x + 2;
+            } else if (x > playerX) {
+                x = x - 2;
+            } else if (y < playerY) {
+                y = y + 2;
+            } else if (y > playerY) {
+                y = y - 2;
+            }
+
+            if (isValidMove(x, y, field)) {
+                enemyPosition.setNew(x, y, false);
+                System.out.println("ogr: (" + x + ", " + y + ")");
+            }
+        }
+    }
+
+
+    public void moveGhost(char[][] field, Position ghostPosition, Position playerPosition, int hostilityLevel, int visibilityChance) {
         Random random = new Random();
-        int randomNumber = 0;
-        for (int i = 0; i < 4; i++) {
-            switch (initialDirection) {
-                case TOP:
-                    randomNumber = random.nextInt(1 + 1);
-                    newY = y - 1;
-                    newX = randomNumber == 0 ? x + 1 : x - 1;
-                    break;
-                case RIGHT:
-                    newX = x + 1;
-                    randomNumber = random.nextInt(1 + 1);
-                    newY = randomNumber == 0 ? y + 1 : y - 1;
-                    break;
-                case BOTTOM:
-                    newY = y + 1;
-                    randomNumber = random.nextInt(1 + 1);
-                    newX = randomNumber == 0 ? x + 1 : x - 1;
-                    break;
-                case LEFT:
-                    randomNumber = random.nextInt(1 + 1);
-                    newX = x - 1;
-                    newY = randomNumber == 0 ? y + 1 : y - 1;
-                    break;
-                default:
-                    return;
+        int x = ghostPosition.getX();
+        int y = ghostPosition.getY();
+        int newX = x;
+        int newY = y;
+
+        if (random.nextInt(100) < visibilityChance) {
+            System.out.println("Призрак исчез");
+        }
+
+        int distanceToPlayer = Math.abs(x - playerPosition.getX()) + Math.abs(y - playerPosition.getY());
+        int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
+        if (distanceToPlayer <= distanceForPursuit) {
+            if (x < playerPosition.getX()) {
+                newX++;
+            } else if (x > playerPosition.getX()) {
+                newX--;
             }
-//            System.out.println("dir=" + initialDirection);
-            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
-                position.setNew(newX, newY, false);
-            } else {
-                initialDirection = (initialDirection + 1) % 4;
+
+            if (y < playerPosition.getY()) {
+                newY++;
+            } else if (y > playerPosition.getY()) {
+                newY--;
             }
+        } else {
+            newX = x + random.nextInt(3) - 1;
+            newY = y + random.nextInt(3) - 1;
+        }
+
+        if (isValidMove(newX, newY, field)) {
+            ghostPosition.setNew(newX, newY, false);
+            System.out.println("ghost: (" + newX + ", " + newY + ")");
         }
     }
 
-    public void moveVampire(char[][] field, Position position) {
-       moveSnake(field,position);//доделать
-    }
-
-
-    /**
-     * Движение по вверх-вниз
-     */
-    public void moveZombie(char[][] field, Position position) {
-        int x = position.getX();
-        int y = position.getY();
-        int newX = x, newY = y;
-        for (int i = 0; i < 4; i++) {
-            switch (initialDirection) {
-                case TOP:
-                    newY = y - 1;
-                    break;
-
-                case BOTTOM:
-                    newY = y + 1;
-                    break;
-                default:
-                    return;
-            }
-            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
-                position.setNew(newX, newY, false);
-
-            } else {
-                initialDirection = (initialDirection + 2) % 4;
-            }
-
-        }
-    }
-
-    /**
-     * Движение по кругу
-     */
-    public void moveOgre(char[][] field, Position position) {
-
-        int x = position.getX();
-        int y = position.getY();
-        int newX, newY;
-        for (int i = 0; i < 4; i++) {
-            switch (initialDirection) {
-                case TOP:
-                    newX = x;
-                    newY = y - 2;
-                    break;
-                case RIGHT:
-                    newX = x + 2;
-                    newY = y;
-                    break;
-                case BOTTOM:
-                    newX = x;
-                    newY = y + 2;
-                    break;
-                case LEFT:
-                    newX = x - 2;
-                    newY = y;
-                    break;
-                default:
-                    return;
-            }
-//            System.out.println("dir=" + initialDirection);
-            if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
-                position.setNew(newX, newY, false);
-
-            } else {
-                initialDirection = (initialDirection + 1) % 4;
-            }
-        }
-    }
-
-    /**
-     * Рандомное передвижение
-     */
-    public void moveGhost(char[][] field, boolean visible, Position position) {
-        int x = position.getX();
-        int y = position.getY();
-        int newX = x, newY = y;
-        Random random = new Random();
-        if (visible) {
-            for (int i = 0; i < 4; i++) {
-                int direction = random.nextInt(4);
-                switch (direction) {
-                    case TOP:
-                        newY = y - 1;
-                        newX = x;
-                        break;
-                    case RIGHT:
-                        newX = x + 1;
-                        newY = y;
-                        break;
-                    case BOTTOM:
-                        newY = y + 1;
-                        newX = x;
-                        break;
-                    case LEFT:
-                        newX = x - 1;
-                        newY = y;
-                        break;
-                    default:
-                        return;
-                }
-//                System.out.println("dir=" + direction);
-                if (field[newY][newX] != WALL_CHAR && field[newY][newX] != OUTER_AREA_CHAR && field[newY][newX] != CORRIDOR_CHAR) {
-                    position.setNew(newX, newY, false);
-
-                }
-            }
-        }
-    }
-
-    public void move(int type, char[][] field, Position position) {
+    public void move(int type, char[][] field, Position position, Position ch) {
         this.type = type;
         switch (type) {
             case ZOMBIE:
-                moveZombie(field, position);
+                moveZombie(field, position, ch, getHostility());
                 break;
             case VAMPIRE:
-                moveVampire(field, position);
+                moveVampire(field, position, ch, getHostility());
                 break;
             case GHOST:
-                moveGhost(field, true, position);
+                moveGhost(field, position, ch, getHostility(), 50);
+//                moveGhost(field, true, position);
                 break;
             case OGRE:
-                moveOgre(field, position);
+                moveOgre(field, position, ch, getHostility());
                 break;
             case SNAKE:
-                moveSnake(field, position);
+                moveSnake(field, position, ch, getHostility());
                 break;
             default:
                 break;
