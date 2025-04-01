@@ -235,7 +235,6 @@ public class Enemy extends Entity {
     public void moveOgre(Position playerPosition, Position top_left, Position bot_right, int hostilityLevel) {
         int x = position.getX();
         int y = position.getY();
-        int newX = x, newY = y;
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
@@ -254,37 +253,6 @@ public class Enemy extends Entity {
             if (isValidMove(x, y, top_left, bot_right)) {
                 position.setNew(x, y, false);
 //                System.out.println("ogr: (" + x + ", " + y + ")");
-            }
-        } else {
-            for (int i = 0; i < 4; i++) {
-                switch (initialDirection) {
-                    case TOP:
-                        x = x;
-                        y = y - 2;
-                        break;
-                    case RIGHT:
-                        x = x + 2;
-                        y = y;
-                        break;
-                    case BOTTOM:
-                        x = x;
-                        y = y + 2;
-                        break;
-                    case LEFT:
-                        x = x - 2;
-                        y = y;
-                        break;
-                    default:
-                        return;
-                }
-//            System.out.println("dir=" + initialDirection);
-                if (x > top_left.getX() && x < bot_right.getX()
-                        && y > top_left.getY() && y < bot_right.getY()) {
-                    position.setNew(x, y, false);
-
-                } else {
-                    initialDirection = (initialDirection + 1) % 4;
-                }
             }
         }
     }
