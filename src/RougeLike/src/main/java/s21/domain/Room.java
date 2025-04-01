@@ -58,30 +58,6 @@ public class Room {
         return sector;
     }
 
-    public void setSector(int sector) {
-        this.sector = sector;
-    }
-
-    public int getGrid_i() {
-        return grid_i;
-    }
-
-    public void setGrid_i(int i) {
-        this.grid_i = i;
-    }
-
-    public int getGrid_j() {
-        return grid_j;
-    }
-
-    public void setGrid_j(int j) {
-        this.grid_j = j;
-    }
-
-    public Room[] getConnections() {
-        return connections;
-    }
-
     public Room getConnections(int i) {
         return connections[i];
     }
@@ -171,10 +147,9 @@ public class Room {
     }
 
     public void moveEnemiesInRoom(Position position){
-
         for (int i = 0; i < entities_cnt; i++) {
-            entities[i].move(position, top_left, bot_right);
-        }
+                entities[i].move(position, top_left, bot_right);
+            }
     }
 
     public boolean checkRoom(Position player_position){
@@ -191,8 +166,9 @@ public class Room {
         bot_right.setVisibility(true);
         for (int i = 0; i < entities_cnt; i++) {
             entities[i].getPosition().setVisibility(true);
+            if (entities[i].getType() == GHOST )
+                entities[i].getPosition().setVisibility(Math.random() > 0.5);
         }
-
     }
 
     public void makeInvisible (){

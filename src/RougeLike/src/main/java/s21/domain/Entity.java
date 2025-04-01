@@ -2,7 +2,7 @@ package s21.domain;
 
 import static s21.domain.GameConstants.*;
 
-public class Entity {
+abstract class Entity {
     int type; // enemy, item, player, exit
     int symbol; // выбрать из возможного пула
     Position position;
@@ -18,6 +18,7 @@ public class Entity {
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
     }
+     abstract void move(Position player_pos, Position  top_left, Position bot_right);
 
     public int getType() {
         return type;
@@ -43,32 +44,6 @@ public class Entity {
         this.symbol = symbol;
     }
 
-    public Position generate_entity_coords(Room room){
-        Position pos  = new Position();
-        do {
-            int x = (int) ((Math.random() * (room.getBot_right().getX() - room.getTop_left().getX() - 1)) + room.getTop_left().getX() + 1);
-            int y = (int) ((Math.random() * (room.getBot_right().getY() - room.getTop_left().getY() - 1)) + room.getTop_left().getY() + 1);
-            pos.setNew(x, y, false);
-        }
-        while (check_unoccupied(room, pos) == OCCUPIED);
-        return pos;
-    }
 
-    private int check_unoccupied(Room room, Position pos)
-    {
-        int status = UNOCCUPIED;
-
-        for (int i = 0; i < room.getEntities_cnt() && status == UNOCCUPIED; i++)
-            if (room.getEntities(i).position.getX() == pos.getX() && room.getEntities(i).position.getY() == pos.getY())
-                status = OCCUPIED;
-
-        return status;
-    }
-
-    public void move(Position player_pos, Position  top_left, Position bot_right){
-
-
-
-    }
 
 }

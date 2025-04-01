@@ -12,11 +12,15 @@ public class Character {
     private int agility;
     private int strength;
     private int gold;
+    private int stepCounter;
     private boolean sleep;
     private int eatenFoodCounter;
     private int drunkElixirCounter;
     private int attackCounter;
     private int enemiesAttackCounter;
+    private float view_distance;
+    private float fov;
+    private float view_angle;
 
     Character(Position pos) {
         this.position = pos;
@@ -29,6 +33,10 @@ public class Character {
         this.eatenFoodCounter = 0;
         this.drunkElixirCounter = 0;
         this.attackCounter = 0;
+        this.view_distance = DEFAULT_VIEW_DISTANCE;
+        this.fov = DEFAULT_FOV;
+        this.view_angle = DEFAULT_ANGLE;
+        this.stepCounter = 0;
     }
 
 
@@ -81,20 +89,28 @@ public class Character {
         int y = position.getY();
         switch (direction) {
             case (TOP):
-                if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR)
+                if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR) {
                     position.setNew(x, y - 1, true);
+                    stepCounter++;
+                }
                 break;
             case (RIGHT):
-                if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR)
+                if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR) {
                     position.setNew(x + 1, y, true);
+                    stepCounter++;
+                }
                 break;
             case (BOTTOM):
-                if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR)
+                if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR) {
                     position.setNew(x, y + 1, true);
+                    stepCounter++;
+                }
                 break;
             case (LEFT):
-                if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR)
+                if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) {
                     position.setNew(x - 1, y, true);
+                    stepCounter++;
+                }
                 break;
         }
     }

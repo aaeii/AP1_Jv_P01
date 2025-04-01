@@ -6,7 +6,7 @@ public class GameConstants {
 
     public static final int CONNECTED = 0;
     public static final int NOT_CONNECTED = 1;
-    public static final int MAP_HEIGHT = 24;
+    public static final int MAP_HEIGHT = 30;
     public static final int MAP_WIDTH  = 80;
     public static final int MAX_LEVEL_NUMBER  = 21;
     public static final int ROOMS_PER_SIDE  = 3;
@@ -34,7 +34,6 @@ public class GameConstants {
 
     public static final int LEFT_TO_RIGHT_CORRIDOR = 0;
     public static final int LEFT_TURN_CORRIDOR = 1;
-    public static final int RIGHT_TURN_CORRIDOR = 2;
     public static final int TOP_TO_BOTTOM_CORRIDOR = 3;
 
     public static final int UNOCCUPIED = 0;
@@ -48,7 +47,6 @@ public class GameConstants {
 
     public static final int  WALL_CHAR = '#';
     public static final int CORRIDOR_CHAR = '+';
-    public static final int CORRIDOR_CHAR2 = '1';
 
 
     public static final int  OUTER_AREA_CHAR = '.';
@@ -67,6 +65,30 @@ public class GameConstants {
     public static final int OGRE_CHAR = 'O';
     public static final int SNAKE = 7;
     public static final int SNAKE_CHAR = 'S';
+
+    //ITEMS
+    public static final int GOLD = 8;
+    public static final int GOLD_CHAR = '$';
+    public static final int FOOD = 9;
+    public static final int FOOD_CHAR = 'F';
+    public static final int AGILITY = 10;
+    public static final int AGILITY_CHAR = '>';
+    public static final int STRENGTH = 11;
+    public static final int STRENGTH_CHAR = '%';
+    public static final int MAX_HEALTH = 12;
+    public static final int MAX_HEALTH_CHAR = 'H';
+    public static final int ELIXIR = 13;
+    public static final int ELIXIR_CHAR = 'E';
+
+
+    //PLAYER CONST
+    public static final float DEFAULT_VIEW_DISTANCE = 30.0f;
+    public static final float DEFAULT_FOV = 3.14159f / 3.5f;
+    public static final float DEFAULT_ANGLE = 0.0f;
+    public static final float MOVEMENT_STEP = 0.2f;
+    public static final float TURN_ANGLE_STEP = 0.03f;
+
+
 
 //            #define IS_OUTER    0
 //            #define IS_INNER    1

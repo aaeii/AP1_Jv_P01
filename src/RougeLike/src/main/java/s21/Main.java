@@ -8,10 +8,10 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         GameSession newGame = new GameSession();
-        UserInput userInput = new UserInput();
         Print print = new Print();
         print.setField(newGame.getField());
         Terminal terminal = print.createTerminal();
+        UserInput userInput = new UserInput();
         print.printGame(terminal, newGame);
         while (!newGame.isReadyToStart()) {
             print.printRules(terminal);
