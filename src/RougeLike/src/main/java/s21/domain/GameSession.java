@@ -80,7 +80,7 @@ public GameSession() {
     {
         generate_player_pos();
         generate_enemies();
-//        generate_items();
+        generate_items();
     }
 
     public void generate_player_pos(){
@@ -127,6 +127,32 @@ public GameSession() {
         }
     }
 
+    public void generate_items(){
+
+        for (int i=0; i < currentLevel.getRoom_cnt(); i++)
+        {
+            int offset = 0 ;
+            while (currentLevel.getRoomsSequence(offset).getSector() == -1)
+                ++offset;
+            int items_cnt = (int)(Math.random() * (MAX_ITEMS_PER_ROOM) + 1);
+            int item_type = -1;
+            for (int j = 0; j < items_cnt; j++){
+                item_type = (int)(Math.random() * (double) (ELIXIR - GOLD + 1) + GOLD );
+                Item item = new Item(item_type);
+                switch (item_type){
+                    case GOLD -> item.setSymbol(GOLD_CHAR);
+                    case FOOD -> item.setSymbol(FOOD_CHAR);
+                    case AGILITY -> item.setSymbol(AGILITY_CHAR);
+                    case STRENGTH -> item.setSymbol(STRENGTH_CHAR);
+                    case MAX_HEALTH -> item.setSymbol(MAX_HEALTH_CHAR);
+                    case ELIXIR -> item.setSymbol(ELIXIR_CHAR);
+                } Position item_pos = new Position();
+                item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                item.setPosition(item_pos);
+                currentLevel.getRoomsSequence(offset + i).setEntities(item);
+            }
+        }
+    }
     public void level_to_field (Level level){
         rooms_to_field(level);
         corridors_to_field(level);

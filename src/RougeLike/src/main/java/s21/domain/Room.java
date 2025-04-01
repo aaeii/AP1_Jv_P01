@@ -59,30 +59,6 @@ public class Room {
         return sector;
     }
 
-    public void setSector(int sector) {
-        this.sector = sector;
-    }
-
-    public int getGrid_i() {
-        return grid_i;
-    }
-
-    public void setGrid_i(int i) {
-        this.grid_i = i;
-    }
-
-    public int getGrid_j() {
-        return grid_j;
-    }
-
-    public void setGrid_j(int j) {
-        this.grid_j = j;
-    }
-
-    public Room[] getConnections() {
-        return connections;
-    }
-
     public Room getConnections(int i) {
         return connections[i];
     }

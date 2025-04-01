@@ -40,7 +40,26 @@ public class Print {
             for (int i = 0; i < MAP_HEIGHT; i++) {
                 for (int j = 0; j < MAP_WIDTH; j++) {
                     terminal.setCursorPosition(j, i);
+                    switch (field[i][j]){
+                        case ZOMBIE_CHAR:
+                            terminal.setForegroundColor(TextColor.ANSI.GREEN);
+                            break;
+                        case VAMPIRE_CHAR:
+                            terminal.setForegroundColor(TextColor.ANSI.RED);
+                            break;
+                        case GHOST_CHAR:
+                            terminal.setForegroundColor(TextColor.ANSI.WHITE);
+                            break;
+                        case OGRE_CHAR:
+                            terminal.setForegroundColor(TextColor.ANSI.YELLOW);
+                            break;
+                        case SNAKE_CHAR:
+                            terminal.setForegroundColor(TextColor.ANSI.WHITE);
+                            break;
+                    }
                     terminal.putCharacter(field[i][j]);
+                    terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
+
                 }
             }
             terminal.flush();

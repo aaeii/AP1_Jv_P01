@@ -66,6 +66,21 @@ public class GameConstants {
     public static final int SNAKE = 7;
     public static final int SNAKE_CHAR = 'S';
 
+    //ITEMS
+    public static final int GOLD = 8;
+    public static final int GOLD_CHAR = '$';
+    public static final int FOOD = 9;
+    public static final int FOOD_CHAR = 'F';
+    public static final int AGILITY = 10;
+    public static final int AGILITY_CHAR = '>';
+    public static final int STRENGTH = 11;
+    public static final int STRENGTH_CHAR = '%';
+    public static final int MAX_HEALTH = 12;
+    public static final int MAX_HEALTH_CHAR = 'H';
+    public static final int ELIXIR = 13;
+    public static final int ELIXIR_CHAR = 'E';
+
+
     //PLAYER CONST
     public static final float DEFAULT_VIEW_DISTANCE = 30.0f;
     public static final float DEFAULT_FOV = 3.14159f / 3.5f;
