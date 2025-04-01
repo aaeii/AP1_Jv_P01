@@ -330,7 +330,7 @@ public class Level {
 
 
     public boolean checkExitInRoom(int number){
-        return roomsSequence.get(number).checkInRoomEntities(exit_position);
+        return roomsSequence.get(number).checkRoom(exit_position);
     }
 
     public void changeVisibility(Position player_position){

@@ -26,12 +26,20 @@ public class Print {
     }
 
     public Terminal createTerminal() throws IOException {
-        TerminalSize size = new TerminalSize(MAP_WIDTH+ 20, MAP_HEIGHT );
-        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(size);
-        Terminal terminal = defaultTerminalFactory.createTerminal();
+//        TerminalSize size = new TerminalSize(MAP_WIDTH+ 20, MAP_HEIGHT );
+//        DefaultTerminalFactory defaultTerminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(size);
+//        Terminal terminal = defaultTerminalFactory.createTerminal();
+//        terminal.setCursorVisible(false);
+//        terminal.flush();
+//
+//        return terminal;
+        Terminal terminal = new DefaultTerminalFactory().createTerminal();
         terminal.setCursorVisible(false);
+
         terminal.flush();
+
         return terminal;
+
     }
 
     public void printOnlyField(Terminal terminal) throws IOException {
