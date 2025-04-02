@@ -26,6 +26,8 @@ public class GameConstants {
     public static final int MAX_ENTITIES_TOTAL = MAX_ENEMIES_TOTAL + MAX_ITEMS_TOTAL + 2;
     public static final int ENEMY_POOL_LEN  = 26;
     public static final int ITEM_POOL_LEN  = 5;
+    public static final int MAX_HEALTH  = 20;
+    public static final long MAX_COUNT_TYPE_ITEM = 9;
 
     public static final int TOP = 0;
     public static final int RIGHT = 1;
@@ -43,7 +45,6 @@ public class GameConstants {
     public static final int PLAYER_CHAR = '@';
     public static final int EXIT = 1;
     public static final int EXIT_CHAR  = '|';
-    public static final int ITEM = 2;
 
     public static final int  WALL_CHAR = '#';
     public static final int CORRIDOR_CHAR = '+';
@@ -51,7 +52,6 @@ public class GameConstants {
 
     public static final int  OUTER_AREA_CHAR = '.';
     public static final int  INNER_AREA_CHAR = ' ';
-    public static final int EMPTY_CHAR = ' ';
 
 
     //TYPE OF ENEMIES
@@ -71,15 +71,31 @@ public class GameConstants {
     public static final int GOLD_CHAR = '$';
     public static final int FOOD = 9;
     public static final int FOOD_CHAR = 'F';
-    public static final int AGILITY = 10;
-    public static final int AGILITY_CHAR = '>';
-    public static final int STRENGTH = 11;
-    public static final int STRENGTH_CHAR = '%';
-    public static final int MAX_HEALTH = 12;
-    public static final int MAX_HEALTH_CHAR = 'H';
-    public static final int ELIXIR = 13;
-    public static final int ELIXIR_CHAR = 'E';
+    public static final int SCROLL = 10;
+    public static final int SCROLL_CHAR = '>';
+    public static final int WEAPON = 11;
+    public static final int WEAPON_CHAR = '%';
+    public static final int ELIXIR = 12;
+    public static final int ELIXIR_CHAR = '^';
 
+    //TYPE OF ELIXIR
+    public static final int HEALTH_ELIXIR = 0;
+    public static final int STRENGTH_ELIXIR = 1;
+    public static final int AGILITY_ELIXIR = 2;
+
+    //TYPE OF SCROLL
+    public static final int STRENGTH_SCROLL = 0;
+    public static final int AGILITY_SCROLL = 1;
+    public static final int MAX_HEAL_SCROLL = 2;
+    public static final int CURSED_STRENGTH_SCROLL = 3;
+    public static final int CURSED_AGILITY_SCROLL = 4;
+
+//TYPE OF WEAPON
+    public static final int MACE = 0;
+    public static final int LONG_SWORD = 1;
+    public static final int SHORT_BOW = 2;
+    public static final int  DAGGER = 3;
+    public static final int TWO_HANDED_SWORD = 4;
 
     //PLAYER CONST
     public static final float DEFAULT_VIEW_DISTANCE = 30.0f;

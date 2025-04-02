@@ -255,8 +255,9 @@ public class Enemy extends Entity {
                 break;
         }
     }
-
-    public void move(Position player_pos, Position  top_left, Position bot_right){
+    
+    @Override
+    public void action(Position player_pos, Position  top_left, Position bot_right){
         switch (type){
             case ZOMBIE -> moveZombie(player_pos, top_left, bot_right);
             case GHOST -> moveGhost(player_pos, top_left, bot_right);

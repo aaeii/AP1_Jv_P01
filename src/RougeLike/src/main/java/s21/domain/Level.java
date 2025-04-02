@@ -319,10 +319,9 @@ public class Level {
         while (getRoomsSequence(offset).getSector() == -1)
             ++offset;
         Room exit_room = new Room();
-//        do {
+
             exit_room = getRoomsSequence(offset + room_index - 1);
-//        }
-//        while (exit_room.checkPlayerInRoom(player.getPosition()));
+
         Position exit_coordinate = new Position();
         exit_coordinate = exit_coordinate.generate_entity_coords(exit_room);
         exit_position.setNew(exit_coordinate.getX(), exit_coordinate.getY(), false);
@@ -331,6 +330,15 @@ public class Level {
 
     public boolean checkExitInRoom(int number){
         return roomsSequence.get(number).checkRoom(exit_position);
+    }
+
+    public void takeItem(Character player){
+        int offset = 0 ;
+        while (roomsSequence.get(offset).getSector() == -1)
+            ++offset;
+        for (int i = offset; i < roomsSequence.size(); i++){
+            roomsSequence.get(i).ckeckIsItItem(player);
+        }
     }
 
     public void changeVisibility(Position player_position){

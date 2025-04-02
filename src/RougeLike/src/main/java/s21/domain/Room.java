@@ -26,7 +26,7 @@ public class Room {
         doors = new Position[4];
         top_left = new Position();
         bot_right = new Position();
-        entities = new Entity[MAX_ENTITIES_PER_ROOM];
+        entities = new Entity[MAX_ENTITIES_PER_ROOM + 5];
         entities_cnt = 0;
         visited = false;
     }
@@ -147,9 +147,22 @@ public class Room {
         return false;
     }
 
+    public void ckeckIsItItem(Character player){
+        for (int i = 0; i < entities_cnt; i++) {
+            if(entities[i].position.getX() == player.getPosition().getX()
+                    && entities[i].position.getY() == player.getPosition().getY()
+                    && entities[i].getType() > 7
+                    && player.getItemsCount() <= MAX_COUNT_TYPE_ITEM)
+                {
+                    player.add(entities[i]);
+                    entities[i].clear();
+                }
+        }
+    }
+
     public void moveEnemiesInRoom(Position position){
         for (int i = 0; i < entities_cnt; i++) {
-                entities[i].move(position, top_left, bot_right);
+                entities[i].action(position, top_left, bot_right);
             }
     }
 

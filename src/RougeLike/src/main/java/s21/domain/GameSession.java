@@ -1,14 +1,13 @@
 package s21.domain;
 
-import s21.controller.UserInput;
-import s21.presentation.Print;
+import s21.domain.items.Elixir;
+import s21.domain.items.Item;
+import s21.domain.items.Scroll;
+import s21.domain.items.Weapon;
 
-import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static s21.controller.UserInput.*;
 import static s21.domain.GameConstants.*;
 
 public class GameSession {
@@ -138,21 +137,39 @@ public GameSession() {
             int item_type = -1;
             for (int j = 0; j < items_cnt; j++){
                 item_type = (int)(Math.random() * (double) (ELIXIR - GOLD + 1) + GOLD );
-                Item item = new Item(item_type);
+                Item newItem;
                 switch (item_type){
-                    case GOLD -> item.setSymbol(GOLD_CHAR);
-                    case FOOD -> item.setSymbol(FOOD_CHAR);
-                    case AGILITY -> item.setSymbol(AGILITY_CHAR);
-                    case STRENGTH -> item.setSymbol(STRENGTH_CHAR);
-                    case MAX_HEALTH -> item.setSymbol(MAX_HEALTH_CHAR);
-                    case ELIXIR -> item.setSymbol(ELIXIR_CHAR);
-                } Position item_pos = new Position();
-                item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
-                item.setPosition(item_pos);
-                currentLevel.getRoomsSequence(offset + i).setEntities(item);
+//                    case GOLD -> newItem = new .setSymbol(GOLD_CHAR);
+//                    case FOOD -> item.setSymbol(FOOD_CHAR);
+                    case WEAPON: {
+                        int weapon_type = (int)(Math.random() * (double) (TWO_HANDED_SWORD - MACE + 1) + MACE );
+                        newItem = new Weapon(weapon_type);
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                    }
+                    case SCROLL: {
+                        int scroll_type = (int)(Math.random() * (double) (CURSED_AGILITY_SCROLL - STRENGTH_SCROLL + 1) + STRENGTH_SCROLL );
+                        newItem = new Scroll(scroll_type);
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                    }
+                    case ELIXIR: {
+                        int elixir_type = (int)(Math.random() * (double) (AGILITY_ELIXIR - HEALTH_ELIXIR + 1) + AGILITY_ELIXIR );
+                        newItem = new Elixir(elixir_type);
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        }
+                    }
             }
         }
     }
+
     public void level_to_field (Level level){
         rooms_to_field(level);
         corridors_to_field(level);
@@ -248,14 +265,13 @@ public GameSession() {
             if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
                 for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
                     Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility())
+                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && cur_entity.getType()!=UNINITIALIZED)
                         field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
                 }
             }
         }
     }
-
-
+    
     private void player_to_field(Level level){
         field[player.getPosition().getY()][player.getPosition().getX()] = PLAYER_CHAR;
     }
@@ -287,6 +303,7 @@ public GameSession() {
         else
         {
             currentLevel.moveEnemies(player.getPosition());
+            currentLevel.takeItem(player);
         }
 //        checkInGame();
         if (action == 'Q' || action == 'q')

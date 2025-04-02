@@ -2,14 +2,14 @@ package s21.domain;
 
 import static s21.domain.GameConstants.*;
 
-abstract class Entity {
+public abstract class Entity {
     int type; // enemy, item, player, exit
     int symbol; // выбрать из возможного пула
     Position position;
 
     public Entity() {
-        type = -1;
-        symbol = -1;
+        type = UNINITIALIZED;
+        symbol = UNINITIALIZED;
         Position position = new Position();
     }
 
@@ -18,7 +18,7 @@ abstract class Entity {
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
     }
-     abstract void move(Position player_pos, Position  top_left, Position bot_right);
+     public abstract void action(Position player_pos, Position top_left, Position bot_right);
 
     public int getType() {
         return type;
@@ -42,6 +42,14 @@ abstract class Entity {
 
     public void setSymbol(int symbol) {
         this.symbol = symbol;
+    }
+
+    public void clear() {
+        type = UNINITIALIZED;
+        symbol = UNINITIALIZED;
+        position.setX(-1);
+        position.setY(-1);
+        position.setVisibility(false);
     }
 
 
