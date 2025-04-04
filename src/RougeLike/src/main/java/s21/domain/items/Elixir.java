@@ -59,8 +59,12 @@ public class Elixir extends Item {
 
     @Override
     public void action(Position player_pos, Position  top_left, Position bot_right){
-
         }
+
+    @Override
+    public String toString(){
+        return  "Name = " + getName();
+    }
 
         public boolean isExpired() {
             return dateStart.getTime() + duration < System.currentTimeMillis();

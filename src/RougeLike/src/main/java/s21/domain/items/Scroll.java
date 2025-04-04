@@ -19,7 +19,10 @@ public class Scroll extends Item {
         this.maxHealth = 0;
     }
 
-
+    @Override
+    public String toString(){
+        return  "Name = " + getName();
+    }
     public Scroll(int scroll_type) {
         super();
         setSymbol(SCROLL_CHAR);

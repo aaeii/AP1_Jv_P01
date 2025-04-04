@@ -133,7 +133,7 @@ public GameSession() {
             int offset = 0 ;
             while (currentLevel.getRoomsSequence(offset).getSector() == -1)
                 ++offset;
-            int items_cnt = (int)(Math.random() * (MAX_ITEMS_PER_ROOM) + 1);
+            int items_cnt = (int)(Math.random() * (MAX_ITEMS_PER_ROOM + 1));
             int item_type = -1;
             for (int j = 0; j < items_cnt; j++){
                 item_type = (int)(Math.random() * (double) (ELIXIR - GOLD + 1) + GOLD );
@@ -265,7 +265,7 @@ public GameSession() {
             if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
                 for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
                     Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && cur_entity.getType()!=UNINITIALIZED)
+                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && cur_entity.getStatus()==ON_FIELD)
                         field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
                 }
             }

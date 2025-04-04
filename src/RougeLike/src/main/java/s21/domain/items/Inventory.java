@@ -24,7 +24,7 @@ public class Inventory {
                 .filter(elem -> elem.getType() == item.getType())
                 .count();
 
-        if (countTypeItem < MAX_COUNT_TYPE_ITEM) {
+        if (countTypeItem < (MAX_COUNT_TYPE_ITEM )) {
             items.add(item);
         }
     }
@@ -38,6 +38,10 @@ public class Inventory {
 
     public int getSize(){
         return items.size();
+    }
+
+    public Entity getItem( int i){
+        return items.get(i);
     }
 }
 

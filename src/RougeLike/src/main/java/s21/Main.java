@@ -24,6 +24,7 @@ public class Main {
             newGame.gameStep(ch);
             print.setField(newGame.getField());
             print.printGame(terminal, newGame);
+            print.printItems(terminal, newGame, ch);
             terminal.flush();
         }
             print.printResultOfGame(terminal, newGame);

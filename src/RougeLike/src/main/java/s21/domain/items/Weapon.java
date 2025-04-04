@@ -19,6 +19,11 @@ public class Weapon extends Item {
         this.strength = 0;
     }
 
+    @Override
+    public String toString(){
+        return  getName() + " + " + getStrength();
+    }
+
     public Weapon(int weapon_type) {
         super();
         setType(WEAPON);
@@ -49,6 +54,7 @@ public class Weapon extends Item {
         }
     }
 
+    @Override
     public int getStrength() {
         return strength;
     }

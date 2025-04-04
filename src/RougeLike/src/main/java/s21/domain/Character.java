@@ -1,5 +1,6 @@
 package s21.domain;
 
+import com.googlecode.lanterna.SGR;
 import s21.domain.items.Inventory;
 import s21.domain.items.Item;
 
@@ -98,7 +99,6 @@ public class Character {
                 if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) position.setNew(x - 1, y, true);
                 break;
         }
-
     }
 
     public List<Entity> getAllItems() {
@@ -109,11 +109,44 @@ public class Character {
         return inventory.getItemsByType(itemType);
     }
 
-    public void add(Entity item) {
+    public void addItem(Entity item) {
         inventory.addItem(item);
     }
 
     public int getItemsCount() {
         return inventory.getSize();
+    }
+
+    public Entity getItemFromInventory(int i) {
+        return inventory.getItem(i);
+    }
+
+    public void useWeapon(int number){
+        int count = 0;
+        for (int i = 0; i < getItemsCount(); i++){
+            Entity cur_entity = getItemFromInventory(i);
+            if (cur_entity.getType() == WEAPON
+                    && cur_entity.getStatus() == IN_INVENTORY
+                    && number == count){
+                count++;
+                freeCurrentWeapon();
+                getItemFromInventory(i).setStatus(USED);
+                setStrength(getItemFromInventory(i).getStrength());
+            }
+        }
+
+    }
+
+    public void freeCurrentWeapon(){
+        for (int i = 0; i < getItemsCount(); i++){
+            Entity cur_entity = getItemFromInventory(i);
+            if (cur_entity.getType() == WEAPON
+                    && cur_entity.getStatus() == USED)
+            {
+                getItemFromInventory(i).setStatus(ON_FIELD);
+                int newStrenght = getItemFromInventory(i).getStrength() *(-1);
+                setStrength(newStrenght);
+            }
+        }
     }
 }

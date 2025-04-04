@@ -7,9 +7,11 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.TerminalFactory;
+import s21.domain.Entity;
 import s21.domain.GameSession;
 
 import java.io.IOException;
+import java.util.List;
 
 import static s21.domain.GameConstants.*;
 
@@ -123,37 +125,157 @@ public class Print {
         e.printStackTrace();
     }
     }
-
-    public void printInfo(Terminal terminal, GameSession game) throws IOException {
-        final TextGraphics textGraphics = terminal.newTextGraphics();
-        try {
-            textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
-            textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-            textGraphics.putString(MAP_WIDTH + 2, 5, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH + 2, 6, "            ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH + 2, 7, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH + 2, 8, "            ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH + 2, 9, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH + 2, 10, "            ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH + 2, 11, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
-            terminal.flush();
-        }
-        catch (IOException e) {
-        e.printStackTrace();
-    }
-    }
-    public void printResultOfGame(Terminal terminal, GameSession game) throws IOException {
+    public void printItems(Terminal terminal, GameSession game, char input) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();
         textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
         textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "                        ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "      Game is Over      ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "     Your level:  " + game.getCurrentLevelNumber() + "     ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "    Your health: " + game.getPlayer().getHealth() + "     ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getGold(), SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                        ", SGR.BOLD);
-        terminal.flush();
+        try {
+            int number_of_weapon = 0;
+            switch (input){
+                case 'h':
+                {
+                    for (int i = 0; i < game.getPlayer().getItemsCount(); i++){
+                        Entity cur_entity = game.getPlayer().getItemFromInventory(i);
+                        if (cur_entity.getType() == WEAPON && cur_entity.getStatus() == IN_INVENTORY){
+                            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number_of_weapon, (number_of_weapon) + " " + cur_entity.toString(), SGR.BOLD);
+                            number_of_weapon++;
+                        }
+                    }
+                    textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number_of_weapon, "Choose weapon by pressing 0-" + (number_of_weapon-1), SGR.BOLD);
+                    terminal.flush();;
+                    char choose = terminal.readInput().getCharacter();
+                        int int_choose = Character.getNumericValue(choose);
+                        if (int_choose >= 0 && int_choose < number_of_weapon) {
+                            switch (choose) {
+                                case '0':
+                                    game.getPlayer().useWeapon(0);
+                                    printInfo(terminal, game);
+                                    terminal.flush();
+                                    break;
+                                case '1':
+                                    game.getPlayer().useWeapon(1);
+                                    printInfo(terminal, game);
+                                    terminal.flush();
+                                    break;
+                                case '2':
+                                    game.getPlayer().useWeapon(2);
+                                    printInfo(terminal, game);
+                                    terminal.flush();
+                                    break;
+                                case '3':
+                                    game.getPlayer().useWeapon(3);
+                                    printInfo(terminal, game);
+                                    terminal.flush();
+                                    break;
+                                case '4':
+                                    game.getPlayer().useWeapon(4);
+                                    printInfo(terminal, game);
+                                    terminal.flush();
+                                    break;
+                                case '5':
+                                    game.getPlayer().useWeapon(5);
+                                    printInfo(terminal, game);
+                                    terminal.flush();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                }
+
+            }
+//            switch (input){
+//                case 'h': {
+//                    List<Entity> weapons = game.getPlayer().getItemsByType(WEAPON);
+//                    if (weapons.isEmpty())
+//                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "NO WEAPON IN INVENTORY", SGR.BOLD);
+//                    else {
+//                        for (int i = 0; i< weapons.size(); i++){
+//                                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + i, (i) + " " + weapons.get(i).toString(), SGR.BOLD);
+//                        }
+//                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + weapons.size(), "Choose weapon by pressing 0-" + weapons.size(), SGR.BOLD);
+//                        terminal.flush();
+//                        char choose = terminal.readInput().getCharacter();
+//                        int int_choose = Character.getNumericValue(choose);
+//                        if (int_choose >= 0 && int_choose < weapons.size()) {
+//                            switch (choose) {
+//                                case '0':
+//                                    game.getPlayer().useWeapon(weapons.get(0));
+//                                    printInfo(terminal, game);
+//                                    terminal.flush();
+//                                    break;
+//                                case '1':
+//                                    game.getPlayer().useWeapon(weapons.get(1));
+//                                    printInfo(terminal, game);
+//                                    terminal.flush();
+//                                    break;
+//                                case '2':
+//                                    game.getPlayer().useWeapon(weapons.get(2));
+//                                    printInfo(terminal, game);
+//                                    terminal.flush();
+//                                    break;
+//                                case '3':
+//                                    game.getPlayer().useWeapon(weapons.get(3));
+//                                    printInfo(terminal, game);
+//                                    terminal.flush();
+//                                    break;
+//                                case '4':
+//                                    game.getPlayer().useWeapon(weapons.get(2));
+//                                    printInfo(terminal, game);
+//                                    terminal.flush();
+//                                    break;
+//                                case '5':
+//                                    game.getPlayer().useWeapon(weapons.get(2));
+//                                    printInfo(terminal, game);
+//                                    terminal.flush();
+//                                    break;
+//                                default:
+//                                    break;
+//                            }
+//                        }
+////                            }
+//                        }
+//                }
+//                    break;
+//                }
+            terminal.flush();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+        public void printInfo (Terminal terminal, GameSession game) throws IOException {
+            final TextGraphics textGraphics = terminal.newTextGraphics();
+            try {
+                textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+                textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+                textGraphics.putString(MAP_WIDTH + 2, 5, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH + 2, 6, "            ", SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH + 2, 7, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH + 2, 8, "            ", SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH + 2, 9, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH + 2, 10, "            ", SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH + 2, 11, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
+                terminal.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void printResultOfGame (Terminal terminal, GameSession game) throws IOException {
+            final TextGraphics textGraphics = terminal.newTextGraphics();
+            textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+            textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "                        ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "      Game is Over      ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "     Your level:  " + game.getCurrentLevelNumber() + "     ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "    Your health: " + game.getPlayer().getHealth() + "     ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getGold(), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                        ", SGR.BOLD);
+            terminal.flush();
+        }
 
 
 }

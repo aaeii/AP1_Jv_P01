@@ -61,6 +61,8 @@ public class Enemy extends Entity {
         }
     }
 
+
+
     public int getHealth() {
         return health;
     }
@@ -73,7 +75,7 @@ public class Enemy extends Entity {
         return agility;
     }
 
-
+    @Override
     public int getStrength() {
         return strength;
     }
@@ -268,6 +270,10 @@ public class Enemy extends Entity {
         }
     }
 
+    @Override
+    public String toString(){
+        return  "Type = " + getType();
+    }
 
 }
 

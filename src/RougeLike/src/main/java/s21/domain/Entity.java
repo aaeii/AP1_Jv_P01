@@ -6,19 +6,25 @@ public abstract class Entity {
     int type; // enemy, item, player, exit
     int symbol; // выбрать из возможного пула
     Position position;
+    int status;
 
     public Entity() {
         type = UNINITIALIZED;
         symbol = UNINITIALIZED;
         Position position = new Position();
+        int status = ON_FIELD;
     }
 
     public Entity(int type, int symbol, Position position) {
         this.type = type;
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
+        this.status = ON_FIELD;
     }
-     public abstract void action(Position player_pos, Position top_left, Position bot_right);
+
+    public abstract void action(Position player_pos, Position top_left, Position bot_right);
+    public abstract String toString();
+    public abstract int getStrength();
 
     public int getType() {
         return type;
@@ -42,6 +48,14 @@ public abstract class Entity {
 
     public void setSymbol(int symbol) {
         this.symbol = symbol;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public void clear() {

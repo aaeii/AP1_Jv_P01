@@ -26,7 +26,7 @@ public class Room {
         doors = new Position[4];
         top_left = new Position();
         bot_right = new Position();
-        entities = new Entity[MAX_ENTITIES_PER_ROOM + 5];
+        entities = new Entity[MAX_ENTITIES_PER_ROOM * 9];
         entities_cnt = 0;
         visited = false;
     }
@@ -45,8 +45,8 @@ public class Room {
             doors[k] = currentPosition;
         }
 
-        entities = new Entity[MAX_ENTITIES_PER_ROOM];
-        for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++){
+        entities = new Entity[MAX_ENTITIES_PER_ROOM * 9];
+        for (int k = 0; k < MAX_ENTITIES_PER_ROOM * 9; k++){
             entities[k] = null;
         }
         top_left = new Position();
@@ -148,14 +148,16 @@ public class Room {
     }
 
     public void ckeckIsItItem(Character player){
+        int count = player.getItemsCount();
         for (int i = 0; i < entities_cnt; i++) {
             if(entities[i].position.getX() == player.getPosition().getX()
                     && entities[i].position.getY() == player.getPosition().getY()
                     && entities[i].getType() > 7
-                    && player.getItemsCount() <= MAX_COUNT_TYPE_ITEM)
+                    && player.getItemsCount() <= MAX_COUNT_TYPE_ITEM * 9
+                    && entities[i].getStatus() == ON_FIELD)
                 {
-                    player.add(entities[i]);
-                    entities[i].clear();
+                    entities[i].setStatus(IN_INVENTORY);
+                    player.addItem(entities[i]);
                 }
         }
     }
