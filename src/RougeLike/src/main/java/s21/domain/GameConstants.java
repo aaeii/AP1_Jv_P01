@@ -10,7 +10,7 @@ public class GameConstants {
 
     public static final int CONNECTED = 0;
     public static final int NOT_CONNECTED = 1;
-    public static final int MAP_HEIGHT = 24;
+    public static final int MAP_HEIGHT = 22;
     public static final int MAP_WIDTH  = 80;
     public static final int MAX_LEVEL_NUMBER  = 21;
     public static final int ROOMS_PER_SIDE  = 3;

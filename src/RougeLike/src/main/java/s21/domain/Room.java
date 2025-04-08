@@ -154,20 +154,25 @@ public class Room {
     }
 
     public void ckeckIsItItem(Character player){
-        int count = player.getItemsCount();
         for (int i = 0; i < entities_cnt; i++) {
             if(entities.get(i).position.getX() == player.getPosition().getX()
                     && entities.get(i).position.getY() == player.getPosition().getY()
-                    && entities.get(i).getType() > 7
-                    && player.getItemsCount() <= MAX_COUNT_TYPE_ITEM * 9
-                    && entities.get(i).getStatus() == ON_FIELD)
+                    && entities.get(i).getStatus() == ON_FIELD
+                    && entities.get(i).getType() > 7)
+            {
+                    if (entities.get(i).getType() == 8)
+                        player.setGold(player.getGold()+1);
+                    else {
+                        entities.get(i).setStatus(IN_INVENTORY);
+                        player.addItem(entities.get(i));
+                    }
+
                 {
-                    entities.get(i).setStatus(IN_INVENTORY);
-                    player.addItem(entities.get(i));
                     entities.remove(i);
                     entities_cnt--;
                     player.printInventary();
                 }
+        }
         }
     }
 

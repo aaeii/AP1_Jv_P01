@@ -1,9 +1,6 @@
 package s21.domain;
 
-import s21.domain.items.Elixir;
-import s21.domain.items.Item;
-import s21.domain.items.Scroll;
-import s21.domain.items.Weapon;
+import s21.domain.items.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +135,14 @@ public GameSession() {
                 item_type = (int)(Math.random() * (double) (ELIXIR - GOLD + 1) + GOLD );
                 Item newItem;
                 switch (item_type){
-//                    case GOLD -> newItem = new .setSymbol(GOLD_CHAR);
+                    case GOLD: {
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem = new Gold(GOLD, GOLD_CHAR, item_pos);
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                    }
 //                    case FOOD -> item.setSymbol(FOOD_CHAR);
                     case WEAPON: {
                         int weapon_type = (int)(Math.random() * (double) (TWO_HANDED_SWORD - MACE + 1) + MACE );

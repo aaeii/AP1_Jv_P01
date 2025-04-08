@@ -59,6 +59,14 @@ public class Character {
         return strength;
     }
 
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
+    public int getGold(){
+        return gold;
+    }
+
     public void setPosition(Position position) {
         this.position = position;
     }
@@ -79,9 +87,6 @@ public class Character {
         this.strength = value;
     }
 
-    public int getGold() {
-        return gold;
-    }
 
     public void move(char[][] field, int direction, Level level) {
         int x = position.getX();

@@ -201,13 +201,11 @@ public class Print {
             try {
                 textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
                 textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-                textGraphics.putString(MAP_WIDTH + 2, 5, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH + 2, 6, "            ", SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH + 2, 7, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH + 2, 8, "            ", SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH + 2, 9, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH + 2, 10, "            ", SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH + 2, 11, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
+                textGraphics.putString( 2, MAP_HEIGHT + 1, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
+                textGraphics.putString(15, MAP_HEIGHT + 1, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
+                textGraphics.putString(30, MAP_HEIGHT + 1, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
+                textGraphics.putString(45, MAP_HEIGHT + 1, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
+                textGraphics.putString(60, MAP_HEIGHT + 1, "Gold:  " + game.getPlayer().getGold(), SGR.BOLD);
                 terminal.flush();
             } catch (IOException e) {
                 e.printStackTrace();
