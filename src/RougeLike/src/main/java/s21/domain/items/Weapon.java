@@ -21,7 +21,7 @@ public class Weapon extends Item {
 
     @Override
     public String toString(){
-        return  getName() + " + " + getStrength();
+        return  getName() + " " + getStrength() + " " + getStatus();
     }
 
     public Weapon(int weapon_type) {

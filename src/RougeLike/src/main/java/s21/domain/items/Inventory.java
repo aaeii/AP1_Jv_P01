@@ -20,11 +20,11 @@ public class Inventory {
     }
 
     public void addItem(Entity item) {
-        long countTypeItem = items.stream()
-                .filter(elem -> elem.getType() == item.getType())
-                .count();
+//        long countTypeItem = items.stream()
+//                .filter(elem -> elem.getType() == item.getType())
+//                .count();
 
-        if (countTypeItem < (MAX_COUNT_TYPE_ITEM )) {
+        if (items.size() <= (MAX_COUNT_TYPE_ITEM )) {
             items.add(item);
         }
     }
@@ -42,6 +42,13 @@ public class Inventory {
 
     public Entity getItem( int i){
         return items.get(i);
+    }
+
+    public void print(){
+
+        for (int i=0; i< items.size(); i++){
+            System.out.println(i + " " + items.get(i).toString());
+        }
     }
 }
 

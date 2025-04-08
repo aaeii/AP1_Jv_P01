@@ -61,14 +61,25 @@ public class Position {
         return pos;
     }
 
-    private int check_unoccupied(Room room, Position pos)
+    public int check_unoccupied(Room room, Position pos)
     {
         int status = UNOCCUPIED;
 
         for (int i = 0; i < room.getEntities_cnt() && status == UNOCCUPIED; i++)
             if (room.getEntities(i).position.getX() == pos.getX() && room.getEntities(i).position.getY() == pos.getY())
                 status = OCCUPIED;
+        return status;
+    }
 
+    public int check_walls(Room room, Position pos)
+    {
+        int status = UNOCCUPIED;
+        for (int i = 0; i < room.getEntities_cnt() && status == UNOCCUPIED; i++)
+            if (room.getTop_left().getX() == pos.getX() ||
+                    room.getBot_right().getX() == pos.getX() ||
+                    room.getTop_left().getY() == pos.getY() ||
+                    room.getBot_right().getY() == pos.getY())
+                status = OCCUPIED;
         return status;
     }
 }

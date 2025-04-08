@@ -23,7 +23,7 @@ public class GameConstants {
     public static final double ROOM_CHANCE = 0.5;
     public static final double SPAWN_SET_CHANCE = 0.5;
     public static final int MAX_ENEMIES_PER_ROOM = 2;
-    public static final int MAX_ITEMS_PER_ROOM = 5;
+    public static final int MAX_ITEMS_PER_ROOM = 3;
     public static final int MAX_ENTITIES_PER_ROOM = MAX_ENEMIES_PER_ROOM + MAX_ITEMS_PER_ROOM + 2;
     public static final int MAX_ENEMIES_TOTAL = MAX_ENEMIES_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_ITEMS_TOTAL = MAX_ITEMS_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
@@ -42,8 +42,8 @@ public class GameConstants {
     public static final int LEFT_TURN_CORRIDOR = 1;
     public static final int TOP_TO_BOTTOM_CORRIDOR = 3;
 
-    public static final int UNOCCUPIED = 0;
-    public static final int OCCUPIED = 1;
+    public static final int UNOCCUPIED = 1;
+    public static final int OCCUPIED = 0;
 
     public static final int  PLAYER = 0;
     public static final int PLAYER_CHAR = '@';

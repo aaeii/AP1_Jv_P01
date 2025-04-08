@@ -3,6 +3,7 @@ package s21.domain;
 import com.googlecode.lanterna.SGR;
 import s21.domain.items.Inventory;
 import s21.domain.items.Item;
+import s21.domain.items.Weapon;
 
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class Character {
     }
 
     public void setStrength(int value) {
-        this.strength = this.strength + value;
+        this.strength = value;
     }
 
     public int getGold() {
@@ -121,32 +122,73 @@ public class Character {
         return inventory.getItem(i);
     }
 
-    public void useWeapon(int number){
+
+
+    public void useWeapon(int number, Level level){
         int count = 0;
         for (int i = 0; i < getItemsCount(); i++){
             Entity cur_entity = getItemFromInventory(i);
             if (cur_entity.getType() == WEAPON
-                    && cur_entity.getStatus() == IN_INVENTORY
-                    && number == count){
+                    && cur_entity.getStatus() == IN_INVENTORY){
                 count++;
-                freeCurrentWeapon();
+                if (number == (count - 1)) {
+                freeCurrentWeapon(level);
                 getItemFromInventory(i).setStatus(USED);
-                setStrength(getItemFromInventory(i).getStrength());
+                setStrength(getStrength() + getItemFromInventory(i).getStrength());
+                }
             }
         }
-
+        for (int i = 0; i < getItemsCount(); i++){
+            Entity cur_entity = getItemFromInventory(i);
+            if (cur_entity.getType() == WEAPON
+                    && cur_entity.getStatus() == ON_FIELD){
+            getAllItems().remove(i);
+        break;
+            }
+        }
+       printInventary();
     }
 
-    public void freeCurrentWeapon(){
+    public void freeCurrentWeapon(Level level){
         for (int i = 0; i < getItemsCount(); i++){
             Entity cur_entity = getItemFromInventory(i);
             if (cur_entity.getType() == WEAPON
                     && cur_entity.getStatus() == USED)
             {
-                getItemFromInventory(i).setStatus(ON_FIELD);
-                int newStrenght = getItemFromInventory(i).getStrength() *(-1);
-                setStrength(newStrenght);
+                int offset = 0 ;
+                while (level.getRoomsSequence(offset).getSector() == -1)
+                    ++offset;
+                int player_room = -1;
+                for (int j = offset; j < level.getRoom_cnt(); j++){
+                    Room current_room = level.getRoomsSequence(j);
+                    if (current_room.checkRoom(position)) {
+                        Position newWeaponPos = new Position();
+                        do {
+                            int x = position.getX();
+                            int y = position.getY();
+                            int direction = (int) ((Math.random() * 5));
+                            switch (direction) {
+                                case TOP -> y--;
+                                case BOTTOM -> y++;
+                                case LEFT -> x--;
+                                case RIGHT -> x++;
+                            }
+                            newWeaponPos.setNew(x, y, false);
+                        }
+                        while ((newWeaponPos.check_unoccupied(current_room, newWeaponPos) == OCCUPIED) && (newWeaponPos.check_walls(current_room, newWeaponPos) == OCCUPIED));
+                        System.out.println(newWeaponPos.getX() + newWeaponPos.getY());
+                        cur_entity.setStatus(ON_FIELD);
+                        cur_entity.setPosition(newWeaponPos);
+                        current_room.setEntities(cur_entity);
+                    }
+                }
+                setStrength(getStrength() - getItemFromInventory(i).getStrength());
             }
         }
+        printInventary();
+    }
+
+    public void printInventary(){
+        inventory.print();
     }
 }

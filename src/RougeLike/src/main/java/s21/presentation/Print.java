@@ -148,32 +148,38 @@ public class Print {
                         if (int_choose >= 0 && int_choose < number_of_weapon) {
                             switch (choose) {
                                 case '0':
-                                    game.getPlayer().useWeapon(0);
+                                    game.getPlayer().useWeapon(0, game.currentLevel);
+                                    terminal.flush();
                                     printInfo(terminal, game);
                                     terminal.flush();
                                     break;
                                 case '1':
-                                    game.getPlayer().useWeapon(1);
+                                    game.getPlayer().useWeapon(1, game.currentLevel);
+                                    terminal.flush();
                                     printInfo(terminal, game);
                                     terminal.flush();
                                     break;
                                 case '2':
-                                    game.getPlayer().useWeapon(2);
+                                    game.getPlayer().useWeapon(2, game.currentLevel);
+                                    terminal.flush();
                                     printInfo(terminal, game);
                                     terminal.flush();
                                     break;
                                 case '3':
-                                    game.getPlayer().useWeapon(3);
+                                    game.getPlayer().useWeapon(3, game.currentLevel);
+                                    terminal.flush();
                                     printInfo(terminal, game);
                                     terminal.flush();
                                     break;
                                 case '4':
-                                    game.getPlayer().useWeapon(4);
+                                    game.getPlayer().useWeapon(4, game.currentLevel);
+                                    terminal.flush();
                                     printInfo(terminal, game);
                                     terminal.flush();
                                     break;
                                 case '5':
-                                    game.getPlayer().useWeapon(5);
+                                    game.getPlayer().useWeapon(5, game.currentLevel);
+                                    terminal.flush();
                                     printInfo(terminal, game);
                                     terminal.flush();
                                     break;
@@ -185,60 +191,6 @@ public class Print {
                 }
 
             }
-//            switch (input){
-//                case 'h': {
-//                    List<Entity> weapons = game.getPlayer().getItemsByType(WEAPON);
-//                    if (weapons.isEmpty())
-//                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "NO WEAPON IN INVENTORY", SGR.BOLD);
-//                    else {
-//                        for (int i = 0; i< weapons.size(); i++){
-//                                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + i, (i) + " " + weapons.get(i).toString(), SGR.BOLD);
-//                        }
-//                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + weapons.size(), "Choose weapon by pressing 0-" + weapons.size(), SGR.BOLD);
-//                        terminal.flush();
-//                        char choose = terminal.readInput().getCharacter();
-//                        int int_choose = Character.getNumericValue(choose);
-//                        if (int_choose >= 0 && int_choose < weapons.size()) {
-//                            switch (choose) {
-//                                case '0':
-//                                    game.getPlayer().useWeapon(weapons.get(0));
-//                                    printInfo(terminal, game);
-//                                    terminal.flush();
-//                                    break;
-//                                case '1':
-//                                    game.getPlayer().useWeapon(weapons.get(1));
-//                                    printInfo(terminal, game);
-//                                    terminal.flush();
-//                                    break;
-//                                case '2':
-//                                    game.getPlayer().useWeapon(weapons.get(2));
-//                                    printInfo(terminal, game);
-//                                    terminal.flush();
-//                                    break;
-//                                case '3':
-//                                    game.getPlayer().useWeapon(weapons.get(3));
-//                                    printInfo(terminal, game);
-//                                    terminal.flush();
-//                                    break;
-//                                case '4':
-//                                    game.getPlayer().useWeapon(weapons.get(2));
-//                                    printInfo(terminal, game);
-//                                    terminal.flush();
-//                                    break;
-//                                case '5':
-//                                    game.getPlayer().useWeapon(weapons.get(2));
-//                                    printInfo(terminal, game);
-//                                    terminal.flush();
-//                                    break;
-//                                default:
-//                                    break;
-//                            }
-//                        }
-////                            }
-//                        }
-//                }
-//                    break;
-//                }
             terminal.flush();
         }
         catch (IOException e) {
