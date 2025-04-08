@@ -37,9 +37,7 @@ public class Print {
 //        return terminal;
         Terminal terminal = new DefaultTerminalFactory().createTerminal();
         terminal.setCursorVisible(false);
-
         terminal.flush();
-
         return terminal;
 
     }

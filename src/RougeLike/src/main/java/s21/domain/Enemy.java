@@ -284,7 +284,7 @@ public class Enemy extends Entity {
         }
         }
     }
-    
+
     public void moveVampire(Position playerPosition, Position top_left, Position bot_right, int hostilityLevel) {
         int x = position.getX();
         int y = position.getY();
