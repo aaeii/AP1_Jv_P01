@@ -146,9 +146,10 @@ public class Room {
         return false;
     }
 
-    public void moveEnemiesInRoom(Position position){
+    public void moveEnemiesInRoom(Character position){
         for (int i = 0; i < entities_cnt; i++) {
                 entities[i].move(position, top_left, bot_right);
+//                entities[i].attack(position);
             }
     }
 

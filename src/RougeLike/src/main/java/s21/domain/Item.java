@@ -33,7 +33,7 @@ public class Item extends Entity {
         }
     }
 
-    public void move(Position player_pos, Position  top_left, Position bot_right){
+    public void move(Character player_pos, Position  top_left, Position bot_right){
         switch (type){
             case GOLD:
                 break;

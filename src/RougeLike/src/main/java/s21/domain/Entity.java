@@ -18,7 +18,11 @@ abstract class Entity {
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
     }
-     abstract void move(Position player_pos, Position  top_left, Position bot_right);
+     abstract void move(Character player_pos, Position  top_left, Position bot_right);
+
+    public void attack(Character p) {
+
+    }
 
     public int getType() {
         return type;

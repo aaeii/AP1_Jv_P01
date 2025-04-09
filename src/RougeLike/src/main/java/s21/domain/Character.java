@@ -1,6 +1,7 @@
 package s21.domain;
 
 import java.util.List;
+import java.util.Random;
 
 import static s21.domain.GameConstants.*;
 
@@ -114,5 +115,4 @@ public class Character {
                 break;
         }
     }
-
 }

@@ -302,12 +302,12 @@ public class Level {
         return visited_count;
     }
 
-    public void moveEnemies(Position position){
+    public void moveEnemies(Character position){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++) {
-                if (roomsSequence.get(i).checkPlayerInRoom(position)){
+                if (roomsSequence.get(i).checkPlayerInRoom(position.getPosition())){
                     roomsSequence.get(i).moveEnemiesInRoom(position);
                 }
         }

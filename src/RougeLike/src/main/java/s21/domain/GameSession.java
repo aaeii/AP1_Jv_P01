@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static s21.controller.UserInput.*;
 import static s21.domain.GameConstants.*;
@@ -114,13 +115,7 @@ public class GameSession {
             for (int j = 0; j < enemies_cnt; j++){
                 enemy_type = (int)(Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE );
                 Enemy enemy = new Enemy(enemy_type);
-                switch (enemy_type){
-                    case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
-                    case VAMPIRE -> enemy.setSymbol(VAMPIRE_CHAR);
-                    case GHOST -> enemy.setSymbol(GHOST_CHAR);
-                    case OGRE -> enemy.setSymbol(OGRE_CHAR);
-                    case SNAKE -> enemy.setSymbol(SNAKE_CHAR);
-                } Position enemy_pos = new Position();
+                Position enemy_pos = new Position();
                 enemy_pos = enemy_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
                 enemy.setPosition(enemy_pos);
                 currentLevel.getRoomsSequence(offset + i).setEntities(enemy);
@@ -267,10 +262,9 @@ public class GameSession {
     }
 
     public void gameStep(int action){
-
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
-            currentLevel.moveEnemies(player.getPosition());
+            currentLevel.moveEnemies(player);
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
@@ -287,8 +281,9 @@ public class GameSession {
         }
         else
         {
-            currentLevel.moveEnemies(player.getPosition());
+            currentLevel.moveEnemies(player);
         }
+
 //        checkInGame();
         if (action == 'Q' || action == 'q')
         {
@@ -320,4 +315,42 @@ public class GameSession {
         else win = true;
     }
 
+    public void attack(Character p,Enemy enemy) {
+        if (isInRange(p.getPosition(),enemy.getPosition())) {
+            int hitChance = calculateHitChance(p,enemy);
+            Random random = new Random();
+            boolean hits = random.nextInt(100) < hitChance; // Проверка шанса попадания
+            if (hits) {
+                takeDamage(p,enemy);
+                System.out.println(" hits " + enemy.getType() + " dealing ");
+            } else {
+                System.out.println(" misses " + enemy.getType());
+            }
+        }
+    }
+    public void takeDamage(Character p, Enemy enemy) {
+        p.setHealth(p.getHealth() - enemy.getStrength());
+        if (p.getHealth() < 0) {
+            p.setHealth(0);
+            System.out.println("GAME OVER");
+        }
+
+        enemy.setHealth(enemy.getHealth()-p.getStrength());
+        if (enemy.getHealth() < 0) {
+            enemy.setHealth(0);
+            System.out.println("Enemy dead");
+        }
+    }
+    public boolean isInRange(Position p, Position e) {
+        return (Math.abs(e.getX() - p.getX()) <= 1 && Math.abs(e.getY() - p.getY()) <= 1);
+    }
+
+    private int calculateHitChance(Character player,Enemy e) {
+        int baseChance = 50;
+        return Math.min(baseChance + (player.getAgility()- e.getAgility()), 100);
+    }
+
+//    public int calculateDamage(Character player) {
+//        return player.getStrength() + player.getGold();
+//    }
 }
