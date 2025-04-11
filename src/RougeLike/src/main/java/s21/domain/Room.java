@@ -160,16 +160,29 @@ public class Room {
                     && entities.get(i).getStatus() == ON_FIELD
                     && entities.get(i).getType() > 7)
             {
-                    if (entities.get(i).getType() == 8)
-                        player.setGold(player.getGold()+1);
-                    else {
-                        entities.get(i).setStatus(IN_INVENTORY);
-                        player.addItem(entities.get(i));
-                    }
-
-                {
-                    entities.remove(i);
-                    entities_cnt--;
+                    if (entities.get(i).getType() == GOLD) {
+                        player.setGold(player.getGold() + 1);
+                        entities.remove(i);
+                        entities_cnt--;
+                    } else {
+                        if (entities.get(i).getType() == FOOD) {
+                            int newHealth = player.getHealth() + entities.get(i).getHealth();
+                            if (newHealth < MAX_HEALTH) player.setHealth(newHealth);
+                            else
+                                player.setHealth(MAX_HEALTH);
+                            player.setEatenFoodCounter();
+                            entities.remove(i);
+                            entities_cnt--;
+                        }
+                        else {
+                            if (player.getItemsCount() < MAX_COUNT_TYPE_ITEM)
+                                {
+                                entities.get(i).setStatus(IN_INVENTORY);
+                                player.addItem(entities.get(i));
+                                    entities.remove(i);
+                                    entities_cnt--;
+                                }
+                            }
                     player.printInventary();
                 }
         }

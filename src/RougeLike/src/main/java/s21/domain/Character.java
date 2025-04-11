@@ -20,6 +20,8 @@ public class Character {
     private boolean sleep;
     private int eatenFoodCounter;
     private int drunkElixirCounter;
+    private int readScrollsCounter;
+    private int stepCount;
     private int attackCounter;
     private int enemiesAttackCounter;
     private Inventory inventory;
@@ -35,7 +37,9 @@ public class Character {
         this.eatenFoodCounter = 0;
         this.drunkElixirCounter = 0;
         this.attackCounter = 0;
+        this.readScrollsCounter = 0;
         this.inventory = new Inventory();
+        this.stepCount = 0;
     }
 
 
@@ -45,6 +49,30 @@ public class Character {
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public int getDrunkElixirCounter(){
+        return drunkElixirCounter;
+    }
+
+    public int getEatenFoodCounter(){
+        return eatenFoodCounter;
+    }
+
+    public void setEatenFoodCounter(){
+        this.eatenFoodCounter++;
+    }
+
+    public void setStepCount(){
+        this.stepCount++;
+    }
+
+    public int getReadScrollCounter(){
+        return readScrollsCounter;
+    }
+
+    public void setReadScrollCounter(){
+        this.readScrollsCounter++;
     }
 
     public int getHealth() {
@@ -129,43 +157,67 @@ public class Character {
 
 
 
-    public void useWeapon(int number, Level level){
+    public void useItem(int number, GameSession game, int type){
         int count = 0;
         for (int i = 0; i < getItemsCount(); i++){
             Entity cur_entity = getItemFromInventory(i);
-            if (cur_entity.getType() == WEAPON
+            if (cur_entity.getType() == type
                     && cur_entity.getStatus() == IN_INVENTORY){
                 count++;
                 if (number == (count - 1)) {
-                freeCurrentWeapon(level);
-                getItemFromInventory(i).setStatus(USED);
-                setStrength(getStrength() + getItemFromInventory(i).getStrength());
+                    setNewCharacters(i, game);
                 }
             }
         }
         for (int i = 0; i < getItemsCount(); i++){
             Entity cur_entity = getItemFromInventory(i);
-            if (cur_entity.getType() == WEAPON
-                    && cur_entity.getStatus() == ON_FIELD){
+            if ((cur_entity.getType() == WEAPON
+                    && cur_entity.getStatus() == ON_FIELD)
+                    || (cur_entity.getType() == type
+                    && cur_entity.getStatus() == USED
+                    && cur_entity.getType() != WEAPON
+                    && cur_entity.getType()!=ELIXIR)){
             getAllItems().remove(i);
-        break;
             }
         }
        printInventary();
     }
 
-    public void freeCurrentWeapon(Level level){
+    public void setNewCharacters(int i, GameSession game){
+        if (getItemFromInventory(i).getType() == WEAPON) freeCurrentWeapon(game);
+        if (getItemFromInventory(i).getType() == ELIXIR){
+            int duration = (int) ( Math.random() * 10 + 10);
+            getItemFromInventory(i).setDuration(duration);
+            System.out.println("duration" + getItemFromInventory(i).toString() + " " + getItemFromInventory(i).getDuration());
+        }
+        getItemFromInventory(i).setStatus(USED);
+        int newStrength = getStrength() + getItemFromInventory(i).getStrength();
+        if (newStrength >= 0) setStrength(newStrength);
+        else setStrength(0);
+        int newAgility = getAgility() + getItemFromInventory(i).getAgility();
+        System.out.println(newAgility);
+        if (newAgility >= 0) setAgility(newAgility);
+        else setAgility(0);
+        int newHealth = getHealth() + getItemFromInventory(i).getHealth();
+        if (newHealth <= MAX_HEALTH) setHealth(newHealth);
+        else setHealth(MAX_HEALTH);
+        if (getItemFromInventory(i).getType()==ELIXIR) drunkElixirCounter++;
+        if (getItemFromInventory(i).getType()==SCROLL) readScrollsCounter++;
+
+    }
+
+    public void freeCurrentWeapon(GameSession game){
         for (int i = 0; i < getItemsCount(); i++){
             Entity cur_entity = getItemFromInventory(i);
             if (cur_entity.getType() == WEAPON
                     && cur_entity.getStatus() == USED)
             {
                 int offset = 0 ;
-                while (level.getRoomsSequence(offset).getSector() == -1)
+                while (game.currentLevel.getRoomsSequence(offset).getSector() == -1)
                     ++offset;
                 int player_room = -1;
-                for (int j = offset; j < level.getRoom_cnt(); j++){
-                    Room current_room = level.getRoomsSequence(j);
+                for (int j = offset; j < game.currentLevel.getRoom_cnt(); j++){
+                    Room current_room = game.currentLevel.getRoomsSequence(j);
                     if (current_room.checkRoom(position)) {
                         Position newWeaponPos = new Position();
                         do {
@@ -181,7 +233,6 @@ public class Character {
                             newWeaponPos.setNew(x, y, false);
                         }
                         while ((newWeaponPos.check_unoccupied(current_room, newWeaponPos) == OCCUPIED) && (newWeaponPos.check_walls(current_room, newWeaponPos) == OCCUPIED));
-                        System.out.println(newWeaponPos.getX() + newWeaponPos.getY());
                         cur_entity.setStatus(ON_FIELD);
                         cur_entity.setPosition(newWeaponPos);
                         current_room.setEntities(cur_entity);
@@ -190,10 +241,31 @@ public class Character {
                 setStrength(getStrength() - getItemFromInventory(i).getStrength());
             }
         }
+        game.level_to_field(game.currentLevel);
         printInventary();
     }
 
     public void printInventary(){
         inventory.print();
+    }
+
+    public void checkElixirDuration(){
+        for (int i=0; i<getItemsCount(); i++){
+            if (getItemFromInventory(i).getType()==ELIXIR) {
+                getItemFromInventory(i).reduceDuration();
+                if (getItemFromInventory(i).getDuration() == 0) {
+                    int newStrength = getStrength() - getItemFromInventory(i).getStrength();
+                    if (newStrength >= 0) setStrength(newStrength);
+                    else setStrength(0);
+                    int newAgility = getAgility() - getItemFromInventory(i).getAgility();
+                    if (newAgility >= 0) setAgility(newAgility);
+                    else setAgility(0);
+                    int newHealth = getHealth() - getItemFromInventory(i).getHealth();
+                    if (newHealth >= 0) setAgility(newHealth);
+                    else setAgility(0);
+                    getAllItems().remove(i);
+                }
+            }
+        }
     }
 }

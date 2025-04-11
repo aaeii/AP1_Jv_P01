@@ -7,12 +7,15 @@ public abstract class Entity {
     int symbol; // выбрать из возможного пула
     Position position;
     int status;
+    private int duration;
 
     public Entity() {
         type = UNINITIALIZED;
         symbol = UNINITIALIZED;
         Position position = new Position();
-        int status = ON_FIELD;
+        status = ON_FIELD;
+        duration = UNINITIALIZED;
+
     }
 
     public Entity(int type, int symbol, Position position) {
@@ -20,11 +23,14 @@ public abstract class Entity {
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
         this.status = ON_FIELD;
+        this.duration = UNINITIALIZED;
     }
 
     public abstract void action(Position player_pos, Position top_left, Position bot_right);
     public abstract String toString();
     public abstract int getStrength();
+    public abstract int getAgility();
+    public abstract int getHealth();
 
     public int getType() {
         return type;
@@ -58,12 +64,27 @@ public abstract class Entity {
         this.status = status;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int i) {
+        duration = i;
+    }
+
+    public void reduceDuration() {
+        --duration;
+    }
+
+
+
     public void clear() {
         type = UNINITIALIZED;
         symbol = UNINITIALIZED;
         position.setX(-1);
         position.setY(-1);
         position.setVisibility(false);
+        duration = UNINITIALIZED;
     }
 
 

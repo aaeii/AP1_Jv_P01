@@ -123,77 +123,56 @@ public class Print {
         e.printStackTrace();
     }
     }
+
     public void printItems(Terminal terminal, GameSession game, char input) throws IOException {
-        final TextGraphics textGraphics = terminal.newTextGraphics();
-        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
-        textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+
         try {
-            int number_of_weapon = 0;
-            switch (input){
-                case 'h':
-                {
-                    for (int i = 0; i < game.getPlayer().getItemsCount(); i++){
-                        Entity cur_entity = game.getPlayer().getItemFromInventory(i);
-                        if (cur_entity.getType() == WEAPON && cur_entity.getStatus() == IN_INVENTORY){
-                            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number_of_weapon, (number_of_weapon) + " " + cur_entity.toString(), SGR.BOLD);
-                            number_of_weapon++;
-                        }
-                    }
-                    textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number_of_weapon, "Choose weapon by pressing 0-" + (number_of_weapon-1), SGR.BOLD);
-                    terminal.flush();;
-                    char choose = terminal.readInput().getCharacter();
-                        int int_choose = Character.getNumericValue(choose);
-                        if (int_choose >= 0 && int_choose < number_of_weapon) {
-                            switch (choose) {
-                                case '0':
-                                    game.getPlayer().useWeapon(0, game.currentLevel);
-                                    terminal.flush();
-                                    printInfo(terminal, game);
-                                    terminal.flush();
-                                    break;
-                                case '1':
-                                    game.getPlayer().useWeapon(1, game.currentLevel);
-                                    terminal.flush();
-                                    printInfo(terminal, game);
-                                    terminal.flush();
-                                    break;
-                                case '2':
-                                    game.getPlayer().useWeapon(2, game.currentLevel);
-                                    terminal.flush();
-                                    printInfo(terminal, game);
-                                    terminal.flush();
-                                    break;
-                                case '3':
-                                    game.getPlayer().useWeapon(3, game.currentLevel);
-                                    terminal.flush();
-                                    printInfo(terminal, game);
-                                    terminal.flush();
-                                    break;
-                                case '4':
-                                    game.getPlayer().useWeapon(4, game.currentLevel);
-                                    terminal.flush();
-                                    printInfo(terminal, game);
-                                    terminal.flush();
-                                    break;
-                                case '5':
-                                    game.getPlayer().useWeapon(5, game.currentLevel);
-                                    terminal.flush();
-                                    printInfo(terminal, game);
-                                    terminal.flush();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-
-                }
-
+            switch (input) {
+                case 'h' -> printItemMenu(terminal, game, WEAPON);
+                case 'e' -> printItemMenu(terminal, game, SCROLL);
+                case 'k' -> printItemMenu(terminal, game, ELIXIR);
             }
-            terminal.flush();
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+public void printItemMenu(Terminal terminal, GameSession game, int type) throws IOException {
+                final TextGraphics textGraphics = terminal.newTextGraphics();
+                textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+                textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+                int number = 0;
+
+                for (int i = 0; i < game.getPlayer().getItemsCount(); i++){
+                    Entity cur_entity = game.getPlayer().getItemFromInventory(i);
+                    if (cur_entity.getType() == type && cur_entity.getStatus() == IN_INVENTORY){
+                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
+                        number++;
+                    }
+                }
+
+                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "Choose by pressing 0-" + (number-1), SGR.BOLD);
+                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + number, "Press any Q for exit", SGR.BOLD);
+
+                terminal.flush();;
+
+                char choose = terminal.readInput().getCharacter();
+                int int_choose = Character.getNumericValue(choose);
+                    for (int i = 0; i < number; i++) {
+                        if (i == int_choose) {
+                            game.getPlayer().useItem(i, game, type);
+                            terminal.flush();
+                            printGame(terminal, game);
+                            terminal.flush();
+                        }
+                    }
+                 if (choose == 'q'|| choose == 'Q') {
+                     printGame(terminal, game);
+                     terminal.flush();
+                 }
+
+        terminal.flush();
     }
 
         public void printInfo (Terminal terminal, GameSession game) throws IOException {
@@ -206,6 +185,7 @@ public class Print {
                 textGraphics.putString(30, MAP_HEIGHT + 1, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
                 textGraphics.putString(45, MAP_HEIGHT + 1, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
                 textGraphics.putString(60, MAP_HEIGHT + 1, "Gold:  " + game.getPlayer().getGold(), SGR.BOLD);
+
                 terminal.flush();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -221,7 +201,10 @@ public class Print {
             textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "     Your level:  " + game.getCurrentLevelNumber() + "     ", SGR.BOLD);
             textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "    Your health: " + game.getPlayer().getHealth() + "     ", SGR.BOLD);
             textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getGold(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                        ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "Drunk Elixirs " + game.getPlayer().getDrunkElixirCounter(), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 3, "Eaten Food " + game.getPlayer().getEatenFoodCounter(), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 4, "Read Scrolls " + game.getPlayer().getReadScrollCounter(), SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 5, "                        ", SGR.BOLD);
             terminal.flush();
         }
 

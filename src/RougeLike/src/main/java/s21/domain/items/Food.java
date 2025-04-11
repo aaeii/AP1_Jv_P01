@@ -2,33 +2,33 @@ package s21.domain.items;
 
 import s21.domain.Position;
 
-public class Gold extends Item {
+public class Food extends Item {
 
     private int strength;
     private int agility;
     private int health;
 
-    public Gold(){
+    public Food(){
         super();
         this.strength = 0;
         this.agility = 0;
         this.health = 0;
     }
 
-    public Gold(int type, int symbol, Position position) {
+    public Food(int type, int symbol, Position position) {
         super(type,  symbol, position);
         this.strength = 0;
         this.agility = 0;
-        this.health = 0;
+        this.health = (int)(Math.random() * (10) + 1);;
     }
 
-    public void setStrength(int amount) {
-        this.strength = amount;
+    public void setHealth(int amount) {
+        this.health = amount;
     }
 
     @Override
     public String toString(){
-        return  "Gold = " + strength;
+        return  "Food = " + health;
     }
     @Override
     public void action(Position player_pos, Position top_left, Position bot_right) {
@@ -45,5 +45,6 @@ public class Gold extends Item {
     public int getHealth() {
         return health;
     }
-    }
+}
+
 

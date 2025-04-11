@@ -10,8 +10,8 @@ public class GameConstants {
 
     public static final int CONNECTED = 0;
     public static final int NOT_CONNECTED = 1;
-    public static final int MAP_HEIGHT = 22;
-    public static final int MAP_WIDTH  = 80;
+    public static final int MAP_HEIGHT = 21;
+    public static final int MAP_WIDTH  = 84;
     public static final int MAX_LEVEL_NUMBER  = 21;
     public static final int ROOMS_PER_SIDE  = 3;
     public static final int SECTOR_WIDTH = MAP_WIDTH / ROOMS_PER_SIDE;
@@ -31,7 +31,9 @@ public class GameConstants {
     public static final int ENEMY_POOL_LEN  = 26;
     public static final int ITEM_POOL_LEN  = 5;
     public static final int MAX_HEALTH  = 20;
-    public static final long MAX_COUNT_TYPE_ITEM = 9;
+    public static final int MAX_COUNT_TYPE_ITEM = 9;
+    public static final int ELIXIR_DURATION = 20;
+
 
     public static final int TOP = 0;
     public static final int RIGHT = 1;
@@ -90,7 +92,7 @@ public class GameConstants {
     //TYPE OF SCROLL
     public static final int STRENGTH_SCROLL = 0;
     public static final int AGILITY_SCROLL = 1;
-    public static final int MAX_HEAL_SCROLL = 2;
+    public static final int MAX_HEALTH_SCROLL = 2;
     public static final int CURSED_STRENGTH_SCROLL = 3;
     public static final int CURSED_AGILITY_SCROLL = 4;
 

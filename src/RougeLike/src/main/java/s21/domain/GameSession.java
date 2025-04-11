@@ -139,11 +139,18 @@ public GameSession() {
                         Position item_pos = new Position();
                         item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
                         newItem = new Gold(GOLD, GOLD_CHAR, item_pos);
+//                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                    }
+                    case FOOD :{
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem = new Food(FOOD, FOOD_CHAR, item_pos);
                         newItem.setPosition(item_pos);
                         currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
                         break;
                     }
-//                    case FOOD -> item.setSymbol(FOOD_CHAR);
                     case WEAPON: {
                         int weapon_type = (int)(Math.random() * (double) (TWO_HANDED_SWORD - MACE + 1) + MACE );
                         newItem = new Weapon(weapon_type);
@@ -163,7 +170,7 @@ public GameSession() {
                         break;
                     }
                     case ELIXIR: {
-                        int elixir_type = (int)(Math.random() * (double) (AGILITY_ELIXIR - HEALTH_ELIXIR + 1) + AGILITY_ELIXIR );
+                        int elixir_type = (int)(Math.random() * (double) (AGILITY_ELIXIR - HEALTH_ELIXIR + 1) + HEALTH_ELIXIR);
                         newItem = new Elixir(elixir_type);
                         Position item_pos = new Position();
                         item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
@@ -291,15 +298,23 @@ public GameSession() {
 
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (action == 's' || action == 'S') {
             player.move(field, BOTTOM, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (action == 'a' || action == 'A') {
             player.move(field, LEFT, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (player.getPosition().getX() == currentLevel.getExit_position().getX()
                 && player.getPosition().getY() == currentLevel.getExit_position().getY()) {

@@ -12,15 +12,15 @@ public class Elixir extends Item {
         private Date dateStart;
         private int agility;
         private int strength;
-        private int maxHealth;
-        private long duration;
+        private int health;
+        private int duration;
 
         public Elixir(){
             super();
             this.dateStart = null;
             this.agility = 0;
             this.strength = 0;
-            this.maxHealth = 0;
+            this.health = 0;
             this.duration = 0;
 
         }
@@ -34,22 +34,22 @@ public class Elixir extends Item {
                     this.name = "Health Elixir";
                     this.agility = 0;
                     this.strength = 0;
-                    this.maxHealth = MAX_HEALTH;
-                    this.duration = 60000;
+                    this.health = 5;
+                    this.duration = 60;
                     break;
                 case STRENGTH_ELIXIR: //("Strength Elixir", 5, 10, 0, 60000)
                     this.name = "Strength Elixir";
                     this.agility = 5;
                     this.strength = 10;
-                    this.maxHealth = 0;
-                    this.duration = 60000;
+                    this.health = 0;
+                    this.duration = 60;
                     break;
                 case AGILITY_ELIXIR:
                     this.name = "Agility Elixir";
                     this.agility = 10;
                     this.strength = 0;
-                    this.maxHealth = 0;
-                    this.duration = 50000;
+                    this.health = 0;
+                    this.duration = 50;
                     break;
                 default:
                     break;
@@ -63,10 +63,10 @@ public class Elixir extends Item {
 
     @Override
     public String toString(){
-        return  "Name = " + getName();
+        return  getName() + duration;
     }
 
-        public boolean isExpired() {
+    public boolean isExpired() {
             return dateStart.getTime() + duration < System.currentTimeMillis();
         }
 
@@ -75,19 +75,18 @@ public class Elixir extends Item {
 
             return dateStart;
         }
-
+    @Override
         public int getAgility() {
             return agility;
         }
-
+    @Override
         public int getStrength() {
             return strength;
         }
-
-        public int getMaxHealth() {
-            return maxHealth;
+    @Override
+        public int getHealth() {
+            return health;
         }
-
 
     }
 

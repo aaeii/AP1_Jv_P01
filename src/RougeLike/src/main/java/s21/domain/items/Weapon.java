@@ -9,14 +9,20 @@ import static s21.domain.GameConstants.SCROLL_CHAR;
 
 public class Weapon extends Item {
     private int strength;
+    private int agility;
+    private int health;
 
     public Weapon(String name, int strength) {
         this.name = name;
         this.strength = strength;
+        this.agility = 0;
+        this.health = 0;
     }
     public Weapon() {
         this.name = null;
         this.strength = 0;
+        this.agility = 0;
+        this.health = 0;
     }
 
     @Override
@@ -52,11 +58,21 @@ public class Weapon extends Item {
             default:
                 break;
         }
+        this.agility = 0;
+        this.health = 0;
     }
 
     @Override
+    public int getAgility() {
+        return agility;
+    }
+    @Override
     public int getStrength() {
         return strength;
+    }
+    @Override
+    public int getHealth() {
+        return health;
     }
 
     @Override

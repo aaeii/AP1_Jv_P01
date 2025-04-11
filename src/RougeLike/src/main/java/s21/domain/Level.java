@@ -162,12 +162,12 @@ public class Level {
 
     public void generate_corners(Room room, int offset_y, int offset_x)
     {
-        int top_leftY = (int) ((Math.random() * (double) (SECTOR_HEIGHT - 6) / 2) + offset_y + 1);
+        int top_leftY = (int) ((Math.random() * (double) (SECTOR_HEIGHT - 6) / 2) + offset_y + 2);
         int top_leftX = (int) ((Math.random() * (double) (SECTOR_WIDTH - 6) / 2) + offset_x + 1);
         Position Top_left = new Position(top_leftX, top_leftY, false);
         room.setTop_left(Top_left);
-        int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2)) + 3);
-        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2)) + 3 );
+        int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2-2)) + 3);
+        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2-2)) + 5 );
         Position Bot_right = new Position(bot_rightX, bot_rightY, false);
         room.setBot_right(Bot_right);
     }
