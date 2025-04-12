@@ -215,8 +215,7 @@ public class Character {
                 int offset = 0 ;
                 while (game.currentLevel.getRoomsSequence(offset).getSector() == -1)
                     ++offset;
-                int player_room = -1;
-                for (int j = offset; j < game.currentLevel.getRoom_cnt(); j++){
+                for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
                     Room current_room = game.currentLevel.getRoomsSequence(j);
                     if (current_room.checkRoom(position)) {
                         Position newWeaponPos = new Position();
@@ -267,5 +266,20 @@ public class Character {
                 }
             }
         }
+    }
+
+    public boolean playerInCorridor(GameSession game){
+        boolean result = true;
+        int offset = 0 ;
+        while (game.currentLevel.getRoomsSequence(offset).getSector() == -1)
+            ++offset;
+        for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
+            System.out.println(j+ " " + game.currentLevel.getRoomsSequence(j).checkPlayerInRoom(game.getPlayer().getPosition()));
+            if (game.currentLevel.getRoomsSequence(j).checkPlayerInRoom(game.getPlayer().getPosition())) {
+                result=false;
+                return result;
+            }
+        }
+        return result;
     }
 }

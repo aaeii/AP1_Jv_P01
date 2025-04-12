@@ -29,10 +29,9 @@ public class Main {
         }
             print.printResultOfGame(terminal, newGame);
             userInput.waitForResumeOrExit(terminal);
-//        if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
-//            print.printResultTable();
+        if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
 //            userInput.waitForExit();
-//        }
+        }
         terminal.flush();
         terminal.close();
     }

@@ -127,10 +127,13 @@ public class Print {
     public void printItems(Terminal terminal, GameSession game, char input) throws IOException {
 
         try {
-            switch (input) {
-                case 'h' -> printItemMenu(terminal, game, WEAPON);
-                case 'e' -> printItemMenu(terminal, game, SCROLL);
-                case 'k' -> printItemMenu(terminal, game, ELIXIR);
+            System.out.println(game.getPlayer().playerInCorridor(game));
+            if (!game.getPlayer().playerInCorridor(game)) {
+                switch (input) {
+                    case 'h' -> printItemMenu(terminal, game, WEAPON);
+                    case 'e' -> printItemMenu(terminal, game, SCROLL);
+                    case 'k' -> printItemMenu(terminal, game, ELIXIR);
+                }
             }
         }
         catch (IOException e) {
@@ -151,14 +154,16 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
                         number++;
                     }
                 }
-
-                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "Choose by pressing 0-" + (number-1), SGR.BOLD);
+                if (number==0)
+                    textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "You have 0 Items", SGR.BOLD);
+                else textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "Choose by pressing 0-" + (number-1), SGR.BOLD);
                 textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + number, "Press any Q for exit", SGR.BOLD);
-
-                terminal.flush();;
-
-                char choose = terminal.readInput().getCharacter();
-                int int_choose = Character.getNumericValue(choose);
+                terminal.flush();
+                char choose = 0;
+                int int_choose = 0;
+                do{
+                 choose = terminal.readInput().getCharacter();
+                 int_choose = Character.getNumericValue(choose);
                     for (int i = 0; i < number; i++) {
                         if (i == int_choose) {
                             game.getPlayer().useItem(i, game, type);
@@ -171,6 +176,7 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
                      printGame(terminal, game);
                      terminal.flush();
                  }
+                } while (choose != 'q'&& choose != 'Q');
 
         terminal.flush();
     }

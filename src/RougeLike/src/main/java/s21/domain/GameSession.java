@@ -329,7 +329,7 @@ public GameSession() {
         if (action == 'Q' || action == 'q')
         {
             inGame = false;
-            readyToStart = false;
+            readyToStart = true;
         }
         currentLevel.RoomVisit(player.getPosition());
         map_refresh();
