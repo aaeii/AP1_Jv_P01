@@ -59,6 +59,7 @@ public class Enemy extends Entity {
         }
     }
 
+
     public int getHealth() {
         return health;
     }
@@ -71,7 +72,7 @@ public class Enemy extends Entity {
         return agility;
     }
 
-
+    @Override
     public int getStrength() {
         return strength;
     }
@@ -91,6 +92,7 @@ public class Enemy extends Entity {
         };
     }
 
+
     private boolean isValidMove(int x, int y, Position top_left, Position bot_right) {
         return (x > top_left.getX() && x < bot_right.getX()
                 && y > top_left.getY() && y < bot_right.getY());
@@ -105,10 +107,12 @@ public class Enemy extends Entity {
         Random random = new Random();
         int randomNumber = 0;
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
+
             moveToPlayer(playerPosition, top_left, bot_right, x, y, 1, checkHealth());
         } else {
             for (int i = 0; i < 4; i++) {
                 switch (initialDirection) {
+
                     case TOP:
                         randomNumber = random.nextInt(1 + 1);
                         y = y - 1;
@@ -141,6 +145,8 @@ public class Enemy extends Entity {
             }
         }
     }
+
+
 
     public void moveVampire(Character playerPosition, Position top_left, Position bot_right, int hostilityLevel) {
         int x = position.getX();
@@ -263,9 +269,41 @@ public class Enemy extends Entity {
         }
 //        attack(player_pos);
     }
-    private boolean checkHealth(){
+
+    private boolean checkHealth() {
         return getHealth() <= 0;
     }
 
+    public void action(Character player_pos, Position top_left, Position bot_right) {
+        switch (type) {
+            case ZOMBIE -> moveZombie(player_pos, top_left, bot_right, getHostility());
+            case GHOST -> moveGhost(player_pos, top_left, bot_right, getHostility());
+            case OGRE -> moveOgre(player_pos, top_left, bot_right, getHostility());
+            case VAMPIRE -> moveVampire(player_pos, top_left, bot_right, getHostility());
+            case SNAKE -> moveSnake(player_pos, top_left, bot_right, getHostility());
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Type = " + getType();
+    }
+
+
+    private void moveToPlayer(Position playerPosition, Position top_left, Position bot_right, int x, int y, int step, boolean visible) {
+        if (x < playerPosition.getX()) {
+            x = x + step;
+        } else if (x > playerPosition.getX()) {
+            x = x - step;
+        } else if (y < playerPosition.getY()) {
+            y = y + step;
+        } else if (y > playerPosition.getY()) {
+            y = y - step;
+        }
+        if (isValidMove(x, y, top_left, bot_right)) {
+            position.setNew(x, y, visible);
+        }
+    }
 }
 

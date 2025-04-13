@@ -1,15 +1,11 @@
 package s21.domain;
 
-import s21.controller.UserInput;
-import s21.presentation.Print;
+import s21.domain.items.*;
 
-import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static s21.controller.UserInput.*;
 import static s21.domain.GameConstants.*;
 
 public class GameSession {
@@ -124,31 +120,65 @@ public class GameSession {
     }
 
     public void generate_items(){
-
-        for (int i=0; i < currentLevel.getRoom_cnt(); i++)
+        int offset = 0 ;
+        while (currentLevel.getRoomsSequence(offset).getSector() == -1)
+            ++offset;
+        for (int i = 0; i < currentLevel.getRoom_cnt(); i++)
         {
-            int offset = 0 ;
-            while (currentLevel.getRoomsSequence(offset).getSector() == -1)
-                ++offset;
             int items_cnt = (int)(Math.random() * (MAX_ITEMS_PER_ROOM) + 1);
             int item_type = -1;
             for (int j = 0; j < items_cnt; j++){
                 item_type = (int)(Math.random() * (double) (ELIXIR - GOLD + 1) + GOLD );
-                Item item = new Item(item_type);
+                Item newItem;
                 switch (item_type){
-                    case GOLD -> item.setSymbol(GOLD_CHAR);
-                    case FOOD -> item.setSymbol(FOOD_CHAR);
-                    case AGILITY -> item.setSymbol(AGILITY_CHAR);
-                    case STRENGTH -> item.setSymbol(STRENGTH_CHAR);
-                    case MAX_HEALTH -> item.setSymbol(MAX_HEALTH_CHAR);
-                    case ELIXIR -> item.setSymbol(ELIXIR_CHAR);
-                } Position item_pos = new Position();
-                item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
-                item.setPosition(item_pos);
-                currentLevel.getRoomsSequence(offset + i).setEntities(item);
+                    case GOLD: {
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem = new Gold(GOLD, GOLD_CHAR, item_pos);
+//                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                    }
+                    case FOOD :{
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem = new Food(FOOD, FOOD_CHAR, item_pos);
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                    }
+                    case WEAPON: {
+                        int weapon_type = (int)(Math.random() * (double) (TWO_HANDED_SWORD - MACE + 1) + MACE );
+                        newItem = new Weapon(weapon_type);
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                    }
+                    case SCROLL: {
+                        int scroll_type = (int)(Math.random() * (double) (CURSED_AGILITY_SCROLL - STRENGTH_SCROLL + 1) + STRENGTH_SCROLL );
+                        newItem = new Scroll(scroll_type);
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                    }
+                    case ELIXIR: {
+                        int elixir_type = (int)(Math.random() * (double) (AGILITY_ELIXIR - HEALTH_ELIXIR + 1) + HEALTH_ELIXIR);
+                        newItem = new Elixir(elixir_type);
+                        Position item_pos = new Position();
+                        item_pos = item_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                        newItem.setPosition(item_pos);
+                        currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
+                        break;
+                        }
+                    }
             }
         }
     }
+
     public void level_to_field (Level level){
         rooms_to_field(level);
         corridors_to_field(level);
@@ -244,14 +274,13 @@ public class GameSession {
             if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
                 for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
                     Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility())
+                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && cur_entity.getStatus()==ON_FIELD)
                         field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
                 }
             }
         }
     }
-
-
+    
     private void player_to_field(Level level){
         field[player.getPosition().getY()][player.getPosition().getX()] = PLAYER_CHAR;
     }
@@ -264,16 +293,27 @@ public class GameSession {
     public void gameStep(int action){
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
+<<<<<<< HEAD
             currentLevel.moveEnemies(player);
+=======
+            player.setStepCount();
+            player.checkElixirDuration();
+>>>>>>> origin/develop
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (action == 's' || action == 'S') {
             player.move(field, BOTTOM, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (action == 'a' || action == 'A') {
             player.move(field, LEFT, currentLevel);
+            player.setStepCount();
+            player.checkElixirDuration();
         }
         if (player.getPosition().getX() == currentLevel.getExit_position().getX()
                 && player.getPosition().getY() == currentLevel.getExit_position().getY()) {
@@ -281,14 +321,19 @@ public class GameSession {
         }
         else
         {
+<<<<<<< HEAD
             currentLevel.moveEnemies(player);
+=======
+            currentLevel.moveEnemies(player.getPosition());
+            currentLevel.takeItem(player);
+>>>>>>> origin/develop
         }
 
 //        checkInGame();
         if (action == 'Q' || action == 'q')
         {
             inGame = false;
-            readyToStart = false;
+            readyToStart = true;
         }
         currentLevel.RoomVisit(player.getPosition());
         map_refresh();
@@ -305,6 +350,7 @@ public class GameSession {
     }
 
     public void generate_next_level(){
+
         currentLevelNumber++;
         if (currentLevelNumber < MAX_LEVEL_NUMBER) {
             levels.get(currentLevelNumber).generate_level();

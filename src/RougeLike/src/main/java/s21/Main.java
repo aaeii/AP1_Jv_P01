@@ -24,14 +24,14 @@ public class Main {
             newGame.gameStep(ch);
             print.setField(newGame.getField());
             print.printGame(terminal, newGame);
+            print.printItems(terminal, newGame, ch);
             terminal.flush();
         }
-        print.printResultOfGame(terminal, newGame);
-        userInput.waitForResumeOrExit(terminal);
-//        if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
-//            print.printResultTable();
+            print.printResultOfGame(terminal, newGame);
+            userInput.waitForResumeOrExit(terminal);
+        if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
 //            userInput.waitForExit();
-//        }
+        }
         terminal.flush();
         terminal.close();
     }

@@ -2,27 +2,36 @@ package s21.domain;
 
 import static s21.domain.GameConstants.*;
 
-abstract class Entity {
+public abstract class Entity {
     int type; // enemy, item, player, exit
     int symbol; // выбрать из возможного пула
     Position position;
+    int status;
+    private int duration;
 
     public Entity() {
-        type = -1;
-        symbol = -1;
+        type = UNINITIALIZED;
+        symbol = UNINITIALIZED;
         Position position = new Position();
+        status = ON_FIELD;
+        duration = UNINITIALIZED;
+
     }
 
     public Entity(int type, int symbol, Position position) {
         this.type = type;
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
+        this.status = ON_FIELD;
+        this.duration = UNINITIALIZED;
     }
-     abstract void move(Character player_pos, Position  top_left, Position bot_right);
 
-    public void attack(Character p) {
 
-    }
+    public abstract void action(Position player_pos, Position top_left, Position bot_right);
+    public abstract String toString();
+    public abstract int getStrength();
+    public abstract int getAgility();
+    public abstract int getHealth();
 
     public int getType() {
         return type;
@@ -46,6 +55,37 @@ abstract class Entity {
 
     public void setSymbol(int symbol) {
         this.symbol = symbol;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int i) {
+        duration = i;
+    }
+
+    public void reduceDuration() {
+        --duration;
+    }
+
+
+
+    public void clear() {
+        type = UNINITIALIZED;
+        symbol = UNINITIALIZED;
+        position.setX(-1);
+        position.setY(-1);
+        position.setVisibility(false);
+        duration = UNINITIALIZED;
     }
 
 

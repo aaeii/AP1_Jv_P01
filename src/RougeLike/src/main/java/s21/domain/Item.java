@@ -42,4 +42,29 @@ public class Item extends Entity {
 
         }
     }
+
+    @Override
+    public void action(Position player_pos, Position top_left, Position bot_right) {
+
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    @Override
+    public int getStrength() {
+        return 0;
+    }
+
+    @Override
+    public int getAgility() {
+        return 0;
+    }
+
+    @Override
+    public int getHealth() {
+        return 0;
+    }
 }
