@@ -2,6 +2,7 @@
 package s21.domain.items;
 
 
+import s21.domain.Character;
 import s21.domain.Position;
 
 import static s21.domain.GameConstants.*;
@@ -76,6 +77,6 @@ public class Weapon extends Item {
     }
 
     @Override
-    public void action(Position player_pos, Position top_left, Position bot_right) {
+    public void action(Character player_pos, Position top_left, Position bot_right) {
     }
 }

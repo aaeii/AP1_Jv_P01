@@ -293,12 +293,9 @@ public class GameSession {
     public void gameStep(int action){
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
-<<<<<<< HEAD
-            currentLevel.moveEnemies(player);
-=======
             player.setStepCount();
             player.checkElixirDuration();
->>>>>>> origin/develop
+
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
@@ -321,12 +318,8 @@ public class GameSession {
         }
         else
         {
-<<<<<<< HEAD
             currentLevel.moveEnemies(player);
-=======
-            currentLevel.moveEnemies(player.getPosition());
             currentLevel.takeItem(player);
->>>>>>> origin/develop
         }
 
 //        checkInGame();

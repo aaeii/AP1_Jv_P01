@@ -18,7 +18,6 @@ public class Room {
 //    private boolean playerSpawn;
     private final List  <Entity> entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
-    private boolean visited;
 
     public Room(){
         grid_i = 0;
@@ -190,7 +189,7 @@ public class Room {
         }
     }
 
-    public void moveEnemiesInRoom(Position position){
+    public void moveEnemiesInRoom(Character position){
         for (int i = 0; i < entities_cnt; i++) {
             entities.get(i).action(position, top_left, bot_right);
             }

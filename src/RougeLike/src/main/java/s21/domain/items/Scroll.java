@@ -1,8 +1,7 @@
 package s21.domain.items;
 
+import s21.domain.Character;
 import s21.domain.Position;
-
-import java.sql.Date;
 
 import static s21.domain.GameConstants.*;
 
@@ -17,6 +16,12 @@ public class Scroll extends Item {
         this.agility = 0;
         this.strength = 0;
         this.health = 0;
+    }
+
+
+    @Override
+    public void action(Character player_pos, Position top_left, Position bot_right) {
+
     }
 
     @Override
@@ -77,7 +82,4 @@ public class Scroll extends Item {
         return health;
     }
 
-    @Override
-    public void action(Position player_pos, Position top_left, Position bot_right) {
-    }
 }

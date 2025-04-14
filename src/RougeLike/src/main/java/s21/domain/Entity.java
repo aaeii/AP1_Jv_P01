@@ -27,7 +27,7 @@ public abstract class Entity {
     }
 
 
-    public abstract void action(Position player_pos, Position top_left, Position bot_right);
+    public abstract void action(Character player_pos, Position top_left, Position bot_right);
     public abstract String toString();
     public abstract int getStrength();
     public abstract int getAgility();

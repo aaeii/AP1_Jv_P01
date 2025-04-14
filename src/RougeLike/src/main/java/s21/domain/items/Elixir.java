@@ -1,6 +1,7 @@
 package s21.domain.items;
 
 
+import s21.domain.Character;
 import s21.domain.Position;
 
 import java.sql.Date;
@@ -25,7 +26,12 @@ public class Elixir extends Item {
 
         }
 
-        public Elixir( int elixir_type) {
+    @Override
+    public void action(Character player_pos, Position top_left, Position bot_right) {
+
+    }
+
+    public Elixir( int elixir_type) {
             super();
             setSymbol(ELIXIR_CHAR);
             setType(ELIXIR);
@@ -57,9 +63,9 @@ public class Elixir extends Item {
 
         }
 
-    @Override
-    public void action(Position player_pos, Position  top_left, Position bot_right){
-        }
+//    @Override
+//    public void action(Position player_pos, Position  top_left, Position bot_right){
+//        }
 
     @Override
     public String toString(){
