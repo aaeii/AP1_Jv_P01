@@ -23,7 +23,7 @@ public abstract class Entity {
         this.symbol = symbol;
         this.position = new Position(position.getX(), position.getY(), false);
         this.status = ON_FIELD;
-        this.duration = UNINITIALIZED;
+        this.duration = 0;
     }
 
     public abstract void action(Position player_pos, Position top_left, Position bot_right);
@@ -73,7 +73,7 @@ public abstract class Entity {
     }
 
     public void reduceDuration() {
-        --duration;
+        if (duration>=1) duration--;
     }
 
 
@@ -86,7 +86,4 @@ public abstract class Entity {
         position.setVisibility(false);
         duration = UNINITIALIZED;
     }
-
-
-
 }

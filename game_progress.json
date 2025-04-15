@@ -1,0 +1,1021 @@
+{
+  "characters": [
+    {
+      "position": {
+        "x": 13,
+        "y": 3,
+        "visibility": true
+      },
+      "maxHealth": 20,
+      "health": 20,
+      "agility": 15,
+      "strength": 2,
+      "gold": 1,
+      "sleep": false,
+      "eatenFoodCounter": 1,
+      "drunkElixirCounter": 1,
+      "readScrollsCounter": 0,
+      "stepCount": 194,
+      "attackCounter": 0,
+      "enemiesAttackCounter": 0,
+      "inventory": {
+        "items": [
+          {
+            "agility": -5,
+            "strength": 0,
+            "health": 0,
+            "name": "cursed agility scroll",
+            "type": 10,
+            "symbol": 62,
+            "position": {
+              "x": 8,
+              "y": 3,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "strength": 7,
+            "agility": 0,
+            "health": 0,
+            "name": "Short bow",
+            "type": 11,
+            "symbol": 37,
+            "position": {
+              "x": 8,
+              "y": 4,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "strength": 7,
+            "agility": 0,
+            "health": 0,
+            "name": "Short bow",
+            "type": 11,
+            "symbol": 37,
+            "position": {
+              "x": 32,
+              "y": 4,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "agility": 5,
+            "strength": 0,
+            "health": 0,
+            "name": "Agility Scroll",
+            "type": 10,
+            "symbol": 62,
+            "position": {
+              "x": 33,
+              "y": 4,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "agility": 5,
+            "strength": 0,
+            "health": 0,
+            "name": "Agility Scroll",
+            "type": 10,
+            "symbol": 62,
+            "position": {
+              "x": 35,
+              "y": 3,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "agility": 5,
+            "strength": 10,
+            "health": 0,
+            "name": "Strength Elixir",
+            "type": 12,
+            "symbol": 94,
+            "position": {
+              "x": 63,
+              "y": 10,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "strength": 7,
+            "agility": 0,
+            "health": 0,
+            "name": "Short bow",
+            "type": 11,
+            "symbol": 37,
+            "position": {
+              "x": 44,
+              "y": 10,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          },
+          {
+            "agility": 5,
+            "strength": 10,
+            "health": 0,
+            "name": "Strength Elixir",
+            "type": 12,
+            "symbol": 94,
+            "position": {
+              "x": 15,
+              "y": 11,
+              "visibility": true
+            },
+            "status": 1,
+            "duration": -1
+          }
+        ]
+      },
+      "moveDirection": 0,
+      "view_area": [
+        [
+          {
+            "x": 7,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 10,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 11,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 12,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 13,
+            "y": -3,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 15,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 16,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 17,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 18,
+            "y": -3,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": -3,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 10,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 11,
+            "y": -2,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": -2,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": -2,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": -2,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": -2,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 17,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 18,
+            "y": -2,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": -2,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": -1,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": -1,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": -1,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": -1,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": -1,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 0,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 0,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 0,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 0,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": 0,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 1,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 9,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 1,
+            "visibility": true
+          },
+          {
+            "x": 19,
+            "y": 1,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 2,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 9,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 2,
+            "visibility": true
+          },
+          {
+            "x": 19,
+            "y": 2,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 8,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 9,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 3,
+            "visibility": true
+          },
+          {
+            "x": 19,
+            "y": 3,
+            "visibility": true
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 4,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 9,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 4,
+            "visibility": true
+          },
+          {
+            "x": 19,
+            "y": 4,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 5,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 9,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 5,
+            "visibility": true
+          },
+          {
+            "x": 19,
+            "y": 5,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 6,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 6,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 6,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 6,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": 6,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 7,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 7,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 10,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 11,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 17,
+            "y": 7,
+            "visibility": true
+          },
+          {
+            "x": 18,
+            "y": 7,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": 7,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 10,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 11,
+            "y": 8,
+            "visibility": true
+          },
+          {
+            "x": 12,
+            "y": 8,
+            "visibility": true
+          },
+          {
+            "x": 13,
+            "y": 8,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 8,
+            "visibility": true
+          },
+          {
+            "x": 15,
+            "y": 8,
+            "visibility": true
+          },
+          {
+            "x": 16,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 17,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 18,
+            "y": 8,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": 8,
+            "visibility": false
+          }
+        ],
+        [
+          {
+            "x": 7,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 8,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 9,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 10,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 11,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 12,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 13,
+            "y": 9,
+            "visibility": true
+          },
+          {
+            "x": 14,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 15,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 16,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 17,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 18,
+            "y": 9,
+            "visibility": false
+          },
+          {
+            "x": 19,
+            "y": 9,
+            "visibility": false
+          }
+        ]
+      ]
+    }
+  ]
+}

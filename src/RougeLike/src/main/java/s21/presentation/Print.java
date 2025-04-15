@@ -127,11 +127,11 @@ public class Print {
     public void printItems(Terminal terminal, GameSession game, char input) throws IOException {
 
         try {
-            System.out.println(game.getPlayer().playerInCorridor(game));
             if (!game.getPlayer().playerInCorridor(game)) {
                 switch (input) {
                     case 'h' -> printItemMenu(terminal, game, WEAPON);
                     case 'e' -> printItemMenu(terminal, game, SCROLL);
+                    case 'j' -> printItemMenu(terminal, game, HEALTHKIT);
                     case 'k' -> printItemMenu(terminal, game, ELIXIR);
                 }
             }
@@ -149,7 +149,11 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
 
                 for (int i = 0; i < game.getPlayer().getItemsCount(); i++){
                     Entity cur_entity = game.getPlayer().getItemFromInventory(i);
-                    if (cur_entity.getType() == type && cur_entity.getStatus() == IN_INVENTORY){
+                    if (cur_entity.getType() == type && cur_entity.getStatus() == IN_INVENTORY && type!= HEALTHKIT){
+                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
+                        number++;
+                    }
+                    if (type == HEALTHKIT && cur_entity.getStatus() == IN_INVENTORY && cur_entity.getHealth()>0){
                         textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
                         number++;
                     }
@@ -161,6 +165,7 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
                 terminal.flush();
                 char choose = 0;
                 int int_choose = 0;
+                int flag=0;
                 do{
                  choose = terminal.readInput().getCharacter();
                  int_choose = Character.getNumericValue(choose);
@@ -170,13 +175,15 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
                             terminal.flush();
                             printGame(terminal, game);
                             terminal.flush();
+                            flag=1;
+                            break;
                         }
                     }
                  if (choose == 'q'|| choose == 'Q') {
                      printGame(terminal, game);
                      terminal.flush();
                  }
-                } while (choose != 'q'&& choose != 'Q');
+                } while (choose != 'q' && choose != 'Q' && flag == 0);
 
         terminal.flush();
     }

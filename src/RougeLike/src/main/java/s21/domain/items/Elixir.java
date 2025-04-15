@@ -13,7 +13,6 @@ public class Elixir extends Item {
         private int agility;
         private int strength;
         private int health;
-        private int duration;
 
         public Elixir(){
             super();
@@ -21,7 +20,6 @@ public class Elixir extends Item {
             this.agility = 0;
             this.strength = 0;
             this.health = 0;
-            this.duration = 0;
 
         }
 
@@ -35,26 +33,22 @@ public class Elixir extends Item {
                     this.agility = 0;
                     this.strength = 0;
                     this.health = 5;
-                    this.duration = 60;
                     break;
                 case STRENGTH_ELIXIR: //("Strength Elixir", 5, 10, 0, 60000)
                     this.name = "Strength Elixir";
                     this.agility = 5;
                     this.strength = 10;
                     this.health = 0;
-                    this.duration = 60;
                     break;
                 case AGILITY_ELIXIR:
                     this.name = "Agility Elixir";
                     this.agility = 10;
                     this.strength = 0;
                     this.health = 0;
-                    this.duration = 50;
                     break;
                 default:
                     break;
             }
-
         }
 
     @Override
@@ -63,12 +57,12 @@ public class Elixir extends Item {
 
     @Override
     public String toString(){
-        return  getName() + duration;
+        return  getName() + " " + getStatus();
     }
 
-    public boolean isExpired() {
-            return dateStart.getTime() + duration < System.currentTimeMillis();
-        }
+//    public boolean isExpired() {
+//            return dateStart.getTime() + duration < System.currentTimeMillis();
+//        }
 
         public Date apply() {
             dateStart = new Date(System.currentTimeMillis());

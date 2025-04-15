@@ -56,8 +56,9 @@ public class GameConstants {
     public static final int CORRIDOR_CHAR = '+';
 
 
-    public static final int  OUTER_AREA_CHAR = '.';
+    public static final int  OUTER_AREA_CHAR = '/';
     public static final int  INNER_AREA_CHAR = ' ';
+    public static final int  INNER_AREA_CHAR_ROOM = '.';
 
 
     //TYPE OF ENEMIES
@@ -83,6 +84,7 @@ public class GameConstants {
     public static final int WEAPON_CHAR = '%';
     public static final int ELIXIR = 12;
     public static final int ELIXIR_CHAR = '^';
+    public static final int HEALTHKIT = 13;
 
     //TYPE OF ELIXIR
     public static final int HEALTH_ELIXIR = 0;
@@ -104,8 +106,9 @@ public class GameConstants {
     public static final int TWO_HANDED_SWORD = 4;
 
     //PLAYER CONST
-    public static final float DEFAULT_VIEW_DISTANCE = 30.0f;
-    public static final float DEFAULT_FOV = 3.14159f / 3.5f;
+    public static final int VIEW_DISTANCE = 6;
+    public static final int VIEW_AREA_SIZE = VIEW_DISTANCE*2+1;
+    public static final float DEFAULT_FOV = 30;
     public static final float DEFAULT_ANGLE = 0.0f;
     public static final float MOVEMENT_STEP = 0.2f;
     public static final float TURN_ANGLE_STEP = 0.03f;

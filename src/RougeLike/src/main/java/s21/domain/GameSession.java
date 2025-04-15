@@ -13,7 +13,6 @@ public class GameSession {
     public Level currentLevel;
     private int currentLevelNumber;
     Character player;
-//    Position exit;
     private boolean inGame;
     private boolean win;
     private boolean readyToStart;
@@ -105,7 +104,6 @@ public GameSession() {
                 ++offset;
             int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
             int enemy_type = -1;
-
             for (int j = 0; j < enemies_cnt; j++){
                 enemy_type = (int)(Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE );
                 Enemy enemy = new Enemy(enemy_type);
@@ -189,46 +187,109 @@ public GameSession() {
         entities_to_field(level);
         player_to_field(level);
         exit_to_field(level);
+        if (!currentLevel.isPlayerInRoom(getPlayer().getPosition()))
+        view_area_to_field();
+    }
+
+    private void view_area_to_field(){
+
+    for (int i = 0; i< MAP_HEIGHT; i++){
+        for (int j = 0; j< MAP_WIDTH; j++) {
+
+            if (field[i][j] != OUTER_AREA_CHAR
+                    && field[i][j] != CORRIDOR_CHAR
+                    && field[i][j] != WALL_CHAR
+                    && field[i][j] != PLAYER_CHAR
+                    && field[i][j] != INNER_AREA_CHAR_ROOM
+                    && field[i][j] != EXIT_CHAR
+            )
+                if (!inViewArea(i,j)) field[i][j]='.';
+            }
+        }
+    }
+
+    public boolean inViewArea(int i, int j){
+    boolean result=false;
+        for (int k = 0; k < VIEW_AREA_SIZE ; k++) {
+            for (int m = 0; m < VIEW_AREA_SIZE; m++) {
+                if (getPlayer().getViewArea(k, m).isVisibility())
+                {
+                    int y = getPlayer().getViewArea(k, m).getY();
+                    int x = getPlayer().getViewArea(k, m).getX();
+                    if (y >= 0 && x >= 0 && x < MAP_WIDTH && y < MAP_HEIGHT)
+                    { boolean isInViewArea = (i==y) && (j==x);
+                        if (isInViewArea){
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        }
+        return result;
     }
 
     private void rooms_to_field(Level level) {
-        currentLevel.changeVisibility(player.getPosition());
+        currentLevel.changeVisibility(player.getPosition(), player.getMoveDirection());
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
             Position top_room_corner = level.getRoomsSequence(i).getTop_left();
             Position bot_room_corner = level.getRoomsSequence(i).getBot_right();
             if (bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && top_room_corner.isVisibility()
                     || bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && level.getRoomsSequence(i).isVisited()) {
-                field[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
-                int j = top_room_corner.getX() + 1;
-                for (; j < bot_room_corner.getX(); j++)
+                    fill_inner_area_visited(top_room_corner, bot_room_corner);
+                    field[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
+                    int j = top_room_corner.getX() + 1;
+                    for (; j < bot_room_corner.getX(); j++)
+                        field[top_room_corner.getY()][j] = WALL_CHAR;
                     field[top_room_corner.getY()][j] = WALL_CHAR;
-                field[top_room_corner.getY()][j] = WALL_CHAR;
 
-                for (j = top_room_corner.getY() + 1; j < bot_room_corner.getY(); j++) {
-                    field[j][top_room_corner.getX()] = WALL_CHAR;
-                    field[j][bot_room_corner.getX()] = WALL_CHAR;
-                }
-                field[bot_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
-                j = top_room_corner.getX() + 1;
-                for (; j < bot_room_corner.getX(); j++)
+                    for (j = top_room_corner.getY() + 1; j < bot_room_corner.getY(); j++) {
+                        field[j][top_room_corner.getX()] = WALL_CHAR;
+                        field[j][bot_room_corner.getX()] = WALL_CHAR;
+                    }
+                    field[bot_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
+                    j = top_room_corner.getX() + 1;
+                    for (; j < bot_room_corner.getX(); j++)
+                        field[bot_room_corner.getY()][j] = WALL_CHAR;
                     field[bot_room_corner.getY()][j] = WALL_CHAR;
-                field[bot_room_corner.getY()][j] = WALL_CHAR;
-                if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
-                    fill_inner_area(top_room_corner, bot_room_corner);
-                for (int k=0; k < 4; k++){
-                    int xDoor = level.getRoomsSequence(i).getDoors(k).getX();
-                    int yDoor = level.getRoomsSequence(i).getDoors(k).getY();
-                    if (xDoor != 0 )
-                        field[yDoor][xDoor] = CORRIDOR_CHAR;
-                }
+
+                    if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition())){
+                        fill_inner_area(top_room_corner, bot_room_corner);}
+                    else {
+                        if (level.getRoomsSequence(i).isPlayerOnConnection(getPlayer().getPosition(), getPlayer().getMoveDirection())
+                            && level.getRoomsSequence(i).distance(getPlayer().getPosition(), getPlayer().getMoveDirection()) < VIEW_DISTANCE
+                            && !level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
+                            fill_inner_area(top_room_corner, bot_room_corner);
+                    }
+                    for (int k=0; k < 4; k++){
+                        int xDoor = level.getRoomsSequence(i).getDoors(k).getX();
+                        int yDoor = level.getRoomsSequence(i).getDoors(k).getY();
+                        if (xDoor != 0 )
+                            field[yDoor][xDoor] = CORRIDOR_CHAR;
+                    }
             }
+//            else {
+//                if (level.getRoomsSequence(i).isPlayerOnConnection(getPlayer().getPosition(), getPlayer().getMoveDirection())) {
+//                    int distance = level.getRoomsSequence(i).distance(getPlayer().getPosition(), getPlayer().getMoveDirection());
+//                    if (distance < VIEW_DISTANCE)
+//                        fogEffectToField(level.getRoomsSequence(i));
+//                }
+//            }
         }
     }
+
 
     private void fill_inner_area(Position top, Position bot){
         for (int i = top.getY() + 1; i < bot.getY(); i++)
             for (int j = top.getX() + 1; j < bot.getX(); j++)
                 field[i][j] = INNER_AREA_CHAR;
+
+    }
+
+    private void fill_inner_area_visited(Position top, Position bot){
+        for (int i = top.getY() + 1; i < bot.getY(); i++)
+            for (int j = top.getX() + 1; j < bot.getX(); j++)
+                field[i][j] = INNER_AREA_CHAR_ROOM;
 
     }
 

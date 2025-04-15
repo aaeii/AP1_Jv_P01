@@ -20,10 +20,6 @@ public class Inventory {
     }
 
     public void addItem(Entity item) {
-//        long countTypeItem = items.stream()
-//                .filter(elem -> elem.getType() == item.getType())
-//                .count();
-
         if (items.size() <= (MAX_COUNT_TYPE_ITEM )) {
             items.add(item);
         }
