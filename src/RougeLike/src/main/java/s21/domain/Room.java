@@ -2,6 +2,7 @@ package s21.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static s21.domain.GameConstants.*;
 
@@ -189,7 +190,7 @@ public class Room {
         }
     }
 
-    public void moveEnemiesInRoom(Character position){
+    public void moveEnemiesInRoom(Character position){//
         for (int i = 0; i < entities_cnt; i++) {
             entities.get(i).action(position, top_left, bot_right);
             }
@@ -221,4 +222,42 @@ public class Room {
             entities.get(i).getPosition().setVisibility(false);
         }
     }
+    public void attack(Character p,Enemy enemy) {
+        if (isInRange(p.getPosition(),enemy.getPosition())) {
+            int hitChance = calculateHitChance(p,enemy);
+            Random random = new Random();
+            boolean hits = random.nextInt(100) < hitChance; // Проверка шанса попадания
+            if (hits) {
+                takeDamage(p,enemy);
+                System.out.println(" hits " + enemy.getType() + " dealing ");
+            } else {
+                System.out.println(" misses " + enemy.getType());
+            }
+        }
+    }
+    public void takeDamage(Character p, Enemy enemy) {
+        p.setHealth(p.getHealth() - enemy.getStrength());
+        if (p.getHealth() < 0) {
+            p.setHealth(0);
+            System.out.println("GAME OVER");
+        }
+
+        enemy.setHealth(enemy.getHealth()-p.getStrength());
+        if (enemy.getHealth() < 0) {
+            enemy.setHealth(0);
+            System.out.println("Enemy dead");
+        }
+    }
+    public boolean isInRange(Position p, Position e) {
+        return (Math.abs(e.getX() - p.getX()) <= 1 && Math.abs(e.getY() - p.getY()) <= 1);
+    }
+
+    private int calculateHitChance(Character player,Enemy e) {
+        int baseChance = 50;
+        return Math.min(baseChance + (player.getAgility()- e.getAgility()), 100);
+    }
+
+//    public int calculateDamage(Character player) {
+//        return player.getStrength() + player.getGold();
+//    }
 }
