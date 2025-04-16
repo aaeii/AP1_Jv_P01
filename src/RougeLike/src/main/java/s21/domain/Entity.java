@@ -77,7 +77,6 @@ public abstract class Entity {
     }
 
 
-
     public void clear() {
         type = UNINITIALIZED;
         symbol = UNINITIALIZED;

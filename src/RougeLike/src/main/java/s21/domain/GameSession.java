@@ -16,6 +16,7 @@ public class GameSession {
     private boolean inGame;
     private boolean win;
     private boolean readyToStart;
+    private Inventory inventory;
 
 
 public GameSession() {
@@ -24,6 +25,7 @@ public GameSession() {
     this.win = false;
     this.readyToStart = false;
     this.currentLevelNumber = 0;
+    this.inventory = new Inventory();
     field = new char[MAP_HEIGHT][MAP_WIDTH]; // Заполняем поле пустотой
     for (int i = 0; i < MAP_HEIGHT; i++) {
         for (int j = 0; j < MAP_WIDTH; j++) {
@@ -41,6 +43,30 @@ public GameSession() {
     generate_entities();
     level_to_field(currentLevel);
 }
+    public List<Entity> getAllItems() {
+        return inventory.getAllItems();
+    }
+
+    public List<Entity> getItemsByType(int itemType) {
+        return inventory.getItemsByType(itemType);
+    }
+
+    public void addItem(Entity item) {
+        inventory.addItem(item);
+    }
+
+    public int getItemsCount() {
+        return inventory.getSize();
+    }
+
+    public Entity getItemFromInventory(int i) {
+        return inventory.getItem(i);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
 
     public char[][] getField() {
         return field;
@@ -360,22 +386,22 @@ public GameSession() {
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (action == 's' || action == 'S') {
             player.move(field, BOTTOM, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (action == 'a' || action == 'A') {
             player.move(field, LEFT, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (player.getPosition().getX() == currentLevel.getExit_position().getX()
                 && player.getPosition().getY() == currentLevel.getExit_position().getY()) {
@@ -384,7 +410,7 @@ public GameSession() {
         else
         {
             currentLevel.moveEnemies(player.getPosition());
-            currentLevel.takeItem(player);
+            currentLevel.takeItem(player, inventory);
         }
 //        checkInGame();
         if (action == 'Q' || action == 'q')
@@ -396,6 +422,26 @@ public GameSession() {
         map_refresh();
         level_to_field(currentLevel);
 
+    }
+
+    public void checkElixirDuration(){
+        for (int i=0; i< getItemsCount(); i++){
+            if (getItemFromInventory(i).getType()==ELIXIR) {
+                getItemFromInventory(i).reduceDuration();
+                if (getItemFromInventory(i).getDuration() == 0) {
+                    int newStrength = player.getStrength() - getItemFromInventory(i).getStrength();
+                    if (newStrength >= 0) player.setStrength(newStrength);
+                    else player.setStrength(0);
+                    int newAgility = player.getAgility() - getItemFromInventory(i).getAgility();
+                    if (newAgility >= 0) player.setAgility(newAgility);
+                    else player.setAgility(0);
+                    int newHealth = player.getHealth() - getItemFromInventory(i).getHealth();
+                    if (newHealth >= 0) player.setAgility(newHealth);
+                    else player.setAgility(0);
+                    getAllItems().remove(i);
+                }
+            }
+        }
     }
 
     public void map_refresh(){

@@ -1,5 +1,7 @@
 package s21.domain;
 
+import s21.domain.items.Inventory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,7 +154,7 @@ public class Room {
         return false;
     }
 
-    public void ckeckIsItItem(Character player){
+    public void ckeckIsItItem(Character player, Inventory inventory){
         for (int i = 0; i < entities_cnt; i++) {
             if(entities.get(i).position.getX() == player.getPosition().getX()
                     && entities.get(i).position.getY() == player.getPosition().getY()
@@ -174,15 +176,15 @@ public class Room {
                             entities_cnt--;
                         }
                         else {
-                            if (player.getItemsCount() < MAX_COUNT_TYPE_ITEM)
+                            if (inventory.getSize() < MAX_COUNT_TYPE_ITEM)
                                 {
                                 entities.get(i).setStatus(IN_INVENTORY);
-                                player.addItem(entities.get(i));
+                                inventory.addItem(entities.get(i));
                                     entities.remove(i);
                                     entities_cnt--;
                                 }
                             }
-                    player.printInventary();
+                    inventory.print();
                 }
         }
         }

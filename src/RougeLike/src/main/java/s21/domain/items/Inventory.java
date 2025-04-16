@@ -46,6 +46,7 @@ public class Inventory {
             System.out.println(i + " " + items.get(i).toString());
         }
     }
+
 }
 
 

@@ -28,9 +28,13 @@ public class Main {
             print.printItems(terminal, newGame, ch);
             terminal.flush();
         }
-            print.printResultOfGame(terminal, newGame);
-            userInput.waitForResumeOrExit(terminal);
+            newGame.getPlayer().setEndLevel(newGame.getCurrentLevelNumber());
+//            print.printResultOfGame(terminal, newGame);
         DataLayer.saveProgress(newGame.getPlayer());
+        print.printStatistic(terminal, newGame);
+            userInput.waitForResumeOrExit(terminal);
+
+
         if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
 //            userInput.waitForExit();
         }

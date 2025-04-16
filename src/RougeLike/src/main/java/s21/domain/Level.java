@@ -7,6 +7,7 @@ import java.util.List;
 
 import static s21.domain.GameConstants.*;
 import s21.domain.*;
+import s21.domain.items.Inventory;
 
 public class Level {
 
@@ -331,12 +332,12 @@ public class Level {
         return roomsSequence.get(number).checkRoom(exit_position);
     }
 
-    public void takeItem(Character player){
+    public void takeItem(Character player, Inventory inventory){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++){
-            roomsSequence.get(i).ckeckIsItItem(player);
+            roomsSequence.get(i).ckeckIsItItem(player, inventory);
         }
     }
 

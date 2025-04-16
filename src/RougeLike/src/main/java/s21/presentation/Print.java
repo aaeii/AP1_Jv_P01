@@ -6,12 +6,17 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.googlecode.lanterna.terminal.TerminalFactory;
+import s21.datalayer.DataLayer;
 import s21.domain.Entity;
 import s21.domain.GameSession;
+import s21.domain.items.MyComparator;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static s21.domain.GameConstants.*;
 
@@ -147,8 +152,8 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
                 textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
                 int number = 0;
 
-                for (int i = 0; i < game.getPlayer().getItemsCount(); i++){
-                    Entity cur_entity = game.getPlayer().getItemFromInventory(i);
+                for (int i = 0; i < game.getItemsCount(); i++){
+                    Entity cur_entity = game.getItemFromInventory(i);
                     if (cur_entity.getType() == type && cur_entity.getStatus() == IN_INVENTORY && type!= HEALTHKIT){
                         textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
                         number++;
@@ -221,6 +226,25 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
             terminal.flush();
         }
 
+    public void printStatistic(Terminal terminal, GameSession game) throws IOException {
 
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+        textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+        List<s21.domain.Character> players = DataLayer.loadProgress();
+        int count = players.size();
+        s21.domain.Character.sortListOfCharacter(players);
+        players.stream()
+                .forEach(p-> textGraphics.putString(2, MAP_HEIGHT / 2 + players.indexOf(p)-5, "lvl: " +  p.getEndLevel() +
+                                " Gold: " + p.getGold() +
+                                " Steps: " + p.getStepCount() +
+                                " Food: " + p.getEatenFoodCounter() +
+                                " Elixirs: " + p.getDrunkElixirCounter(),
+                        SGR.BOLD));
+        textGraphics.putString(2, MAP_HEIGHT / 2 + count - 4, "Press--Q--to--exit.", SGR.BOLD);
+        terminal.flush();
+    }
 }
+
+
 
