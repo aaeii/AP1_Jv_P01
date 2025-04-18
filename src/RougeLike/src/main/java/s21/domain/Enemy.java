@@ -147,7 +147,6 @@ public class Enemy extends Entity {
     }
 
 
-
     public void moveVampire(Character playerPosition, Position top_left, Position bot_right, int hostilityLevel) {
         int x = position.getX();
         int y = position.getY();
@@ -259,16 +258,16 @@ public class Enemy extends Entity {
     }
 
 
-    public void move(Character player_pos, Position top_left, Position bot_right) {
-        switch (type) {
-            case ZOMBIE -> moveZombie(player_pos, top_left, bot_right, getHostility());
-            case GHOST -> moveGhost(player_pos, top_left, bot_right, getHostility());
-            case OGRE -> moveOgre(player_pos, top_left, bot_right, getHostility());
-            case VAMPIRE -> moveVampire(player_pos, top_left, bot_right, getHostility());
-            case SNAKE -> moveSnake(player_pos, top_left, bot_right, getHostility());
-        }
-//        attack(player_pos);
-    }
+//    public void move(Character player_pos, Position top_left, Position bot_right) {
+//        switch (type) {
+//            case ZOMBIE -> moveZombie(player_pos, top_left, bot_right, getHostility());
+//            case GHOST -> moveGhost(player_pos, top_left, bot_right, getHostility());
+//            case OGRE -> moveOgre(player_pos, top_left, bot_right, getHostility());
+//            case VAMPIRE -> moveVampire(player_pos, top_left, bot_right, getHostility());
+//            case SNAKE -> moveSnake(player_pos, top_left, bot_right, getHostility());
+//        }
+////        attack(player_pos);
+//    }
 
     private boolean checkHealth() {
         return getHealth() <= 0;
@@ -283,28 +282,52 @@ public class Enemy extends Entity {
             case SNAKE -> moveSnake(player_pos, top_left, bot_right, getHostility());
 
         }
+        attack(player_pos);
     }
-
 
     @Override
     public String toString() {
         return "Type = " + getType();
     }
 
-
-    private void moveToPlayer(Position playerPosition, Position top_left, Position bot_right, int x, int y, int step, boolean visible) {
-        if (x < playerPosition.getX()) {
-            x = x + step;
-        } else if (x > playerPosition.getX()) {
-            x = x - step;
-        } else if (y < playerPosition.getY()) {
-            y = y + step;
-        } else if (y > playerPosition.getY()) {
-            y = y - step;
-        }
-        if (isValidMove(x, y, top_left, bot_right)) {
-            position.setNew(x, y, visible);
+    public void attack(Character p) {
+        if (isInRange(p.getPosition())) {
+            int hitChance = calculateHitChance(p);
+            Random random = new Random();
+            boolean hits = random.nextInt(100) < hitChance; // Проверка шанса попадания
+            if (hits) {
+                takeDamage(p);
+                System.out.println(" hits " + getType() + " dealing ");
+            } else {
+                System.out.println(" misses " + getType());
+            }
         }
     }
+
+    public void takeDamage(Character p) {
+        p.setHealth(p.getHealth() - getStrength());
+        if (p.getHealth() < 0) {
+            p.setHealth(0);
+            System.out.println("GAME OVER");
+        }
+        setHealth(getHealth() - p.getStrength());
+        if (getHealth() < 0) {
+            setHealth(0);
+            System.out.println("Enemy dead");
+        }
+    }
+
+    public boolean isInRange(Position p) {
+        return (Math.abs(position.getX() - p.getX()) <= 1 && Math.abs(position.getY() - p.getY()) <= 1);
+    }
+
+    private int calculateHitChance(Character player) {
+        int baseChance = 50;
+        return Math.min(baseChance + (player.getAgility() - getAgility()), 100);
+    }
+
+//    public int calculateDamage(Character player) {
+//        return player.getStrength() + player.getGold();
+//    }
 }
 
