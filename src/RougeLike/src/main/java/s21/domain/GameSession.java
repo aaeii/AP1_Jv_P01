@@ -409,7 +409,7 @@ public GameSession() {
         }
         else
         {
-            currentLevel.moveEnemies(player.getPosition());
+            currentLevel.moveEnemies(player);
             currentLevel.takeItem(player, inventory);
         }
 //        checkInGame();

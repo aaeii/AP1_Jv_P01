@@ -1,6 +1,8 @@
 package s21.domain.items;
 
+import s21.domain.Character;
 import s21.domain.Position;
+import s21.domain.Room;
 
 public class Gold extends Item {
 
@@ -25,13 +27,17 @@ public class Gold extends Item {
     public void setStrength(int amount) {
         this.strength = amount;
     }
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
     @Override
     public String toString(){
         return  "Gold = " + strength;
     }
     @Override
-    public void action(Position player_pos, Position top_left, Position bot_right) {
+    public void action(Character player, Room room) {
     }
     @Override
     public int getAgility() {

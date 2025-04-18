@@ -303,13 +303,16 @@ public class Level {
         return visited_count;
     }
 
-    public void moveEnemies(Position position){
+    public void moveEnemies(Character player){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++) {
-                if (roomsSequence.get(i).checkPlayerInRoom(position)){
-                    roomsSequence.get(i).moveEnemiesInRoom(position);
+                if (roomsSequence.get(i).checkPlayerInRoom(player.getPosition())){
+                    for (int j = 0; j < roomsSequence.get(i).getEntities_cnt(); j++) {
+                        roomsSequence.get(i).getEntities(j).action(player, roomsSequence.get(i));
+                    }
+//                    roomsSequence.get(i).moveEnemiesInRoom(position);
                 }
         }
     }

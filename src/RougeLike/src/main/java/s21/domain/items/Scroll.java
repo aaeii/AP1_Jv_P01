@@ -1,6 +1,8 @@
 package s21.domain.items;
 
+import s21.domain.Character;
 import s21.domain.Position;
+import s21.domain.Room;
 
 import java.sql.Date;
 
@@ -76,8 +78,13 @@ public class Scroll extends Item {
     public int getHealth() {
         return health;
     }
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
 
     @Override
-    public void action(Position player_pos, Position top_left, Position bot_right) {
+    public void action(Character player, Room room) {
     }
 }

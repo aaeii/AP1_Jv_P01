@@ -6,6 +6,7 @@ import s21.domain.items.Item;
 import s21.domain.items.Weapon;
 
 import java.util.List;
+import java.util.Random;
 
 import static s21.domain.GameConstants.*;
 
@@ -23,10 +24,6 @@ public class Character {
     private int strength;
     private int maxHealth;
     private boolean sleep;
-
-
-
-
     private int enemiesAttackCounter;
     private int moveDirection;
     private Position[][] view_area;
@@ -38,7 +35,7 @@ public class Character {
         this.maxHealth = 20;
         this.health = maxHealth;
         this.agility = 2;
-        this.strength = 2;
+        this.strength = 10;
         this.gold = 0;
         this.sleep = false;
         this.eatenFoodCounter = 0;
@@ -188,44 +185,119 @@ public class Character {
         moveDirection=direction;
         switch (direction) {
             case (TOP):
-                if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR) position.setNew(x, y - 1, true);
+                if (field[y - 1][x] == SNAKE_CHAR
+                            || field[y - 1][x] == ZOMBIE_CHAR
+                            || field[y - 1][x] == VAMPIRE_CHAR
+                            ||  field[y - 1][x] == GHOST_CHAR)
+                        fight(new Position(x, y - 1, true), level);
+                else
+                    if (field[y-1][x ] != WALL_CHAR && field[y-1][x] != OUTER_AREA_CHAR) position.setNew(x , y-1, true);
                 fillInViewArea();
                 break;
             case (RIGHT):
+                if (field[y][x + 1] == SNAKE_CHAR
+                        || field[y][x + 1] == ZOMBIE_CHAR
+                        || field[y][x + 1] == VAMPIRE_CHAR
+                        ||  field[y][x + 1] == GHOST_CHAR
+                        ||  field[y][x + 1] == OGRE_CHAR)
+                    fight(new Position(x + 1, y, true), level);
+                else
                 if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR) position.setNew(x + 1, y, true);
                 fillInViewArea();
                 break;
             case (BOTTOM):
+                if (field[y + 1][x] == SNAKE_CHAR
+                        || field[y + 1][x] == ZOMBIE_CHAR
+                        || field[y + 1][x] == VAMPIRE_CHAR
+                        ||  field[y + 1][x] == GHOST_CHAR
+                        ||  field[y + 1][x] == OGRE_CHAR)
+                    fight(new Position(x, y + 1, true), level);
+                else
                 if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR) position.setNew(x, y + 1, true);
                 fillInViewArea();
                 break;
             case (LEFT):
+                if (field[y][x - 1] == SNAKE_CHAR
+                        || field[y][x - 1] == ZOMBIE_CHAR
+                        || field[y][x - 1] == VAMPIRE_CHAR
+                        ||  field[y][x - 1] == GHOST_CHAR
+                        ||  field[y][x - 1] == OGRE_CHAR)
+                    fight(new Position(x - 1, y, true), level);
+                else
                 if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) position.setNew(x - 1, y, true);
                 fillInViewArea();
                 break;
         }
 
     }
+    public void fight(Position enemyPos, Level level) {
+        int offset = 0,  roomNumber = 0;
+        while (level.getRoomsSequence(offset).getSector() == -1)
+            ++offset;
+        for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
+            System.out.println(level.getRoomsSequence(j).checkInRoomEntities(enemyPos));
+            if (level.getRoomsSequence(j).checkInRoomEntities(enemyPos)) {
+                roomNumber = j;
+                break;
+            }
+        }
+        System.out.println(roomNumber);
+        for (int i = 0; i < level.getRoomsSequence(roomNumber).getEntities().size(); i++){
+            System.out.println(i + level.getRoomsSequence(roomNumber).getEntities(i).toString());
+        }
+        int entity_num = -1;
+        for (int i = 0; i < level.getRoomsSequence(roomNumber).getEntities_cnt(); i++) {
+                if (enemyPos.getX() == level.getRoomsSequence(roomNumber).getEntities(i).getPosition().getX()
+                        && enemyPos.getY() == level.getRoomsSequence(roomNumber).getEntities(i).getPosition().getY()
+//                    && enemyRoom.getEntities(i).getType() <= ZOMBIE && enemyRoom.getEntities(i).getType() >= SNAKE
+                ) {
+                    entity_num = i;
+                    System.out.println("enemy" + i);
+                    break;
+                }
+        }
+        if (entity_num != UNINITIALIZED){
+        attack(level.getRoomsSequence(roomNumber).getEntities(entity_num));
+        if (level.getRoomsSequence(roomNumber).getEntities(entity_num).getHealth() == 0)
+        {
+            level.getRoomsSequence(roomNumber).getEntities().remove(entity_num);
+            int Entities_cnt = level.getRoomsSequence(roomNumber).getEntities_cnt() - 1;
+            level.getRoomsSequence(roomNumber).setEntities_cnt(Entities_cnt);
+        }
+        }
+    }
 
-//    public List<Entity> getAllItems() {
-//        return inventory.getAllItems();
-//    }
-//
-//    public List<Entity> getItemsByType(int itemType) {
-//        return inventory.getItemsByType(itemType);
-//    }
-//
-//    public void addItem(Entity item) {
-//        inventory.addItem(item);
-//    }
-//
-//    public int getItemsCount() {
-//        return inventory.getSize();
-//    }
-//
-//    public Entity getItemFromInventory(int i) {
-//        return inventory.getItem(i);
-//    }
+    public void attack(Entity enemy) {
+            int hitChance = calculateHitChance(enemy);
+            Random random = new Random();
+            boolean hits = random.nextInt(100) < BASE_FIGHT_CHANCE; // Проверка шанса попадания
+            if (hits) {
+                takeDamage(enemy);
+                System.out.println(" hits " + enemy.getType() + " dealing ");
+            } else {
+                System.out.println(" misses " + enemy.getType());
+            }
+    }
+
+    private int calculateHitChance(Entity enemy) {
+        return (int) (Math.min(BASE_FIGHT_CHANCE + (agility - enemy.getAgility()), 100));
+    }
+
+    public void takeDamage(Entity enemy) {
+        health = health - enemy.getStrength();
+        int enemy_health = enemy.getHealth()-strength;
+        System.out.println("enemy_health " + enemy_health);
+        if (health < 0) {
+            health = 0;
+            System.out.println("GAME OVER");
+        }
+        enemy.setHealth(enemy_health);
+        System.out.println("enemy_health after" + enemy.getHealth());
+        if (enemy.getHealth() < 0) {
+            enemy.setHealth(0);
+            System.out.println("Enemy dead");
+        }
+    }
 
     public void useItem(int number, GameSession game, int type){
         int count = 0;

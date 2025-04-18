@@ -4,6 +4,7 @@ import s21.domain.items.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static s21.domain.GameConstants.*;
 
@@ -107,6 +108,10 @@ public class Room {
         return entities.get(i);
     }
 
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
     public void setTop_left(Position position) {
         this.top_left = position;
     }
@@ -129,9 +134,12 @@ public class Room {
 
     public boolean checkInRoomEntities(Position position){
             for (int i = 0; i < entities_cnt; i++) {
+//                System.out.println("x " + position.getX() + " y "
+//                        + position.getY() + " e_x" + entities.get(i).getPosition().getX() + " e_y" + entities.get(i).getPosition().getY());
                 if (entities.get(i).getPosition().getX() == position.getX() &&
-                        entities.get(i).getPosition().getY() == position.getY() &&
-                        (entities.get(i).getType() <= ZOMBIE && entities.get(i).getType() >= SNAKE))
+                        entities.get(i).getPosition().getY() == position.getY()
+//                       && (entities.get(i).getType() <= ZOMBIE && entities.get(i).getType() >= SNAKE)
+                )
                     return true;
             }
         return false;
@@ -156,8 +164,8 @@ public class Room {
 
     public void ckeckIsItItem(Character player, Inventory inventory){
         for (int i = 0; i < entities_cnt; i++) {
-            if(entities.get(i).position.getX() == player.getPosition().getX()
-                    && entities.get(i).position.getY() == player.getPosition().getY()
+            if(entities.get(i).getPosition().getX() == player.getPosition().getX()
+                    && entities.get(i).getPosition().getY() == player.getPosition().getY()
                     && entities.get(i).getStatus() == ON_FIELD
                     && entities.get(i).getType() > 7)
             {
@@ -190,11 +198,11 @@ public class Room {
         }
     }
 
-    public void moveEnemiesInRoom(Position position){
-        for (int i = 0; i < entities_cnt; i++) {
-            entities.get(i).action(position, top_left, bot_right);
-            }
-    }
+//    public void moveEnemiesInRoom(Position position){
+//        for (int i = 0; i < entities_cnt; i++) {
+//            entities.get(i).action(position, top_left, bot_right, entities);
+//            }
+//    }
 
     public boolean checkRoom(Position player_position){
             if (player_position.getX() >= top_left.getX()
@@ -277,6 +285,28 @@ public class Room {
         return distance;
     }
 
-//    public void render()
+
+
+//    public void takeDamage(Character p, Enemy enemy) {
+//        p.setHealth(p.getHealth() - enemy.getStrength());
+//        if (p.getHealth() < 0) {
+//            p.setHealth(0);
+//            System.out.println("GAME OVER");
+//        }
+//
+//        enemy.setHealth(enemy.getHealth()-p.getStrength());
+//        if (enemy.getHealth() < 0) {
+//            enemy.setHealth(0);
+//            System.out.println("Enemy dead");
+//        }
+//    }
+//    public boolean isInRange(Position p, Position e) {
+//        return (Math.abs(e.getX() - p.getX()) <= 1 && Math.abs(e.getY() - p.getY()) <= 1);
+//    }
+//
+//    private int calculateHitChance(Character player,Enemy e) {
+//        int baseChance = 50;
+//        return Math.min(baseChance + (player.getAgility()- e.getAgility()), 100);
+//    }
 
 }

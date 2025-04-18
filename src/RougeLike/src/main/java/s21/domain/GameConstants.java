@@ -21,7 +21,6 @@ public class GameConstants {
     public static final int CORNER_VERT_RANGE = (SECTOR_HEIGHT - 6) / 2; // для 3д графики
     public static final int CORNER_HOR_RANGE = (SECTOR_WIDTH - 6) / 2; // для 3д графики
     public static final double ROOM_CHANCE = 0.5;
-    public static final double SPAWN_SET_CHANCE = 0.5;
     public static final int MAX_ENEMIES_PER_ROOM = 2;
     public static final int MAX_ITEMS_PER_ROOM = 3;
     public static final int MAX_ENTITIES_PER_ROOM = MAX_ENEMIES_PER_ROOM + MAX_ITEMS_PER_ROOM + 2;
@@ -30,7 +29,7 @@ public class GameConstants {
     public static final int MAX_ENTITIES_TOTAL = MAX_ENEMIES_TOTAL + MAX_ITEMS_TOTAL + 2;
     public static final int ENEMY_POOL_LEN  = 26;
     public static final int ITEM_POOL_LEN  = 5;
-    public static final int MAX_HEALTH  = 20;
+    public static final int MAX_HEALTH  = 40;
     public static final int MAX_COUNT_TYPE_ITEM = 9;
     public static final int ELIXIR_DURATION = 20;
 
@@ -72,6 +71,7 @@ public class GameConstants {
     public static final int OGRE_CHAR = 'O';
     public static final int SNAKE = 7;
     public static final int SNAKE_CHAR = 'S';
+    public static final int BASE_FIGHT_CHANCE = 50;
 
     //ITEMS
     public static final int GOLD = 8;
