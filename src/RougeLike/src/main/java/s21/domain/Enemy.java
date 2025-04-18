@@ -214,23 +214,19 @@ public class Enemy extends Entity {
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
             moveToPlayer(playerPosition, room, x, y, 2, false);
         } else {
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 2; i++) {
                 switch (initialDirection) {
                     case TOP:
-                        x = x;
                         y = y - 2;
                         break;
                     case RIGHT:
                         x = x + 2;
-                        y = y;
                         break;
                     case BOTTOM:
-                        x = x;
                         y = y + 2;
                         break;
                     case LEFT:
                         x = x - 2;
-                        y = y;
                         break;
                     default:
                         return;
@@ -253,7 +249,7 @@ public class Enemy extends Entity {
         int distanceToPlayer = Math.abs(x - playerPosition.getX()) + Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayer <= distanceForPursuit) {
-            visible = false;//призрак виден пи приближении
+            visible = false;//призрак виден при приближении
             moveToPlayer(playerPosition, room, x, y, 1, visible);
         } else {
             visible = Math.random() > 0.6;

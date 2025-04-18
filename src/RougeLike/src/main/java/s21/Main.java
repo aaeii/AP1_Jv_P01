@@ -5,7 +5,9 @@ import s21.controller.UserInput;
 import s21.datalayer.DataLayer;
 import s21.domain.GameSession;
 import s21.presentation.Print;
+
 import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) throws IOException {
         GameSession newGame = new GameSession();
@@ -28,11 +30,11 @@ public class Main {
             print.printItems(terminal, newGame, ch);
             terminal.flush();
         }
-            newGame.getPlayer().setEndLevel(newGame.getCurrentLevelNumber());
+        newGame.getPlayer().setEndLevel(newGame.getCurrentLevelNumber());
 //            print.printResultOfGame(terminal, newGame);
         DataLayer.saveProgress(newGame.getPlayer());
         print.printStatistic(terminal, newGame);
-            userInput.waitForResumeOrExit(terminal);
+        userInput.waitForResumeOrExit(terminal);
 
 
         if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
