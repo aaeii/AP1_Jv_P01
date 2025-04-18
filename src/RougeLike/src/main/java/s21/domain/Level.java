@@ -7,6 +7,7 @@ import java.util.List;
 
 import static s21.domain.GameConstants.*;
 import s21.domain.*;
+import s21.domain.items.Inventory;
 
 public class Level {
 
@@ -167,7 +168,7 @@ public class Level {
         Position Top_left = new Position(top_leftX, top_leftY, false);
         room.setTop_left(Top_left);
         int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2-2)) + 3);
-        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2-2)) + 5 );
+        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2-2)) + 4 );
         Position Bot_right = new Position(bot_rightX, bot_rightY, false);
         room.setBot_right(Bot_right);
     }
@@ -302,14 +303,17 @@ public class Level {
         return visited_count;
     }
 
-    public void moveEnemies(Character position){
+    public void moveEnemies(Character player){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++) {
-                if (roomsSequence.get(i).checkPlayerInRoom(position.getPosition())){
-                    roomsSequence.get(i).moveEnemiesInRoom(position);
+            if (roomsSequence.get(i).checkPlayerInRoom(player.getPosition())){
+                for (int j = 0; j < roomsSequence.get(i).getEntities_cnt(); j++) {
+                    roomsSequence.get(i).getEntities(j).action(player, roomsSequence.get(i));
                 }
+//                    roomsSequence.get(i).moveEnemiesInRoom(position);
+            }
         }
     }
 
@@ -319,12 +323,11 @@ public class Level {
         while (getRoomsSequence(offset).getSector() == -1)
             ++offset;
         Room exit_room = new Room();
-
-            exit_room = getRoomsSequence(offset + room_index - 1);
-
+        exit_room = getRoomsSequence(offset + room_index - 1);
         Position exit_coordinate = new Position();
         exit_coordinate = exit_coordinate.generate_entity_coords(exit_room);
         exit_position.setNew(exit_coordinate.getX(), exit_coordinate.getY(), false);
+        System.out.println();
     }
 
 
@@ -332,15 +335,16 @@ public class Level {
         return roomsSequence.get(number).checkRoom(exit_position);
     }
 
-    public void takeItem(Character player){
+    public void takeItem(Character player, Inventory inventory){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++){
-            roomsSequence.get(i).ckeckIsItItem(player);
+            roomsSequence.get(i).ckeckIsItItem(player, inventory);
         }
     }
-    public void changeVisibility(Position player_position){
+
+    public void changeVisibility(Position player_position, int moveDirection){
         int offset = 0 ;
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
@@ -350,6 +354,11 @@ public class Level {
                 roomsSequence.get(i).makeVisible();
             } else {
                 roomsSequence.get(i).makeInvisible();
+                if ( roomsSequence.get(i).isPlayerOnConnection(player_position, moveDirection) && !isPlayerInRoom(player_position))
+                {
+                    if (roomsSequence.get(i).distance(player_position, moveDirection) < VIEW_DISTANCE)
+                        roomsSequence.get(i).makeVisible();
+                }
             }
             if (roomsSequence.get(i).checkRoom(player_position) && roomsSequence.get(i).checkRoom(exit_position))
                 exit_position.setVisibility(true);
@@ -357,7 +366,7 @@ public class Level {
         for (int i = 0; i < getCorridors_cnt(); i++){
             if (corridors.get(i).checkCorridor(player_position))
                 for (int k=0; k < 4; k++){
-                    corridors.get(i).getPoints(k).setVisibility(true);;
+                    corridors.get(i).getPoints(k).setVisibility(true);
                 }
         }
 
@@ -371,6 +380,20 @@ public class Level {
             if (roomsSequence.get(i).checkPlayerInRoom(player_position))
                 roomsSequence.get(i).setVisited(true);
         }
+    }
+
+    public boolean isPlayerInRoom(Position player){
+        boolean result = false;
+        int offset = 0 ;
+        while (getRoomsSequence(offset).getSector() == -1)
+            ++offset;
+        for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
+            if (getRoomsSequence(j).checkPlayerInRoom(player)) {
+                result=true;
+                return result;
+            }
+        }
+        return result;
     }
 }
 

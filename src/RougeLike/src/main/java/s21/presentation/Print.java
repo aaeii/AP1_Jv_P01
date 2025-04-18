@@ -6,13 +6,17 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-//import com.googlecode.lanterna.TextColor.RGB;
-import com.googlecode.lanterna.terminal.TerminalFactory;
+import s21.datalayer.DataLayer;
 import s21.domain.Entity;
 import s21.domain.GameSession;
+import s21.domain.items.MyComparator;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static s21.domain.GameConstants.*;
 
@@ -77,21 +81,9 @@ public class Print {
         }
     }
 
-//    private void setColorEnemy(Terminal terminal, int i, int j) throws IOException {
-//        if (field[i][j] == ZOMBIE_CHAR) {
-//            terminal.setForegroundColor(TextColor.ANSI.GREEN);
-//        } else if (field[i][j] == VAMPIRE_CHAR) {
-//            terminal.setForegroundColor(TextColor.ANSI.RED);
-//        } else if (field[i][j] == OGRE_CHAR) {
-//            terminal.setForegroundColor(new RGB(239, 255, 0));
-//        } else {
-//            terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
-//        }
-//    }
-
     public void printGame(Terminal terminal, GameSession game) throws IOException {
-     printOnlyField(terminal);
-     printInfo(terminal, game);
+        printOnlyField(terminal);
+        printInfo(terminal, game);
     }
 
     private void printStartMenu(Terminal terminal) throws IOException {
@@ -123,28 +115,28 @@ public class Print {
     public void printRules(Terminal terminal) throws IOException {
         final TextGraphics textGraphics = terminal.newTextGraphics();
         try {
-        textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
-        textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "Press N to start", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "                ", SGR.BOLD);
-        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
-        terminal.flush();
+            textGraphics.setForegroundColor(TextColor.ANSI.BLACK);
+            textGraphics.setBackgroundColor(TextColor.ANSI.WHITE);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "                ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "                ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "Press N to start", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "                ", SGR.BOLD);
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "                ", SGR.BOLD);
+            terminal.flush();
         }
         catch (IOException e) {
-        e.printStackTrace();
-    }
+            e.printStackTrace();
+        }
     }
 
     public void printItems(Terminal terminal, GameSession game, char input) throws IOException {
 
         try {
-            System.out.println(game.getPlayer().playerInCorridor(game));
             if (!game.getPlayer().playerInCorridor(game)) {
                 switch (input) {
                     case 'h' -> printItemMenu(terminal, game, WEAPON);
                     case 'e' -> printItemMenu(terminal, game, SCROLL);
+                    case 'j' -> printItemMenu(terminal, game, HEALTHKIT);
                     case 'k' -> printItemMenu(terminal, game, ELIXIR);
                 }
             }
@@ -154,79 +146,105 @@ public class Print {
         }
     }
 
-public void printItemMenu(Terminal terminal, GameSession game, int type) throws IOException {
-                final TextGraphics textGraphics = terminal.newTextGraphics();
-                textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
-                textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-                int number = 0;
+    public void printItemMenu(Terminal terminal, GameSession game, int type) throws IOException {
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+        textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+        int number = 0;
 
-                for (int i = 0; i < game.getPlayer().getItemsCount(); i++){
-                    Entity cur_entity = game.getPlayer().getItemFromInventory(i);
-                    if (cur_entity.getType() == type && cur_entity.getStatus() == IN_INVENTORY){
-                        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
-                        number++;
-                    }
+        for (int i = 0; i < game.getItemsCount(); i++){
+            Entity cur_entity = game.getItemFromInventory(i);
+            if (cur_entity.getType() == type && cur_entity.getStatus() == IN_INVENTORY && type!= HEALTHKIT){
+                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
+                number++;
+            }
+            if (type == HEALTHKIT && cur_entity.getStatus() == IN_INVENTORY && cur_entity.getHealth()>0){
+                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, (number) + " " + cur_entity.toString(), SGR.BOLD);
+                number++;
+            }
+        }
+        if (number==0)
+            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "You have 0 Items", SGR.BOLD);
+        else textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "Choose by pressing 0-" + (number-1), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + number, "Press any Q for exit", SGR.BOLD);
+        terminal.flush();
+        char choose = 0;
+        int int_choose = 0;
+        int flag=0;
+        do{
+            choose = terminal.readInput().getCharacter();
+            int_choose = Character.getNumericValue(choose);
+            for (int i = 0; i < number; i++) {
+                if (i == int_choose) {
+                    game.getPlayer().useItem(i, game, type);
+                    terminal.flush();
+                    printGame(terminal, game);
+                    terminal.flush();
+                    flag=1;
+                    break;
                 }
-                if (number==0)
-                    textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "You have 0 Items", SGR.BOLD);
-                else textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "Choose by pressing 0-" + (number-1), SGR.BOLD);
-                textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + number, "Press any Q for exit", SGR.BOLD);
+            }
+            if (choose == 'q'|| choose == 'Q') {
+                printGame(terminal, game);
                 terminal.flush();
-                char choose = 0;
-                int int_choose = 0;
-                do{
-                 choose = terminal.readInput().getCharacter();
-                 int_choose = Character.getNumericValue(choose);
-                    for (int i = 0; i < number; i++) {
-                        if (i == int_choose) {
-                            game.getPlayer().useItem(i, game, type);
-                            terminal.flush();
-                            printGame(terminal, game);
-                            terminal.flush();
-                        }
-                    }
-                 if (choose == 'q'|| choose == 'Q') {
-                     printGame(terminal, game);
-                     terminal.flush();
-                 }
-                } while (choose != 'q'&& choose != 'Q');
+            }
+        } while (choose != 'q' && choose != 'Q' && flag == 0);
 
         terminal.flush();
     }
 
-        public void printInfo (Terminal terminal, GameSession game) throws IOException {
-            final TextGraphics textGraphics = terminal.newTextGraphics();
-            try {
-                textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
-                textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-                textGraphics.putString( 2, MAP_HEIGHT + 1, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
-                textGraphics.putString(15, MAP_HEIGHT + 1, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
-                textGraphics.putString(30, MAP_HEIGHT + 1, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
-                textGraphics.putString(45, MAP_HEIGHT + 1, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
-                textGraphics.putString(60, MAP_HEIGHT + 1, "Gold:  " + game.getPlayer().getGold(), SGR.BOLD);
-
-                terminal.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void printResultOfGame (Terminal terminal, GameSession game) throws IOException {
-            final TextGraphics textGraphics = terminal.newTextGraphics();
+    public void printInfo (Terminal terminal, GameSession game) throws IOException {
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        try {
             textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
             textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "                        ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "      Game is Over      ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "     Your level:  " + game.getCurrentLevelNumber() + "     ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "    Your health: " + game.getPlayer().getHealth() + "     ", SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getGold(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "Drunk Elixirs " + game.getPlayer().getDrunkElixirCounter(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 3, "Eaten Food " + game.getPlayer().getEatenFoodCounter(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 4, "Read Scrolls " + game.getPlayer().getReadScrollCounter(), SGR.BOLD);
-            textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 5, "                        ", SGR.BOLD);
+            textGraphics.putString( 2, MAP_HEIGHT + 1, "Level:     " + (game.getCurrentLevelNumber() + 1), SGR.BOLD);
+            textGraphics.putString(15, MAP_HEIGHT + 1, "Health:   " + game.getPlayer().getHealth(), SGR.BOLD);
+            textGraphics.putString(30, MAP_HEIGHT + 1, "Agility:   " + game.getPlayer().getAgility(), SGR.BOLD);
+            textGraphics.putString(45, MAP_HEIGHT + 1, "Strength:  " + game.getPlayer().getStrength(), SGR.BOLD);
+            textGraphics.putString(60, MAP_HEIGHT + 1, "Gold:  " + game.getPlayer().getGold(), SGR.BOLD);
+
             terminal.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
+    public void printResultOfGame (Terminal terminal, GameSession game) throws IOException {
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+        textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 3, "                        ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2, "      Game is Over      ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1, "     Your level:  " + game.getCurrentLevelNumber() + "     ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2, "    Your health: " + game.getPlayer().getHealth() + "     ", SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 1, "Your quantity of Gold: " + game.getPlayer().getGold(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 2, "Drunk Elixirs " + game.getPlayer().getDrunkElixirCounter(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 3, "Eaten Food " + game.getPlayer().getEatenFoodCounter(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 4, "Read Scrolls " + game.getPlayer().getReadScrollCounter(), SGR.BOLD);
+        textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 + 5, "                        ", SGR.BOLD);
+        terminal.flush();
+    }
 
+    public void printStatistic(Terminal terminal, GameSession game) throws IOException {
+
+        final TextGraphics textGraphics = terminal.newTextGraphics();
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+        textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+        List<s21.domain.Character> players = DataLayer.loadProgress();
+        int count = players.size();
+        s21.domain.Character.sortListOfCharacter(players);
+        players.stream()
+                .forEach(p-> textGraphics.putString(2, MAP_HEIGHT / 2 + players.indexOf(p)-5, "lvl: " +  p.getEndLevel() +
+                                " Gold: " + p.getGold() +
+                                " Steps: " + p.getStepCount() +
+                                " Food: " + p.getEatenFoodCounter() +
+                                " Elixirs: " + p.getDrunkElixirCounter(),
+                        SGR.BOLD));
+        textGraphics.putString(2, MAP_HEIGHT / 2 + count - 4, "Press--Q--to--exit.", SGR.BOLD);
+        terminal.flush();
+    }
 }
+
+
 

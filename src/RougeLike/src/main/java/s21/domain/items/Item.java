@@ -1,6 +1,5 @@
 package s21.domain.items;
 
-import s21.domain.Character;
 import s21.domain.Entity;
 import s21.domain.Position;
 
@@ -17,7 +16,6 @@ public abstract class Item extends Entity {
         return name;
     }
 
-    public abstract void action(Character player_pos, Position top_left, Position bot_right);
 }
 
 //public class Item extends Entity {

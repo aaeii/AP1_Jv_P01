@@ -4,7 +4,6 @@ import s21.domain.items.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static s21.domain.GameConstants.*;
 
@@ -14,10 +13,10 @@ public class GameSession {
     public Level currentLevel;
     private int currentLevelNumber;
     Character player;
-    //    Position exit;
     private boolean inGame;
     private boolean win;
     private boolean readyToStart;
+    private Inventory inventory;
 
 
     public GameSession() {
@@ -26,6 +25,7 @@ public class GameSession {
         this.win = false;
         this.readyToStart = false;
         this.currentLevelNumber = 0;
+        this.inventory = new Inventory();
         field = new char[MAP_HEIGHT][MAP_WIDTH]; // Заполняем поле пустотой
         for (int i = 0; i < MAP_HEIGHT; i++) {
             for (int j = 0; j < MAP_WIDTH; j++) {
@@ -43,6 +43,30 @@ public class GameSession {
         generate_entities();
         level_to_field(currentLevel);
     }
+    public List<Entity> getAllItems() {
+        return inventory.getAllItems();
+    }
+
+    public List<Entity> getItemsByType(int itemType) {
+        return inventory.getItemsByType(itemType);
+    }
+
+    public void addItem(Entity item) {
+        inventory.addItem(item);
+    }
+
+    public int getItemsCount() {
+        return inventory.getSize();
+    }
+
+    public Entity getItemFromInventory(int i) {
+        return inventory.getItem(i);
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
 
     public char[][] getField() {
         return field;
@@ -104,14 +128,18 @@ public class GameSession {
             int offset = 0 ;
             while (currentLevel.getRoomsSequence(offset).getSector() == -1)
                 ++offset;
-//            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
-            int enemies_cnt = 1;
+            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
             int enemy_type = -1;
-
             for (int j = 0; j < enemies_cnt; j++){
                 enemy_type = (int)(Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE );
                 Enemy enemy = new Enemy(enemy_type);
-                Position enemy_pos = new Position();
+                switch (enemy_type){
+                    case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
+                    case VAMPIRE -> enemy.setSymbol(VAMPIRE_CHAR);
+                    case GHOST -> enemy.setSymbol(GHOST_CHAR);
+                    case OGRE -> enemy.setSymbol(OGRE_CHAR);
+                    case SNAKE -> enemy.setSymbol(SNAKE_CHAR);
+                } Position enemy_pos = new Position();
                 enemy_pos = enemy_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
                 enemy.setPosition(enemy_pos);
                 currentLevel.getRoomsSequence(offset + i).setEntities(enemy);
@@ -173,8 +201,8 @@ public class GameSession {
                         newItem.setPosition(item_pos);
                         currentLevel.getRoomsSequence(offset + i).setEntities(newItem);
                         break;
-                        }
                     }
+                }
             }
         }
     }
@@ -185,15 +213,56 @@ public class GameSession {
         entities_to_field(level);
         player_to_field(level);
         exit_to_field(level);
+        if (!currentLevel.isPlayerInRoom(getPlayer().getPosition()))
+            view_area_to_field();
+    }
+
+    private void view_area_to_field(){
+
+        for (int i = 0; i< MAP_HEIGHT; i++){
+            for (int j = 0; j< MAP_WIDTH; j++) {
+
+                if (field[i][j] != OUTER_AREA_CHAR
+                        && field[i][j] != CORRIDOR_CHAR
+                        && field[i][j] != WALL_CHAR
+                        && field[i][j] != PLAYER_CHAR
+                        && field[i][j] != INNER_AREA_CHAR_ROOM
+                        && field[i][j] != EXIT_CHAR
+                )
+                    if (!inViewArea(i,j)) field[i][j]='.';
+            }
+        }
+    }
+
+    public boolean inViewArea(int i, int j){
+        boolean result=false;
+        for (int k = 0; k < VIEW_AREA_SIZE ; k++) {
+            for (int m = 0; m < VIEW_AREA_SIZE; m++) {
+                if (getPlayer().getViewArea(k, m).isVisibility())
+                {
+                    int y = getPlayer().getViewArea(k, m).getY();
+                    int x = getPlayer().getViewArea(k, m).getX();
+                    if (y >= 0 && x >= 0 && x < MAP_WIDTH && y < MAP_HEIGHT)
+                    { boolean isInViewArea = (i==y) && (j==x);
+                        if (isInViewArea){
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        }
+        return result;
     }
 
     private void rooms_to_field(Level level) {
-        currentLevel.changeVisibility(player.getPosition());
+        currentLevel.changeVisibility(player.getPosition(), player.getMoveDirection());
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++) {
             Position top_room_corner = level.getRoomsSequence(i).getTop_left();
             Position bot_room_corner = level.getRoomsSequence(i).getBot_right();
             if (bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && top_room_corner.isVisibility()
                     || bot_room_corner.getY() != 0 && top_room_corner.getX() != 0 && level.getRoomsSequence(i).isVisited()) {
+                fill_inner_area_visited(top_room_corner, bot_room_corner);
                 field[top_room_corner.getY()][top_room_corner.getX()] = WALL_CHAR;
                 int j = top_room_corner.getX() + 1;
                 for (; j < bot_room_corner.getX(); j++)
@@ -209,8 +278,15 @@ public class GameSession {
                 for (; j < bot_room_corner.getX(); j++)
                     field[bot_room_corner.getY()][j] = WALL_CHAR;
                 field[bot_room_corner.getY()][j] = WALL_CHAR;
-                if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
-                    fill_inner_area(top_room_corner, bot_room_corner);
+
+                if (level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition())){
+                    fill_inner_area(top_room_corner, bot_room_corner);}
+                else {
+                    if (level.getRoomsSequence(i).isPlayerOnConnection(getPlayer().getPosition(), getPlayer().getMoveDirection())
+                            && level.getRoomsSequence(i).distance(getPlayer().getPosition(), getPlayer().getMoveDirection()) < VIEW_DISTANCE
+                            && !level.getRoomsSequence(i).checkPlayerInRoom(player.getPosition()))
+                        fill_inner_area(top_room_corner, bot_room_corner);
+                }
                 for (int k=0; k < 4; k++){
                     int xDoor = level.getRoomsSequence(i).getDoors(k).getX();
                     int yDoor = level.getRoomsSequence(i).getDoors(k).getY();
@@ -218,13 +294,28 @@ public class GameSession {
                         field[yDoor][xDoor] = CORRIDOR_CHAR;
                 }
             }
+//            else {
+//                if (level.getRoomsSequence(i).isPlayerOnConnection(getPlayer().getPosition(), getPlayer().getMoveDirection())) {
+//                    int distance = level.getRoomsSequence(i).distance(getPlayer().getPosition(), getPlayer().getMoveDirection());
+//                    if (distance < VIEW_DISTANCE)
+//                        fogEffectToField(level.getRoomsSequence(i));
+//                }
+//            }
         }
     }
+
 
     private void fill_inner_area(Position top, Position bot){
         for (int i = top.getY() + 1; i < bot.getY(); i++)
             for (int j = top.getX() + 1; j < bot.getX(); j++)
                 field[i][j] = INNER_AREA_CHAR;
+
+    }
+
+    private void fill_inner_area_visited(Position top, Position bot){
+        for (int i = top.getY() + 1; i < bot.getY(); i++)
+            for (int j = top.getX() + 1; j < bot.getX(); j++)
+                field[i][j] = INNER_AREA_CHAR_ROOM;
 
     }
 
@@ -280,7 +371,7 @@ public class GameSession {
             }
         }
     }
-    
+
     private void player_to_field(Level level){
         field[player.getPosition().getY()][player.getPosition().getX()] = PLAYER_CHAR;
     }
@@ -291,26 +382,26 @@ public class GameSession {
     }
 
     public void gameStep(int action){
+
         if (action == 'w' || action == 'W') {
             player.move(field, TOP, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
-
+            checkElixirDuration();
         }
         if (action == 'd' || action == 'D') {
             player.move(field, RIGHT, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (action == 's' || action == 'S') {
             player.move(field, BOTTOM, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (action == 'a' || action == 'A') {
             player.move(field, LEFT, currentLevel);
             player.setStepCount();
-            player.checkElixirDuration();
+            checkElixirDuration();
         }
         if (player.getPosition().getX() == currentLevel.getExit_position().getX()
                 && player.getPosition().getY() == currentLevel.getExit_position().getY()) {
@@ -319,9 +410,8 @@ public class GameSession {
         else
         {
             currentLevel.moveEnemies(player);
-            currentLevel.takeItem(player);
+            currentLevel.takeItem(player, inventory);
         }
-
 //        checkInGame();
         if (action == 'Q' || action == 'q')
         {
@@ -332,6 +422,26 @@ public class GameSession {
         map_refresh();
         level_to_field(currentLevel);
 
+    }
+
+    public void checkElixirDuration(){
+        for (int i=0; i< getItemsCount(); i++){
+            if (getItemFromInventory(i).getType()==ELIXIR) {
+                getItemFromInventory(i).reduceDuration();
+                if (getItemFromInventory(i).getDuration() == 0) {
+                    int newStrength = player.getStrength() - getItemFromInventory(i).getStrength();
+                    if (newStrength >= 0) player.setStrength(newStrength);
+                    else player.setStrength(0);
+                    int newAgility = player.getAgility() - getItemFromInventory(i).getAgility();
+                    if (newAgility >= 0) player.setAgility(newAgility);
+                    else player.setAgility(0);
+                    int newHealth = player.getHealth() - getItemFromInventory(i).getHealth();
+                    if (newHealth >= 0) player.setAgility(newHealth);
+                    else player.setAgility(0);
+                    getAllItems().remove(i);
+                }
+            }
+        }
     }
 
     public void map_refresh(){
@@ -353,6 +463,5 @@ public class GameSession {
         }
         else win = true;
     }
-
 
 }

@@ -2,6 +2,7 @@ package s21.domain.items;
 
 import s21.domain.Character;
 import s21.domain.Position;
+import s21.domain.Room;
 
 public class Food extends Item {
 
@@ -23,16 +24,12 @@ public class Food extends Item {
         this.health = (int)(Math.random() * (10) + 1);;
     }
 
-    public void setHealth(int amount) {
-        this.health = amount;
-    }
-
     @Override
     public String toString(){
         return  "Food = " + health;
     }
     @Override
-    public void action(Character player_pos, Position top_left, Position bot_right) {
+    public void action(Character player, Room room) {
     }
     @Override
     public int getAgility() {
@@ -45,6 +42,10 @@ public class Food extends Item {
     @Override
     public int getHealth() {
         return health;
+    }
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
     }
 }
 

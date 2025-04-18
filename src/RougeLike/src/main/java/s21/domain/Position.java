@@ -61,12 +61,12 @@ public class Position {
         return pos;
     }
 
-    public int check_unoccupied(Room room, Position pos)
+    public static int check_unoccupied(Room room, Position pos)
     {
         int status = UNOCCUPIED;
 
         for (int i = 0; i < room.getEntities_cnt() && status == UNOCCUPIED; i++)
-            if (room.getEntities(i).position.getX() == pos.getX() && room.getEntities(i).position.getY() == pos.getY())
+            if (room.getEntities(i).getPosition().getX() == pos.getX() && room.getEntities(i).getPosition().getY() == pos.getY())
                 status = OCCUPIED;
         return status;
     }

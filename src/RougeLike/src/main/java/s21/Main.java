@@ -2,6 +2,7 @@ package s21;
 
 import com.googlecode.lanterna.terminal.Terminal;
 import s21.controller.UserInput;
+import s21.datalayer.DataLayer;
 import s21.domain.GameSession;
 import s21.presentation.Print;
 import java.io.IOException;
@@ -27,8 +28,13 @@ public class Main {
             print.printItems(terminal, newGame, ch);
             terminal.flush();
         }
-            print.printResultOfGame(terminal, newGame);
+            newGame.getPlayer().setEndLevel(newGame.getCurrentLevelNumber());
+//            print.printResultOfGame(terminal, newGame);
+        DataLayer.saveProgress(newGame.getPlayer());
+        print.printStatistic(terminal, newGame);
             userInput.waitForResumeOrExit(terminal);
+
+
         if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
 //            userInput.waitForExit();
         }

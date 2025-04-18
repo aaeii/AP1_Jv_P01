@@ -2,6 +2,7 @@ package s21.domain.items;
 
 import s21.domain.Character;
 import s21.domain.Position;
+import s21.domain.Room;
 
 import static s21.domain.GameConstants.*;
 
@@ -18,11 +19,6 @@ public class Scroll extends Item {
         this.health = 0;
     }
 
-
-    @Override
-    public void action(Character player_pos, Position top_left, Position bot_right) {
-
-    }
 
     @Override
     public String toString(){
@@ -81,5 +77,12 @@ public class Scroll extends Item {
     public int getHealth() {
         return health;
     }
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
+    @Override
+    public void action(Character player, Room room) {
+    }
 }
