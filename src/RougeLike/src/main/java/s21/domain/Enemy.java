@@ -21,12 +21,12 @@ public class Enemy extends Entity {
     public Enemy() {
         super();
         setType(UNINITIALIZED);
-                this.health = 0;
-                this.agility = 0;
-                this.strength = 0;
-                this.hostility = 0;
-                setSymbol(' ');
-        }
+        this.health = 0;
+        this.agility = 0;
+        this.strength = 0;
+        this.hostility = 0;
+        setSymbol(' ');
+    }
 
     public Enemy(int type) {
         super();
@@ -75,10 +75,11 @@ public class Enemy extends Entity {
     public int getHealth() {
         return health;
     }
- @Override
- public void setHealth(int health) {
-     this.health = health;
- }
+
+    @Override
+    public void setHealth(int health) {
+        this.health = health;
+    }
 
     public int getAgility() {
         return agility;
@@ -97,8 +98,9 @@ public class Enemy extends Entity {
         boolean result = false;
         if (x > room.getTop_left().getX() && x < room.getBot_right().getX()
                 && y > room.getTop_left().getY() && y < room.getBot_right().getY()
-            && Position.check_unoccupied(room, new Position(x,y,false)) == UNOCCUPIED)
-        result = true;
+                && Position.check_unoccupied(room, new Position(x, y, false)) == UNOCCUPIED) {
+            result = true;
+        }
         return result;
     }
 
@@ -120,14 +122,14 @@ public class Enemy extends Entity {
     public void moveSnake(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
-        int newX = x, newY = y;
+//        int newX = x, newY = y;
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         Random random = new Random();
         int randomNumber = 0;
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
-            moveToPlayer(playerPosition, room, x, y, 3,false);
+            moveToPlayer(playerPosition, room, x, y, 3, false);
         } else {
             for (int i = 0; i < 4; i++) {
                 switch (initialDirection) {
@@ -171,22 +173,22 @@ public class Enemy extends Entity {
     public void moveZombie(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
-        int newX = x, newY = y;
+//        int newX = x, newY = y;
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
-            moveToPlayer(playerPosition,room, x, y, 1,false);
+            moveToPlayer(playerPosition, room, x, y, 1, false);
 
         } else {
             for (int i = 0; i < 4; i++) {
                 switch (initialDirection) {
                     case TOP:
-                        newY = y - 1;
+                        y = y - 1;
                         break;
 
                     case BOTTOM:
-                        newY = y + 1;
+                        y = y + 1;
                         break;
                     default:
                         return;
@@ -205,14 +207,13 @@ public class Enemy extends Entity {
      * Движение по кругу
      */
     public void moveOgre(Position playerPosition, Room room, int hostilityLevel) {
-
         int x = getPosition().getX();
         int y = getPosition().getY();
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
-            moveToPlayer(playerPosition, room, x, y, 2,false);
+            moveToPlayer(playerPosition, room, x, y, 2, false);
         } else {
             int newX, newY;
             for (int i = 0; i < 4; i++) {
@@ -253,43 +254,43 @@ public class Enemy extends Entity {
 
         int x = getPosition().getX();
         int y = getPosition().getY();
-        int newX = x, newY = y;
+//        int newX = x, newY = y;
         Random random = new Random();
         boolean visible = Math.random() > 0.6;
         int distanceToPlayer = Math.abs(x - playerPosition.getX()) + Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayer <= distanceForPursuit) {
             visible = true;
-            moveToPlayer(playerPosition,room, x, y, 2,visible);
+            moveToPlayer(playerPosition, room, x, y, 2, visible);
         } else {
-        for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 int direction = random.nextInt(4);
                 switch (direction) {
                     case TOP:
-                        newY = y - 1;
-                        newX = x;
+                        y = y - 1;
+                        x = x;
                         break;
                     case RIGHT:
-                        newX = x + 1;
-                        newY = y;
+                        x = x + 1;
+                        y = y;
                         break;
                     case BOTTOM:
-                        newY = y + 1;
-                        newX = x;
+                        y = y + 1;
+                        x = x;
                         break;
                     case LEFT:
-                        newX = x - 1;
-                        newY = y;
+                        x = x - 1;
+                        y = y;
                         break;
                     default:
                         return;
                 }
 //                System.out.println("dir=" + direction);
-            if (isValidMove(x, y, room)) {
-                getPosition().setNew(x, y, false);
+                if (isValidMove(x, y, room)) {
+                    getPosition().setNew(x, y, false);
 
                 }
-        }
+            }
         }
     }
 
@@ -299,27 +300,27 @@ public class Enemy extends Entity {
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
-        if (isValidMove(x, y, room)) {
-            getPosition().setNew(x, y, false);
+        if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
+            moveToPlayer(playerPosition, room, x, y, 1, false);
         }
     }
 
 
     @Override
-    public void action(Character player, Room room){
-        switch (getType()){
-            case ZOMBIE -> moveZombie( player.getPosition(), room, getHostility());
-            case GHOST -> moveGhost( player.getPosition(), room, getHostility());
-            case OGRE -> moveOgre( player.getPosition(), room, getHostility());
-            case VAMPIRE -> moveVampire( player.getPosition(), room, getHostility());
-            case SNAKE -> moveSnake( player.getPosition(), room, getHostility());
+    public void action(Character player, Room room) {
+        switch (getType()) {
+            case ZOMBIE -> moveZombie(player.getPosition(), room, getHostility());
+            case GHOST -> moveGhost(player.getPosition(), room, getHostility());
+            case OGRE -> moveOgre(player.getPosition(), room, getHostility());
+            case VAMPIRE -> moveVampire(player.getPosition(), room, getHostility());
+            case SNAKE -> moveSnake(player.getPosition(), room, getHostility());
 
         }
     }
 
     @Override
-    public String toString(){
-        return  "enemy" + getType() + " " + getStrength() + "HP" + getHealth();
+    public String toString() {
+        return "enemy" + getType() + " " + getStrength() + "HP" + getHealth();
     }
 
 
@@ -328,8 +329,7 @@ public class Enemy extends Entity {
             x = x + step;
         } else if (x > player.getX()) {
             x = x - step;
-        }
-        else if (y < player.getY()) {
+        } else if (y < player.getY()) {
             y = y + step;
         } else if (y > player.getY()) {
             y = y - step;

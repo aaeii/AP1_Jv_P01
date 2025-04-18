@@ -273,9 +273,9 @@ public class Character {
             boolean hits = random.nextInt(100) < BASE_FIGHT_CHANCE; // Проверка шанса попадания
             if (hits) {
                 takeDamage(enemy);
-                System.out.println(" hits " + enemy.getType() + " dealing ");
+                System.out.println(" hits " + enemy.getSymbol() + " dealing ");
             } else {
-                System.out.println(" misses " + enemy.getType());
+                System.out.println(" misses " + enemy.getSymbol());
             }
     }
 

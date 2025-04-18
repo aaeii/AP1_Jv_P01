@@ -20,7 +20,7 @@ public class GameSession {
 
 
 public GameSession() {
-    levels = new ArrayList<>(MAX_LEVEL_NUMBER); // Инициализация списка уровней
+    levels = new ArrayList<>(MAX_LEVEL_NUMBER); // инициализация списка уровней
     this.inGame = true;
     this.win = false;
     this.readyToStart = false;
