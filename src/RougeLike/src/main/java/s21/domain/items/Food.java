@@ -47,6 +47,15 @@ public class Food extends Item {
     public void setHealth(int health) {
         this.health = health;
     }
+    @Override
+    public int getCountHit() {
+        return 0;
+    }
+
+    @Override
+    public void setCountHit(int countHit) {
+
+    }
 }
 
 

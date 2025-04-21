@@ -85,4 +85,13 @@ public class Scroll extends Item {
     @Override
     public void action(Character player, Room room) {
     }
+    @Override
+    public int getCountHit() {
+        return 0;
+    }
+
+    @Override
+    public void setCountHit(int countHit) {
+
+    }
 }

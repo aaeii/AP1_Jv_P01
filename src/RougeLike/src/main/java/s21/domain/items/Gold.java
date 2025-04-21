@@ -51,5 +51,14 @@ public class Gold extends Item {
     public int getHealth() {
         return health;
     }
+    @Override
+    public int getCountHit() {
+        return 0;
+    }
+
+    @Override
+    public void setCountHit(int countHit) {
+
+    }
     }
 

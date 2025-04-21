@@ -3,12 +3,13 @@ package s21.domain;
 import static s21.domain.GameConstants.*;
 
 public abstract class Entity {
-    private  int type; // enemy, item, player, exit
+    private int type; // enemy, item, player, exit
     private int symbol; // выбрать из возможного пула
     private Position position;
     private int status;
     private int duration;
     private int health;
+    private int countHit;
 
     public Entity() {
         type = UNINITIALIZED;
@@ -17,6 +18,7 @@ public abstract class Entity {
         status = ON_FIELD;
         duration = UNINITIALIZED;
         health = 0;
+        countHit = 0;
 
     }
 
@@ -27,19 +29,24 @@ public abstract class Entity {
         this.status = ON_FIELD;
         this.duration = 0;
         this.health = 0;
+        this.countHit = 0;
     }
 
     public abstract void action(Character player, Room room);
+
     public abstract String toString();
+
     public abstract int getStrength();
+
     public abstract int getAgility();
+
     public abstract int getHealth();
+
     public abstract void setHealth(int health);
 
     public int getType() {
         return type;
     }
-
 
 
     public void setType(int type) {
@@ -80,9 +87,16 @@ public abstract class Entity {
     }
 
     public void reduceDuration() {
-        if (duration>=1) duration--;
+        if (duration >= 1) duration--;
     }
 
+    public int getCountHit() {
+        return countHit;
+    }
+
+    public void setCountHit(int countHit) {
+        this.countHit = countHit;
+    }
 
     public void clear() {
         type = UNINITIALIZED;

@@ -1,9 +1,5 @@
 package s21.domain;
 
-import s21.domain.Entity;
-import s21.domain.Position;
-
-import java.util.List;
 import java.util.Random;
 
 import static s21.domain.GameConstants.*;
@@ -298,7 +294,6 @@ public class Enemy extends Entity {
             case OGRE -> moveOgre(player.getPosition(), room, getHostility());
             case VAMPIRE -> moveVampire(player.getPosition(), room, getHostility());
             case SNAKE -> moveSnake(player.getPosition(), room, getHostility());
-
         }
     }
 

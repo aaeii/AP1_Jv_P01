@@ -62,6 +62,16 @@ public class Elixir extends Item {
     }
 
     @Override
+    public int getCountHit() {
+        return 0;
+    }
+
+    @Override
+    public void setCountHit(int countHit) {
+
+    }
+
+    @Override
     public String toString(){
         return  getName() + " " + getStatus();
     }

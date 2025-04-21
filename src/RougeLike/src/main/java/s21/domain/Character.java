@@ -1,10 +1,5 @@
 package s21.domain;
 
-import com.googlecode.lanterna.SGR;
-import s21.domain.items.Inventory;
-import s21.domain.items.Item;
-import s21.domain.items.Weapon;
-
 import java.util.List;
 import java.util.Random;
 
@@ -44,10 +39,10 @@ public class Character {
         this.readScrollsCounter = 0;
         this.stepCount = 0;
         this.moveDirection = UNINITIALIZED;
-        this.endLevel=0;
+        this.endLevel = 0;
         this.view_area = new Position[VIEW_AREA_SIZE][VIEW_AREA_SIZE];
         for (int i = 0; i < VIEW_AREA_SIZE; i++)
-            for (int j = 0; j < VIEW_AREA_SIZE; j++){
+            for (int j = 0; j < VIEW_AREA_SIZE; j++) {
                 view_area[i][j] = new Position();
             }
     }
@@ -56,15 +51,15 @@ public class Character {
         this.endLevel = endLevel;
     }
 
-    public int getEndLevel(){
+    public int getEndLevel() {
         return endLevel;
     }
 
-    public int getStepCount(){
+    public int getStepCount() {
         return stepCount;
     }
 
-    public Position getViewArea(int i, int j){
+    public Position getViewArea(int i, int j) {
         return view_area[i][j];
     }
 
@@ -72,31 +67,31 @@ public class Character {
         return position;
     }
 
-    public int getMoveDirection(){
+    public int getMoveDirection() {
         return moveDirection;
     }
 
-    public int getDrunkElixirCounter(){
+    public int getDrunkElixirCounter() {
         return drunkElixirCounter;
     }
 
-    public int getEatenFoodCounter(){
+    public int getEatenFoodCounter() {
         return eatenFoodCounter;
     }
 
-    public void setEatenFoodCounter(){
+    public void setEatenFoodCounter() {
         this.eatenFoodCounter++;
     }
 
-    public void setStepCount(){
+    public void setStepCount() {
         this.stepCount++;
     }
 
-    public int getReadScrollCounter(){
+    public int getReadScrollCounter() {
         return readScrollsCounter;
     }
 
-    public void setReadScrollCounter(){
+    public void setReadScrollCounter() {
         this.readScrollsCounter++;
     }
 
@@ -116,7 +111,7 @@ public class Character {
         this.gold = gold;
     }
 
-    public int getGold(){
+    public int getGold() {
         return gold;
     }
 
@@ -135,8 +130,9 @@ public class Character {
     public void setStrength(int value) {
         this.strength = value;
     }
-    private void fillInViewArea(){
-        for (int i = 0;  i < VIEW_AREA_SIZE; i++) {
+
+    private void fillInViewArea() {
+        for (int i = 0; i < VIEW_AREA_SIZE; i++) {
             for (int j = 0; j < VIEW_AREA_SIZE; j++) {
                 view_area[i][j].setY(position.getY() - VIEW_DISTANCE + i);
                 view_area[i][j].setX(position.getX() - VIEW_DISTANCE + j);
@@ -146,7 +142,7 @@ public class Character {
         drawRound();
     }
 
-    private void drawRound(){
+    private void drawRound() {
         int R = VIEW_DISTANCE;
         int x = 0;
         int y = R;
@@ -155,7 +151,7 @@ public class Character {
         int delta = 1 - 2 * R;
         int error = 0;
         while (y >= x) {
-            for (int i = y1 - y - 1; i <= y1 + y-1; i++)
+            for (int i = y1 - y - 1; i <= y1 + y - 1; i++)
                 view_area[x1 + x - 1][i].setVisibility(true);
             for (int i = y1 - y - 1; i <= y1 + y - 1; i++)
                 view_area[x1 - x - 1][i].setVisibility(true);
@@ -170,9 +166,9 @@ public class Character {
                 delta -= 2 * --y + 1;
             delta += 2 * (++x - --y);
         }
-        for (int i=1; i<VIEW_AREA_SIZE-1; i++){
-            for (int j=0; j<VIEW_AREA_SIZE-1; j++){
-                if (view_area[i-1][j].isVisibility() && view_area[i+1][j].isVisibility())
+        for (int i = 1; i < VIEW_AREA_SIZE - 1; i++) {
+            for (int j = 0; j < VIEW_AREA_SIZE - 1; j++) {
+                if (view_area[i - 1][j].isVisibility() && view_area[i + 1][j].isVisibility())
                     view_area[i][j].setVisibility(true);
             }
         }
@@ -180,61 +176,78 @@ public class Character {
 
 
     public void move(char[][] field, int direction, Level level) {
+        int countHitVamp = 0;
         int x = position.getX();
         int y = position.getY();
-        moveDirection=direction;
+        moveDirection = direction;
         switch (direction) {
             case (TOP):
-                if (field[y - 1][x] == SNAKE_CHAR
-                        || field[y - 1][x] == ZOMBIE_CHAR
-                        || field[y - 1][x] == VAMPIRE_CHAR
-                        ||  field[y - 1][x] == GHOST_CHAR)
-                    fight(new Position(x, y - 1, true), level);
-                else
-                if (field[y-1][x ] != WALL_CHAR && field[y-1][x] != OUTER_AREA_CHAR) position.setNew(x , y-1, true);
-                fillInViewArea();
+                if (!sleep) {
+                    if (field[y - 1][x] == SNAKE_CHAR
+                            || field[y - 1][x] == ZOMBIE_CHAR
+                            || field[y - 1][x] == VAMPIRE_CHAR
+                            || field[y - 1][x] == GHOST_CHAR)
+                        fight(new Position(x, y - 1, true), level, countHitVamp);
+                    else if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR)
+                        position.setNew(x, y - 1, true);
+                    fillInViewArea();
+                } else {
+                    sleep = false;
+                }
                 break;
             case (RIGHT):
-                if (field[y][x + 1] == SNAKE_CHAR
-                        || field[y][x + 1] == ZOMBIE_CHAR
-                        || field[y][x + 1] == VAMPIRE_CHAR
-                        ||  field[y][x + 1] == GHOST_CHAR
-                        ||  field[y][x + 1] == OGRE_CHAR)
-                    fight(new Position(x + 1, y, true), level);
-                else
-                if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR) position.setNew(x + 1, y, true);
-                fillInViewArea();
+                if (!sleep) {
+                    if (field[y][x + 1] == SNAKE_CHAR
+                            || field[y][x + 1] == ZOMBIE_CHAR
+                            || field[y][x + 1] == VAMPIRE_CHAR
+                            || field[y][x + 1] == GHOST_CHAR
+                            || field[y][x + 1] == OGRE_CHAR)
+                        fight(new Position(x + 1, y, true), level, countHitVamp);
+                    else if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR)
+                        position.setNew(x + 1, y, true);
+                    fillInViewArea();
+                } else {
+                    sleep = false;
+                }
                 break;
             case (BOTTOM):
-                if (field[y + 1][x] == SNAKE_CHAR
-                        || field[y + 1][x] == ZOMBIE_CHAR
-                        || field[y + 1][x] == VAMPIRE_CHAR
-                        ||  field[y + 1][x] == GHOST_CHAR
-                        ||  field[y + 1][x] == OGRE_CHAR)
-                    fight(new Position(x, y + 1, true), level);
-                else
-                if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR) position.setNew(x, y + 1, true);
-                fillInViewArea();
+                if (!sleep) {
+                    if (field[y + 1][x] == SNAKE_CHAR
+                            || field[y + 1][x] == ZOMBIE_CHAR
+                            || field[y + 1][x] == VAMPIRE_CHAR
+                            || field[y + 1][x] == GHOST_CHAR
+                            || field[y + 1][x] == OGRE_CHAR)
+                        fight(new Position(x, y + 1, true), level, countHitVamp);
+                    else if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR)
+                        position.setNew(x, y + 1, true);
+                    fillInViewArea();
+                } else {
+                    sleep = false;
+                }
                 break;
             case (LEFT):
-                if (field[y][x - 1] == SNAKE_CHAR
-                        || field[y][x - 1] == ZOMBIE_CHAR
-                        || field[y][x - 1] == VAMPIRE_CHAR
-                        ||  field[y][x - 1] == GHOST_CHAR
-                        ||  field[y][x - 1] == OGRE_CHAR)
-                    fight(new Position(x - 1, y, true), level);
-                else
-                if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) position.setNew(x - 1, y, true);
-                fillInViewArea();
+                if (!sleep) {
+                    if (field[y][x - 1] == SNAKE_CHAR
+                            || field[y][x - 1] == ZOMBIE_CHAR
+                            || field[y][x - 1] == VAMPIRE_CHAR
+                            || field[y][x - 1] == GHOST_CHAR
+                            || field[y][x - 1] == OGRE_CHAR)
+                        fight(new Position(x - 1, y, true), level, countHitVamp);
+                    else if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR)
+                        position.setNew(x - 1, y, true);
+                    fillInViewArea();
+                } else {
+                    sleep = false;
+                }
                 break;
         }
-
     }
-    public void fight(Position enemyPos, Level level) {
-        int offset = 0,  roomNumber = 0;
+
+    public void fight(Position enemyPos, Level level, int countHitVamp) {
+        int offset = 0, roomNumber = 0;
         while (level.getRoomsSequence(offset).getSector() == -1)
             ++offset;
-        for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
+        for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
             System.out.println(level.getRoomsSequence(j).checkInRoomEntities(enemyPos));
             if (level.getRoomsSequence(j).checkInRoomEntities(enemyPos)) {
                 roomNumber = j;
@@ -242,7 +255,7 @@ public class Character {
             }
         }
         System.out.println(roomNumber);
-        for (int i = 0; i < level.getRoomsSequence(roomNumber).getEntities().size(); i++){
+        for (int i = 0; i < level.getRoomsSequence(roomNumber).getEntities().size(); i++) {
             System.out.println(i + level.getRoomsSequence(roomNumber).getEntities(i).toString());
         }
         int entity_num = -1;
@@ -252,14 +265,13 @@ public class Character {
 //                    && enemyRoom.getEntities(i).getType() <= ZOMBIE && enemyRoom.getEntities(i).getType() >= SNAKE
             ) {
                 entity_num = i;
-                System.out.println("enemy" + i);
+                System.out.println(" enemy " + i);
                 break;
             }
         }
-        if (entity_num != UNINITIALIZED){
-            attack(level.getRoomsSequence(roomNumber).getEntities(entity_num));
-            if (level.getRoomsSequence(roomNumber).getEntities(entity_num).getHealth() == 0)
-            {
+        if (entity_num != UNINITIALIZED) {
+            attack(level.getRoomsSequence(roomNumber).getEntities(entity_num), countHitVamp);
+            if (level.getRoomsSequence(roomNumber).getEntities(entity_num).getHealth() == 0) {
                 level.getRoomsSequence(roomNumber).getEntities().remove(entity_num);
                 int Entities_cnt = level.getRoomsSequence(roomNumber).getEntities_cnt() - 1;
                 level.getRoomsSequence(roomNumber).setEntities_cnt(Entities_cnt);
@@ -267,25 +279,49 @@ public class Character {
         }
     }
 
-    public void attack(Entity enemy) {
-        int hitChance = calculateHitChance(enemy);
-        Random random = new Random();
-        boolean hits = random.nextInt(100) < BASE_FIGHT_CHANCE; // Проверка шанса попадания
-        if (hits) {
+    public void attack(Entity enemy, int countHitVamp2) {
+        boolean hitChance = calculateHitChance(enemy);
+//        Random random = new Random();
+//        boolean hits = random.nextInt(100) < BASE_FIGHT_CHANCE; // Проверка шанса попадания
+//        boolean hits=true;
+        hitChance = attackVampire(enemy, hitChance);
+//        System.out.println("hitChance= " + hitChance);
+        if (hitChance) {
+            attackSnake(enemy);
             takeDamage(enemy);
-            System.out.println(" hits " + enemy.getSymbol() + " dealing ");
+            System.out.println("hitting the " + (char) enemy.getSymbol());
         } else {
-            System.out.println(" misses " + enemy.getSymbol());
+            System.out.println("misses " + (char) enemy.getSymbol());
         }
     }
 
-    private int calculateHitChance(Entity enemy) {
-        return (int) (Math.min(BASE_FIGHT_CHANCE + (agility - enemy.getAgility()), 100));
+    private boolean attackVampire(Entity enemy, boolean hitChance) {
+        if (enemy.getType() == VAMPIRE && enemy.getCountHit() == 0) {//1 удар по вампиру промах
+            hitChance = false;
+            int countHitVamp = enemy.getCountHit();
+            enemy.setCountHit(countHitVamp + 1);
+        }
+        return hitChance;
+    }
+
+    private void attackSnake(Entity enemy) {
+        Random random = new Random();
+        if (enemy.getType() == SNAKE) {
+            sleep = random.nextInt(100) > BASE_FIGHT_CHANCE;
+//            System.out.println("sleep= " + this.sleep);
+        }
+    }
+
+    private boolean calculateHitChance(Entity enemy) {
+        Random random = new Random();
+        int chance = BASE_FIGHT_CHANCE + (agility - enemy.getAgility());
+//        System.out.println("chance= " + chance);
+        return random.nextInt(1, 101) <= chance;
     }
 
     public void takeDamage(Entity enemy) {
         health = health - enemy.getStrength();
-        int enemy_health = enemy.getHealth()-strength;
+        int enemy_health = enemy.getHealth() - strength;
         System.out.println("enemy_health " + enemy_health);
         if (health < 0) {
             health = 0;
@@ -299,12 +335,12 @@ public class Character {
         }
     }
 
-    public void useItem(int number, GameSession game, int type){
+    public void useItem(int number, GameSession game, int type) {
         int count = 0;
-        for (int i = 0; i < game.getItemsCount(); i++){
+        for (int i = 0; i < game.getItemsCount(); i++) {
             Entity cur_entity = game.getItemFromInventory(i);
             if (cur_entity.getType() == type
-                    && cur_entity.getStatus() == IN_INVENTORY){
+                    && cur_entity.getStatus() == IN_INVENTORY) {
                 count++;
                 if (number == (count - 1)) {
                     setNewCharacters(i, game);
@@ -312,21 +348,21 @@ public class Character {
             }
             if (type == HEALTHKIT
                     && cur_entity.getStatus() == IN_INVENTORY
-                    && cur_entity.getHealth()>0){
+                    && cur_entity.getHealth() > 0) {
                 count++;
                 if (number == (count - 1)) {
                     setNewCharacters(i, game);
                 }
             }
         }
-        for (int i = 0; i < game.getItemsCount(); i++){
+        for (int i = 0; i < game.getItemsCount(); i++) {
             Entity cur_entity = game.getItemFromInventory(i);
             if ((cur_entity.getType() == WEAPON
                     && cur_entity.getStatus() == ON_FIELD)
                     || (cur_entity.getType() == type
                     && cur_entity.getStatus() == USED
                     && cur_entity.getType() != WEAPON
-                    && cur_entity.getType()!=ELIXIR)){
+                    && cur_entity.getType() != ELIXIR)) {
                 game.getAllItems().remove(i);
             }
         }
@@ -334,10 +370,10 @@ public class Character {
         game.getInventory().print();
     }
 
-    public void setNewCharacters(int i, GameSession game){
+    public void setNewCharacters(int i, GameSession game) {
         if (game.getItemFromInventory(i).getType() == WEAPON) freeCurrentWeapon(game);
-        if (game.getItemFromInventory(i).getType() == ELIXIR){
-            int duration = (int) ( Math.random() * 10 + 10);
+        if (game.getItemFromInventory(i).getType() == ELIXIR) {
+            int duration = (int) (Math.random() * 10 + 10);
             game.getItemFromInventory(i).setDuration(duration);
         }
         game.getItemFromInventory(i).setStatus(USED);
@@ -350,20 +386,19 @@ public class Character {
         int newHealth = getHealth() + game.getItemFromInventory(i).getHealth();
         if (newHealth <= MAX_HEALTH) setHealth(newHealth);
         else setHealth(MAX_HEALTH);
-        if (game.getItemFromInventory(i).getType()==ELIXIR) drunkElixirCounter++;
-        if (game.getItemFromInventory(i).getType()==SCROLL) setReadScrollCounter();
+        if (game.getItemFromInventory(i).getType() == ELIXIR) drunkElixirCounter++;
+        if (game.getItemFromInventory(i).getType() == SCROLL) setReadScrollCounter();
     }
 
-    public void freeCurrentWeapon(GameSession game){
-        for (int i = 0; i < game.getItemsCount(); i++){
+    public void freeCurrentWeapon(GameSession game) {
+        for (int i = 0; i < game.getItemsCount(); i++) {
             Entity cur_entity = game.getItemFromInventory(i);
             if (cur_entity.getType() == WEAPON
-                    && cur_entity.getStatus() == USED)
-            {
-                int offset = 0 ;
+                    && cur_entity.getStatus() == USED) {
+                int offset = 0;
                 while (game.currentLevel.getRoomsSequence(offset).getSector() == -1)
                     ++offset;
-                for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
+                for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
                     Room current_room = game.currentLevel.getRoomsSequence(j);
                     if (current_room.checkRoom(position)) {
                         Position newWeaponPos = new Position();
@@ -416,31 +451,31 @@ public class Character {
 //        }
 //    }
 
-    public boolean playerInCorridor(GameSession game){
+    public boolean playerInCorridor(GameSession game) {
         boolean result = true;
-        int offset = 0 ;
+        int offset = 0;
         while (game.currentLevel.getRoomsSequence(offset).getSector() == -1)
             ++offset;
-        for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
+        for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
             if (game.currentLevel.getRoomsSequence(j).checkPlayerInRoom(game.getPlayer().getPosition())) {
-                result=false;
+                result = false;
                 return result;
             }
         }
         return result;
     }
 
-    public static void sortListOfCharacter(List <Character> players){
-        for (int i = 0; i < players.size()-1; i++){
-            for (int j=0; j < players.size()-1-i; j++){
-                if (players.get(j+1).getGold() < players.get(j).getGold()) {
+    public static void sortListOfCharacter(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
+            for (int j = 0; j < players.size() - 1 - i; j++) {
+                if (players.get(j + 1).getGold() < players.get(j).getGold()) {
                     Character swap = players.get(j);
                     players.set(j, players.get(j + 1));
                     players.set(j + 1, swap);
                 }
             }
         }
-        for ( int i = 0; i < players.size()-1; i++) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getGold() == players.get(j).getGold())
                     if (players.get(j + 1).getEndLevel() < players.get(j).getEndLevel()) {
@@ -451,7 +486,7 @@ public class Character {
             }
         }
 
-        for ( int i = 0; i < players.size()-1; i++) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if ((players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel()))
@@ -462,7 +497,7 @@ public class Character {
                     }
             }
         }
-        for ( int i = 0; i < players.size()-1; i++) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if ((players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
