@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static s21.domain.GameConstants.IN_INVENTORY;
 import static s21.domain.GameConstants.MAX_COUNT_TYPE_ITEM;
 
 public class Inventory {
@@ -19,11 +20,11 @@ public class Inventory {
         items = new ArrayList<>();
     }
 
-    public void addItem(Entity item) {
-        if (items.size() <= (MAX_COUNT_TYPE_ITEM )) {
-            items.add(item);
-        }
-    }
+//    public void addItem(Entity item) {
+//        if (items.size() <= (MAX_COUNT_TYPE_ITEM )) {
+//            items.add(item);
+//        }
+//    }
 
     public List<Entity> getItemsByType(int itemType) {
         List<Entity> itemsList = items.stream()
@@ -39,6 +40,23 @@ public class Inventory {
     public Entity getItem( int i){
         return items.get(i);
     }
+
+    public boolean addItem(Entity item) {
+        boolean result = false;
+
+        long countTypeItem = items.stream()
+                .filter(elem -> elem.getType() == item.getType())
+                .count();
+
+        if (countTypeItem < (MAX_COUNT_TYPE_ITEM)) {
+            items.add(item);
+            item.setStatus(IN_INVENTORY);
+            result = true;
+        }
+
+        return result;
+    }
+
 
     public void print(){
 

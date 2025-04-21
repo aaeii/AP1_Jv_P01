@@ -138,6 +138,7 @@ public class Print {
                     case 'e' -> printItemMenu(terminal, game, SCROLL);
                     case 'j' -> printItemMenu(terminal, game, HEALTHKIT);
                     case 'k' -> printItemMenu(terminal, game, ELIXIR);
+                    case 'i' -> printStatistic(terminal, game);
                 }
             }
         }
@@ -163,7 +164,7 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
                         number++;
                     }
                 }
-                if (number==0)
+                if (number == 0)
                     textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "You have 0 Items", SGR.BOLD);
                 else textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 2 + number, "Choose by pressing 0-" + (number-1), SGR.BOLD);
                 textGraphics.putString(MAP_WIDTH / 2 - 10, MAP_HEIGHT / 2 - 1 + number, "Press any Q for exit", SGR.BOLD);
@@ -235,14 +236,38 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
         int count = players.size();
         s21.domain.Character.sortListOfCharacter(players);
         players.stream()
-                .forEach(p-> textGraphics.putString(2, MAP_HEIGHT / 2 + players.indexOf(p)-5, "lvl: " +  p.getEndLevel() +
-                                " Gold: " + p.getGold() +
-                                " Steps: " + p.getStepCount() +
+                .forEach(p-> textGraphics.putString(MAP_WIDTH/2 - 15, MAP_HEIGHT / 2 + players.indexOf(p)-5,
+                        " Gold: " + p.getGold() +
+                                "lvl: " +  p.getEndLevel() +
                                 " Food: " + p.getEatenFoodCounter() +
-                                " Elixirs: " + p.getDrunkElixirCounter(),
+                                " Elixirs: " + p.getDrunkElixirCounter() +
+                                " Steps: " + p.getStepCount(),
                         SGR.BOLD));
         textGraphics.putString(2, MAP_HEIGHT / 2 + count - 4, "Press--Q--to--exit.", SGR.BOLD);
         terminal.flush();
+        char choose = 0;
+        do{
+            choose = terminal.readInput().getCharacter();
+            if (choose == 'q'|| choose == 'Q') {
+                printGame(terminal, game);
+                terminal.flush();
+            }
+        } while (choose != 'q' && choose != 'Q');
+    }
+
+    public void printInfoMessage(Terminal terminal, List<String> messages, GameSession game) throws IOException {
+        if (!messages.isEmpty()) {
+            printGame(terminal, game); // Отрисовываем поле
+
+            // Объединяем строки в одно сообщение
+            String message = String.join(" ", messages);
+
+            // Выводим сообщение
+            final TextGraphics textGraphics = terminal.newTextGraphics();
+            textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+            textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
+            textGraphics.putString(MAP_WIDTH / 2 - 10  , MAP_HEIGHT / 2, message, SGR.BOLD);
+        }
     }
 }
 

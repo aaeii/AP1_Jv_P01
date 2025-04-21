@@ -1,5 +1,6 @@
 package s21.domain;
 
+import s21.domain.items.Gold;
 import s21.domain.items.Inventory;
 
 import java.util.ArrayList;
@@ -17,8 +18,6 @@ public class Room {
     private Position top_left;
     private Position bot_right;
     private boolean visited;
-//    private boolean playerExit;
-//    private boolean playerSpawn;
     private final List  <Entity> entities; //MAX_ENTITIES_PER_ROOM
     private int entities_cnt;
     private Position[][] room_points;
@@ -184,25 +183,27 @@ public class Room {
                             entities_cnt--;
                         }
                         else {
-                            if (inventory.getSize() < MAX_COUNT_TYPE_ITEM)
-                                {
-                                entities.get(i).setStatus(IN_INVENTORY);
-                                inventory.addItem(entities.get(i));
+//                            if (inventory.getSize() < MAX_COUNT_TYPE_ITEM)
+//                                {
+//                                entities.get(i).setStatus(IN_INVENTORY);
+//                                inventory.addItem(entities.get(i));
+//                                    entities.remove(i);
+//                                    entities_cnt--;
+//                                }
+//                            }
+                            if (inventory.addItem(entities.get(i)))
+                            {
+                                    inventory.addItem(entities.get(i));
                                     entities.remove(i);
                                     entities_cnt--;
-                                }
                             }
+                        }
                     inventory.print();
                 }
         }
         }
     }
 
-//    public void moveEnemiesInRoom(Position position){
-//        for (int i = 0; i < entities_cnt; i++) {
-//            entities.get(i).action(position, top_left, bot_right, entities);
-//            }
-//    }
 
     public boolean checkRoom(Position player_position){
             if (player_position.getX() >= top_left.getX()
@@ -211,6 +212,25 @@ public class Room {
                     && player_position.getY() <= bot_right.getY())
                 return true;
         return false;
+    }
+
+    public void throwGold(Entity enemy, Room room){
+                int gold_count = (enemy.getAgility()+ enemy.getStrength()) / 10;
+                if (gold_count < 1) gold_count++;
+                for (int i=0; i < gold_count ;
+//                        && room.getEntities_cnt() <= MAX_ENTITIES_PER_ROOM;
+                     i++) {
+                    Entity newGold = new Gold();
+                    Position goldPos = new Position();
+                    do goldPos = goldPos.generate_entity_coords(room);
+                    while ((goldPos.check_unoccupied(room, goldPos) == OCCUPIED)
+                            && (goldPos.check_walls(room, goldPos) == OCCUPIED));
+                    newGold.setStatus(ON_FIELD);
+                    newGold.setType(GOLD);
+                    newGold.setSymbol(GOLD_CHAR);
+                    newGold.setPosition(goldPos);
+                    room.setEntities(newGold);
+                }
     }
 
     public void makeVisible (){

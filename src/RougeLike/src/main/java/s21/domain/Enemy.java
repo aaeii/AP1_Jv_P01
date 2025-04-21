@@ -9,9 +9,9 @@ import java.util.Random;
 import static s21.domain.GameConstants.*;
 
 public class Enemy extends Entity {
-    public static final int VERY_HIGH_LVL = 40;
-    public static final int HIGH_LVL = 30;
-    public static final int MEDIUM_LVL = 15;
+    public static final int VERY_HIGH_LVL = 20;
+    public static final int HIGH_LVL = 15;
+    public static final int MEDIUM_LVL = 10;
     public static final int LOW_LVL = 5;
     private int health;
     private int agility;
@@ -77,7 +77,7 @@ public class Enemy extends Entity {
     }
  @Override
  public void setHealth(int health) {
-     this.health = health;
+     this.health = Math.max(health, 0);
  }
 
     public int getAgility() {
@@ -176,24 +176,21 @@ public class Enemy extends Entity {
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
-            moveToPlayer(playerPosition,room, x, y, 1,false);
-
+            moveToPlayer(playerPosition,room, newX, newY, 1,false);
         } else {
             for (int i = 0; i < 4; i++) {
                 switch (initialDirection) {
                     case TOP:
                         newY = y - 1;
                         break;
-
                     case BOTTOM:
                         newY = y + 1;
                         break;
                     default:
                         return;
                 }
-                if (isValidMove(x, y, room)) {
-                    getPosition().setNew(x, y, false);
-
+                if (isValidMove(newX, newY, room)) {
+                    getPosition().setNew(newX, newY, false);
                 } else {
                     initialDirection = (initialDirection + 2) % 4;
                 }
@@ -285,8 +282,8 @@ public class Enemy extends Entity {
                         return;
                 }
 //                System.out.println("dir=" + direction);
-            if (isValidMove(x, y, room)) {
-                getPosition().setNew(x, y, false);
+            if (isValidMove(newX, newY, room)) {
+                getPosition().setNew(newX, newY, false);
 
                 }
         }
@@ -324,19 +321,20 @@ public class Enemy extends Entity {
 
 
     private void moveToPlayer(Position player, Room room, int x, int y, int step, boolean visible) {
-        if (x < player.getX()) {
-            x = x + step;
-        } else if (x > player.getX()) {
-            x = x - step;
-        }
-        else if (y < player.getY()) {
-            y = y + step;
-        } else if (y > player.getY()) {
-            y = y - step;
-        }
-        if (isValidMove(x, y, room)) {
-            getPosition().setNew(x, y, visible);
-        }
+//        do {
+            if (x < player.getX()) {
+                x = x + step;
+            } else if (x > player.getX()) {
+                x = x - step;
+            } else if (y < player.getY()) {
+                y = y + step;
+            } else if (y > player.getY()) {
+                y = y - step;
+            }
+            if (isValidMove(x, y, room)) {
+                getPosition().setNew(x, y, visible);
+            }
+//        } while(!isValidMove(x, y, room));
     }
 
 }

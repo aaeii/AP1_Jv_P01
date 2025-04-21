@@ -312,7 +312,6 @@ public class Level {
                     for (int j = 0; j < roomsSequence.get(i).getEntities_cnt(); j++) {
                         roomsSequence.get(i).getEntities(j).action(player, roomsSequence.get(i));
                     }
-//                    roomsSequence.get(i).moveEnemiesInRoom(position);
                 }
         }
     }

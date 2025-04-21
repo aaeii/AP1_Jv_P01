@@ -6,6 +6,9 @@ import s21.datalayer.DataLayer;
 import s21.domain.GameSession;
 import s21.presentation.Print;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) throws IOException {
         GameSession newGame = new GameSession();
@@ -22,16 +25,16 @@ public class Main {
         if (newGame.isInGame()) print.printGame(terminal, newGame);
         while (newGame.isInGame()) {
             char ch = terminal.readInput().getCharacter();
-            newGame.gameStep(ch);
+            List<String> messages = newGame.gameStep(ch);
             print.setField(newGame.getField());
             print.printGame(terminal, newGame);
+            print.printInfoMessage(terminal, messages, newGame);
             print.printItems(terminal, newGame, ch);
             terminal.flush();
         }
             newGame.getPlayer().setEndLevel(newGame.getCurrentLevelNumber());
-//            print.printResultOfGame(terminal, newGame);
+            print.printResultOfGame(terminal, newGame);
         DataLayer.saveProgress(newGame.getPlayer());
-        print.printStatistic(terminal, newGame);
             userInput.waitForResumeOrExit(terminal);
 
 

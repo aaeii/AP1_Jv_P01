@@ -365,7 +365,7 @@ public GameSession() {
             if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
                 for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
                     Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && cur_entity.getStatus()==ON_FIELD)
+                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && (cur_entity.getStatus()==ON_FIELD||cur_entity.getStatus()==FIGHT))
                         field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
                 }
             }
@@ -381,25 +381,26 @@ public GameSession() {
         field[currentLevel.getExit_position().getY()][currentLevel.getExit_position().getX()] = EXIT_CHAR;
     }
 
-    public void gameStep(int action){
+    public List<String> gameStep(int action){
+        List<String> message = new ArrayList<>();
 
         if (action == 'w' || action == 'W') {
-            player.move(field, TOP, currentLevel);
+            message = player.move(field, TOP, currentLevel);
             player.setStepCount();
             checkElixirDuration();
         }
         if (action == 'd' || action == 'D') {
-            player.move(field, RIGHT, currentLevel);
+            message = player.move(field, RIGHT, currentLevel);
             player.setStepCount();
             checkElixirDuration();
         }
         if (action == 's' || action == 'S') {
-            player.move(field, BOTTOM, currentLevel);
+            message = player.move(field, BOTTOM, currentLevel);
             player.setStepCount();
             checkElixirDuration();
         }
         if (action == 'a' || action == 'A') {
-            player.move(field, LEFT, currentLevel);
+            message = player.move(field, LEFT, currentLevel);
             player.setStepCount();
             checkElixirDuration();
         }
@@ -409,10 +410,10 @@ public GameSession() {
         }
         else
         {
-            currentLevel.moveEnemies(player);
+            if (!isFight()) currentLevel.moveEnemies(player);
             currentLevel.takeItem(player, inventory);
         }
-//        checkInGame();
+        checkInGame();
         if (action == 'Q' || action == 'q')
         {
             inGame = false;
@@ -422,11 +423,36 @@ public GameSession() {
         map_refresh();
         level_to_field(currentLevel);
 
+        return message;
+    }
+
+    private boolean isFight(){
+    boolean result = false;
+        int offset = 0 ;
+        while (currentLevel.getRoomsSequence(offset).getSector() == -1)
+            ++offset;
+        for (int j = 0; j < currentLevel.getRoom_cnt() && !result ; j++){
+        for (int i = 0; i < currentLevel.getRoomsSequence(j+offset).getEntities_cnt() && !result ; i++) {
+            if ( currentLevel.getRoomsSequence(j+offset).getEntities(i).getStatus()==FIGHT
+            ) {
+                result = true;
+            }
+        }
+        }
+        System.out.println(result);
+        return result;
+    }
+
+    private void checkInGame() {
+        if (player.getHealth() <= 0) {
+            this.inGame = false;
+            this.win = false;
+        }
     }
 
     public void checkElixirDuration(){
-        for (int i=0; i< getItemsCount(); i++){
-            if (getItemFromInventory(i).getType()==ELIXIR) {
+        for (int i = 0; i < getItemsCount(); i++){
+            if (getItemFromInventory(i).getType() == ELIXIR) {
                 getItemFromInventory(i).reduceDuration();
                 if (getItemFromInventory(i).getDuration() == 0) {
                     int newStrength = player.getStrength() - getItemFromInventory(i).getStrength();

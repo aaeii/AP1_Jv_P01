@@ -6,6 +6,7 @@ public class GameConstants {
     public static final int  ON_FIELD  = 0;
     public static final int  IN_INVENTORY  = 1;
     public static final int  USED  = 2;
+    public static final int  FIGHT  = 3;
 
 
     public static final int CONNECTED = 0;
@@ -18,11 +19,9 @@ public class GameConstants {
     public static final int SECTOR_HEIGHT = MAP_HEIGHT / ROOMS_PER_SIDE;
     public static final int MAX_ROOMS_NUMBER = ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_CORRIDORS_NUMBER  = 12;
-    public static final int CORNER_VERT_RANGE = (SECTOR_HEIGHT - 6) / 2; // для 3д графики
-    public static final int CORNER_HOR_RANGE = (SECTOR_WIDTH - 6) / 2; // для 3д графики
     public static final double ROOM_CHANCE = 0.5;
     public static final int MAX_ENEMIES_PER_ROOM = 2;
-    public static final int MAX_ITEMS_PER_ROOM = 3;
+    public static final int MAX_ITEMS_PER_ROOM = 5;
     public static final int MAX_ENTITIES_PER_ROOM = MAX_ENEMIES_PER_ROOM + MAX_ITEMS_PER_ROOM + 2;
     public static final int MAX_ENEMIES_TOTAL = MAX_ENEMIES_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_ITEMS_TOTAL = MAX_ITEMS_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
