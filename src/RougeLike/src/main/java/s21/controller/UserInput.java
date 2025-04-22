@@ -23,8 +23,7 @@ public class UserInput {
         try {
             KeyStroke keyStroke = terminal.readInput();
             Action = (int) keyStroke.getCharacter();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -42,11 +41,11 @@ public class UserInput {
                 Action = (int) keyStroke.getCharacter();
             }
 
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     //    public void waitForExit() {
 //        InputChar inputChar = Toolkit.readCharacter();

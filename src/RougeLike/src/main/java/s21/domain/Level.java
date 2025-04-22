@@ -41,13 +41,13 @@ public class Level {
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
             Room room = new Room();
             roomsSequence.add(room);
-            }
+        }
         corridors = new ArrayList<>();
         for (int i = 0; i < MAX_CORRIDORS_NUMBER; i++){
             Corridor corr = new Corridor();
             corridors.add(corr);
         }
-}
+    }
     public void refreshLevel() {
         roomsSequence = new ArrayList<>();
         corridors = new ArrayList<>();
@@ -126,9 +126,9 @@ public class Level {
                 for (int j = 0; j < ROOMS_PER_SIDE; j++, sector++){
                     if (Math.random() < ROOM_CHANCE &&
                             rooms[i][j].getSector() == -1 ){
-                            rooms[i][j] = new Room(i, j, sector);
-                            setRoomsSequence(room_cnt, rooms[i][j]);
-                            room_cnt++;
+                        rooms[i][j] = new Room(i, j, sector);
+                        setRoomsSequence(room_cnt, rooms[i][j]);
+                        room_cnt++;
                     }
                 }
             }
@@ -216,7 +216,7 @@ public class Level {
                     if ((i > 0))
                     {
                         if ((rooms[i - 1][j].getSector() != UNINITIALIZED) && (rooms[i - 1][j] != null))
-                        rooms[i][j].setConnections( rooms[i - 1][j], TOP );
+                            rooms[i][j].setConnections( rooms[i - 1][j], TOP );
                     }
                     if (j < (ROOMS_PER_SIDE - 1) )
                     {
@@ -231,8 +231,8 @@ public class Level {
                             rooms[i][j].setConnections(rooms[i + 1][j], BOTTOM);
                     }
                     if (j > 0) {
-                    if ((rooms[i][j - 1].getSector() != UNINITIALIZED) && (rooms[i][j - 1]!= null))
-                        rooms[i][j].setConnections(rooms[i][j - 1], LEFT);
+                        if ((rooms[i][j - 1].getSector() != UNINITIALIZED) && (rooms[i][j - 1]!= null))
+                            rooms[i][j].setConnections(rooms[i][j - 1], LEFT);
                     }
                 }
 
@@ -299,7 +299,7 @@ public class Level {
         for (int i = 0; i < 4; i++)
         {
             if (room.getConnections(i) != null && visited[room.getConnections(i).getSector()] == 0)
-            visited_count += depth_first_search(room.getConnections(i), visited);}
+                visited_count += depth_first_search(room.getConnections(i), visited);}
         return visited_count;
     }
 
@@ -308,11 +308,12 @@ public class Level {
         while (roomsSequence.get(offset).getSector() == -1)
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++) {
-                if (roomsSequence.get(i).checkPlayerInRoom(player.getPosition())){
-                    for (int j = 0; j < roomsSequence.get(i).getEntities_cnt(); j++) {
-                        roomsSequence.get(i).getEntities(j).action(player, roomsSequence.get(i));
-                    }
+            if (roomsSequence.get(i).checkPlayerInRoom(player.getPosition())){
+                for (int j = 0; j < roomsSequence.get(i).getEntities_cnt(); j++) {
+                    roomsSequence.get(i).getEntities(j).action(player, roomsSequence.get(i));
                 }
+//                    roomsSequence.get(i).moveEnemiesInRoom(position);
+            }
         }
     }
 
@@ -322,7 +323,7 @@ public class Level {
         while (getRoomsSequence(offset).getSector() == -1)
             ++offset;
         Room exit_room = new Room();
-            exit_room = getRoomsSequence(offset + room_index - 1);
+        exit_room = getRoomsSequence(offset + room_index - 1);
         Position exit_coordinate = new Position();
         exit_coordinate = exit_coordinate.generate_entity_coords(exit_room);
         exit_position.setNew(exit_coordinate.getX(), exit_coordinate.getY(), false);
@@ -361,7 +362,7 @@ public class Level {
             }
             if (roomsSequence.get(i).checkRoom(player_position) && roomsSequence.get(i).checkRoom(exit_position))
                 exit_position.setVisibility(true);
-            }
+        }
         for (int i = 0; i < getCorridors_cnt(); i++){
             if (corridors.get(i).checkCorridor(player_position))
                 for (int k=0; k < 4; k++){

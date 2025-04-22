@@ -4,8 +4,6 @@ import s21.domain.Character;
 import s21.domain.Position;
 import s21.domain.Room;
 
-import java.sql.Date;
-
 import static s21.domain.GameConstants.*;
 
 public class Scroll extends Item {
@@ -20,6 +18,7 @@ public class Scroll extends Item {
         this.strength = 0;
         this.health = 0;
     }
+
 
     @Override
     public String toString(){
@@ -82,7 +81,6 @@ public class Scroll extends Item {
     public void setHealth(int health) {
         this.health = health;
     }
-
 
     @Override
     public void action(Character player, Room room) {

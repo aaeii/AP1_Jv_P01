@@ -94,7 +94,7 @@ public class GameConstants {
     public static final int CURSED_STRENGTH_SCROLL = 3;
     public static final int CURSED_AGILITY_SCROLL = 4;
 
-//TYPE OF WEAPON
+    //TYPE OF WEAPON
     public static final int MACE = 0;
     public static final int LONG_SWORD = 1;
     public static final int SHORT_BOW = 2;
@@ -109,6 +109,11 @@ public class GameConstants {
     public static final float MOVEMENT_STEP = 0.2f;
     public static final float TURN_ANGLE_STEP = 0.03f;
 
+    //ENEMY
+    public static final int VERY_HIGH_LVL = 40;
+    public static final int HIGH_LVL = 30;
+    public static final int MEDIUM_LVL = 15;
+    public static final int LOW_LVL = 5;
 
 
 //            #define IS_OUTER    0
