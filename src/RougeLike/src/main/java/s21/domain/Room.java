@@ -193,7 +193,6 @@ public class Room {
 //                            }
                             if (inventory.addItem(entities.get(i)))
                             {
-                                    inventory.addItem(entities.get(i));
                                     entities.remove(i);
                                     entities_cnt--;
                             }

@@ -257,16 +257,13 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
 
     public void printInfoMessage(Terminal terminal, List<String> messages, GameSession game) throws IOException {
         if (!messages.isEmpty()) {
-            printGame(terminal, game); // Отрисовываем поле
-
-            // Объединяем строки в одно сообщение
-            String message = String.join(" ", messages);
-
-            // Выводим сообщение
             final TextGraphics textGraphics = terminal.newTextGraphics();
             textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
             textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
-            textGraphics.putString(MAP_WIDTH / 2 - 10  , MAP_HEIGHT / 2, message, SGR.BOLD);
+            printGame(terminal, game); // Отрисовываем поле
+            messages.stream()
+                    .forEach(m-> textGraphics.putString(MAP_WIDTH/2 - 15, MAP_HEIGHT / 2 + messages.indexOf(m), m,
+                            SGR.BOLD));
         }
     }
 }

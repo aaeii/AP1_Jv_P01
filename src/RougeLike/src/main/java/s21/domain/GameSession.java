@@ -122,28 +122,30 @@ public GameSession() {
 
 
     public void generate_enemies(){
-
+        int offset = 0 ;
+        while (currentLevel.getRoomsSequence(offset).getSector() == -1)
+            ++offset;
         for (int i=0; i < currentLevel.getRoom_cnt(); i++)
         {
-            int offset = 0 ;
-            while (currentLevel.getRoomsSequence(offset).getSector() == -1)
-                ++offset;
-            int enemies_cnt = (int)(Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
-            int enemy_type = -1;
-            for (int j = 0; j < enemies_cnt; j++){
-                enemy_type = (int)(Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE );
-                Enemy enemy = new Enemy(enemy_type);
-                switch (enemy_type){
-                    case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
-                    case VAMPIRE -> enemy.setSymbol(VAMPIRE_CHAR);
-                    case GHOST -> enemy.setSymbol(GHOST_CHAR);
-                    case OGRE -> enemy.setSymbol(OGRE_CHAR);
-                    case SNAKE -> enemy.setSymbol(SNAKE_CHAR);
-                } Position enemy_pos = new Position();
-                enemy_pos = enemy_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
-                enemy.setPosition(enemy_pos);
-                currentLevel.getRoomsSequence(offset + i).setEntities(enemy);
-            }
+           if (!currentLevel.getRoomsSequence(offset + i).checkRoom(player.getPosition())) {
+               int enemies_cnt = (int) (Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
+               int enemy_type = -1;
+               for (int j = 0; j < enemies_cnt; j++) {
+                   enemy_type = (int) (Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE);
+                   Enemy enemy = new Enemy(enemy_type);
+                   switch (enemy_type) {
+                       case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
+                       case VAMPIRE -> enemy.setSymbol(VAMPIRE_CHAR);
+                       case GHOST -> enemy.setSymbol(GHOST_CHAR);
+                       case OGRE -> enemy.setSymbol(OGRE_CHAR);
+                       case SNAKE -> enemy.setSymbol(SNAKE_CHAR);
+                   }
+                   Position enemy_pos = new Position();
+                   enemy_pos = enemy_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
+                   enemy.setPosition(enemy_pos);
+                   currentLevel.getRoomsSequence(offset + i).setEntities(enemy);
+               }
+           }
         }
     }
 

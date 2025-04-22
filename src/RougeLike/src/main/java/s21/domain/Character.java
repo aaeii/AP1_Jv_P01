@@ -7,6 +7,7 @@ import s21.domain.items.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import static s21.domain.GameConstants.*;
@@ -26,9 +27,10 @@ public class Character {
     private int maxHealth;
     private boolean sleep;
     private int enemiesAttackCounter;
+    private int currentAttackHitsCounter;
+    private int killedEnemies;
     private int moveDirection;
     private Position[][] view_area;
-
     private Position position;
 
     Character(Position pos) {
@@ -46,6 +48,11 @@ public class Character {
         this.stepCount = 0;
         this.moveDirection = UNINITIALIZED;
         this.endLevel=0;
+        this.currentAttackHitsCounter=0;
+        this.killedEnemies =0;
+        this.enemiesAttackCounter=0;
+        this.attackCounter = 0;
+        this.sleep=false;
         this.view_area = new Position[VIEW_AREA_SIZE][VIEW_AREA_SIZE];
         for (int i = 0; i < VIEW_AREA_SIZE; i++)
             for (int j = 0; j < VIEW_AREA_SIZE; j++){
@@ -184,6 +191,7 @@ public class Character {
         List <String> message = new ArrayList<>();
         int x = position.getX();
         int y = position.getY();
+        int countHitVamp = 0;
         moveDirection=direction;
         switch (direction) {
             case (TOP):
@@ -192,7 +200,7 @@ public class Character {
                             || field[y - 1][x] == VAMPIRE_CHAR
                             ||  field[y - 1][x] == GHOST_CHAR)
                 {
-                    message = fight(new Position(x, y - 1, true), level);
+                    message = fight(new Position(x, y - 1, true), level, countHitVamp);
                     return message;
                 }
                 else
@@ -208,7 +216,7 @@ public class Character {
                         || field[y][x + 1] == VAMPIRE_CHAR
                         ||  field[y][x + 1] == GHOST_CHAR
                         ||  field[y][x + 1] == OGRE_CHAR) {
-                    message = fight(new Position(x + 1, y, true), level);
+                    message = fight(new Position(x + 1, y, true), level, countHitVamp);
                     return message;
                 }
                 else
@@ -225,7 +233,7 @@ public class Character {
                         || field[y + 1][x] == VAMPIRE_CHAR
                         ||  field[y + 1][x] == GHOST_CHAR
                         ||  field[y + 1][x] == OGRE_CHAR) {
-                    message = fight(new Position(x, y + 1, true), level);
+                    message = fight(new Position(x, y + 1, true), level, countHitVamp);
                     return message;
                 }
                 else
@@ -241,7 +249,7 @@ public class Character {
                         || field[y][x - 1] == VAMPIRE_CHAR
                         ||  field[y][x - 1] == GHOST_CHAR
                         ||  field[y][x - 1] == OGRE_CHAR) {
-                    message = fight(new Position(x - 1, y, true), level);
+                    message = fight(new Position(x - 1, y, true), level, countHitVamp);
                     return message;
                 }
                 else
@@ -256,7 +264,7 @@ public class Character {
         return message;
     }
 
-    public List<String> fight(Position enemyPos, Level level) {
+    public List<String> fight(Position enemyPos, Level level, int countHitVamp) {
         int offset = 0,  roomNumber = 0;
         List<String> message = new ArrayList<>();
         while (level.getRoomsSequence(offset).getSector() == -1)
@@ -274,12 +282,11 @@ public class Character {
                         && enemyPos.getY() == level.getRoomsSequence(roomNumber).getEntities(i).getPosition().getY()
                 ) {
                     entity_num = i;
-                    System.out.println("enemy" + i);
                     break;
                 }
         }
         if (entity_num != UNINITIALIZED){
-        message = attack(level.getRoomsSequence(roomNumber).getEntities(entity_num));
+        message = attack(level.getRoomsSequence(roomNumber).getEntities(entity_num), countHitVamp);
         if (level.getRoomsSequence(roomNumber).getEntities(entity_num).getHealth() == 0)
         {
             level.getRoomsSequence(roomNumber).throwGold(level.getRoomsSequence(roomNumber).getEntities(entity_num), level.getRoomsSequence(roomNumber));
@@ -292,23 +299,147 @@ public class Character {
         return message;
     }
 
-    public List<String> attack(Entity enemy) {
+//    public List<String> attack(Entity enemy) {
+//        enemy.setStatus(FIGHT);
+//        List<String> message = new ArrayList<>();
+//        int hitChance = calculateHitChance(enemy);
+//        Random random = new Random();
+//            boolean hits = random.nextInt(80) < hitChance; // Проверка шанса попадания
+//            if (hits) {
+//                if (!sleep) {
+//                    message.add("You hit the enemy.");
+//                    if (enemy.getType() == OGRE && currentAttackHitsCounter % 2 == 0) {
+//                        message = takeDamage(enemy);
+//                        this.enemiesAttackCounter++;
+//                        this.attackCounter++;
+//                        message.add("Ogre counterattacked you.");
+//                        this.currentAttackHitsCounter++;
+//                    } else if (enemy.getType() == VAMPIRE && currentAttackHitsCounter == 0) {
+//                        message.add("You miss attack.");
+//                    } else {
+//                        message = takeDamage(enemy);
+//                        this.currentAttackHitsCounter++;
+//                        this.attackCounter++;
+//                    }
+//                } else {
+//                    message.add("You didn't hit you are sleeping.");
+//                    this.sleep = false;
+//                }
+//            } else {
+//                message.add("You miss attack.");
+//            }
+//            hits = random.nextInt(80) < hitChance; //шанс атаки противника
+//
+//            if (hits){
+//                if (enemy.getType() == VAMPIRE){
+//                    this.maxHealth -= enemy.getStrength();
+//                    this.health -= enemy.getStrength();
+//                    message.add("Vampire increased your health.");
+//                }
+//                else if (enemy.getType() == SNAKE) {
+//                    if (!this.sleep) {
+//                        hits = random.nextInt(10) > 4;
+//                        if (hits) {
+//                            this.sleep = true;
+//                            message.add("You are sleeping");
+//                        }
+//                    }
+//                } else
+//                    if (enemy.getType() == OGRE && currentAttackHitsCounter % 2 != 0) {
+//                        this.health -= enemy.getStrength();
+//                        message.add("Enemy hits you");
+//                        this.enemiesAttackCounter++;
+//                }
+//                if (enemy.getType() != OGRE) {
+//                    message.add("Enemy hit you.");
+//                    this.health -= enemy.getStrength();
+//                    this.enemiesAttackCounter++;
+//                }
+//            }
+//            else message.add("Enemy misses attack.");
+//
+//            return message;
+//    }
+
+    public List<String> attack(Entity enemy, int countHitVamp2) {
+        enemy.setStatus(FIGHT);
         List<String> message = new ArrayList<>();
-            int hitChance = calculateHitChance(enemy);
-            Random random = new Random();
-            enemy.setStatus(FIGHT);
-            boolean hits = random.nextInt(80) < hitChance; // Проверка шанса попадания
-            if (hits) {
-                message = takeDamage(enemy);
-                message.add("You hit the enemy.");
+        boolean hitChance = calculateHitChance(enemy);
+        hitChance = attackVampire(enemy, hitChance);
+//        Random random = new Random();
+//        boolean hits = random.nextInt(100) < BASE_FIGHT_CHANCE; // Проверка шанса попадания
+//        boolean hits=true;
+//        System.out.println("hitChance= " + hitChance);
+        if (hitChance) { // атака игрока
+            if (!sleep) {
+                    if (enemy.getType() == OGRE && enemy.getCountHit() % 2 == 0) {//гарантированная атака Огра
+                        message.add("You hit the enemy " + (char) enemy.getSymbol());
+                        String damage_message = takeEnemyDamage(enemy);
+                        if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                        this.enemiesAttackCounter++;
+                        this.attackCounter++;
+                        message.add("Ogre counterattacked you.");
+                        damage_message = takePlayerDamage(enemy);
+                        if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                        enemy.setCountHit(enemy.getCountHit() + 1);
+                    } else {
+                        message.add("You hit the enemy " + (char) enemy.getSymbol());
+                        String damage_message = takeEnemyDamage(enemy);
+                        if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                        this.attackCounter++;
+                    }
             } else {
-                message.add("You miss attack.");
+            message.add("You didn't hit you are sleeping");
+                    this.sleep = false;
             }
-            return message;
+        } else {
+            message.add("You miss attack ");
+        }
+
+        hitChance = calculateHitChance(enemy);
+        if (hitChance) { // атака врага
+            String sleep = attackSnake(enemy);
+            if (!Objects.equals(sleep, " ")) message.add(sleep);
+
+            if (enemy.getType() == VAMPIRE){
+                this.maxHealth -= enemy.getStrength();
+                this.health -= enemy.getStrength();
+                message.add("Vampire increased your health");
+            } else
+                if  (enemy.getType() != OGRE) {
+                    message.add((char) enemy.getSymbol() + " hits you");
+                    String damage_message = takePlayerDamage(enemy);
+                    if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                    this.enemiesAttackCounter++;
+                }
+        }
+
+        return message;
     }
+
+    private boolean attackVampire(Entity enemy, boolean hitChance) {
+        if (enemy.getType() == VAMPIRE && enemy.getCountHit() == 0) {//1 удар по вампиру промах
+            hitChance = false;
+            int countHitVamp = enemy.getCountHit();
+            enemy.setCountHit(countHitVamp + 1);
+        }
+        return hitChance;
+    }
+
+    private String attackSnake(Entity enemy) {
+        String message = " ";
+        Random random = new Random();
+        if (enemy.getType() == SNAKE) {
+            sleep = random.nextInt(100) > BASE_FIGHT_CHANCE;
+        if (sleep)  message = "Snake put you to sleep";
+        }
+        return message;
+    }
+
 
     public void stopAttack(Level level){
         int offset = 0,  roomNumber = 0;
+        this.currentAttackHitsCounter = 0;
         while (level.getRoomsSequence(offset).getSector() == -1)
             ++offset;
         for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
@@ -324,25 +455,29 @@ public class Character {
         }
     }
 
-    private int calculateHitChance(Entity enemy) {
-        return (int) (Math.min(BASE_FIGHT_CHANCE + (agility - enemy.getAgility()), 100));
+    private boolean calculateHitChance(Entity enemy) {
+        Random random = new Random();
+        int chance = BASE_FIGHT_CHANCE + (agility - enemy.getAgility());
+        return random.nextInt(1, 101) <= chance;
     }
 
-    public List<String> takeDamage(Entity enemy) {
-        List<String> message = new ArrayList<>();
-        health = health - enemy.getStrength();
+    public String takeEnemyDamage(Entity enemy) {
+        String message = " ";
         int enemy_health = enemy.getHealth()-strength;
-        System.out.println("enemy_health " + enemy_health);
+        enemy.setHealth(enemy_health);
+        if (enemy.getHealth() == 0) {
+            message ="You kill enemy " + (char) enemy.getSymbol();
+            killedEnemies++;
+        }
+        return message;
+    }
+
+    public String takePlayerDamage(Entity enemy) {
+        String message = " ";
+        health = health - enemy.getStrength();
         if (health < 0) {
             health = 0;
-            message.add("GAME OVER");
-//            System.out.println("GAME OVER");
-        }
-        enemy.setHealth(enemy_health);
-        System.out.println("enemy_health after" + enemy.getHealth());
-        if (enemy.getHealth() < 0) {
-            enemy.setHealth(0);
-            message.add("Enemy dead");
+            message =(char) enemy.getSymbol() + " kills you";
         }
         return message;
     }
