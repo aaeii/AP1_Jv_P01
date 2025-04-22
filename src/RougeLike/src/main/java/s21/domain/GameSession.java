@@ -132,7 +132,7 @@ public GameSession() {
                int enemy_type = -1;
                for (int j = 0; j < enemies_cnt; j++) {
                    enemy_type = (int) (Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE);
-                   Enemy enemy = new Enemy(enemy_type);
+                   Enemy enemy = new Enemy(enemy_type, currentLevelNumber);
                    switch (enemy_type) {
                        case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
                        case VAMPIRE -> enemy.setSymbol(VAMPIRE_CHAR);
@@ -441,7 +441,6 @@ public GameSession() {
             }
         }
         }
-        System.out.println(result);
         return result;
     }
 

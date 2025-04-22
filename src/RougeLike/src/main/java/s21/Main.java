@@ -33,14 +33,9 @@ public class Main {
             terminal.flush();
         }
             newGame.getPlayer().setEndLevel(newGame.getCurrentLevelNumber());
+            DataLayer.saveProgress(newGame.getPlayer());
             print.printResultOfGame(terminal, newGame);
-        DataLayer.saveProgress(newGame.getPlayer());
-            userInput.waitForResumeOrExit(terminal);
 
-
-        if (userInput.getAction() == 'n' || userInput.getAction() == 'N') {
-//            userInput.waitForExit();
-        }
         terminal.flush();
         terminal.close();
     }

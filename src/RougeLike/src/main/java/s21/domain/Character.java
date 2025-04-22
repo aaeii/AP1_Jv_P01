@@ -133,7 +133,9 @@ public class Character {
     }
 
     public void setHealth(int health) {
-        this.health = health;
+        if (health <= this.maxHealth)
+        this.health = Math.max(health, 0);
+        else  this.health = this.maxHealth;
     }
 
     public void setAgility(int value) {
@@ -270,7 +272,6 @@ public class Character {
         while (level.getRoomsSequence(offset).getSector() == -1)
             ++offset;
         for (int j = offset; j < MAX_ROOMS_NUMBER; j++){
-            System.out.println(level.getRoomsSequence(j).checkInRoomEntities(enemyPos));
             if (level.getRoomsSequence(j).checkInRoomEntities(enemyPos)) {
                 roomNumber = j;
                 break;
@@ -299,77 +300,13 @@ public class Character {
         return message;
     }
 
-//    public List<String> attack(Entity enemy) {
-//        enemy.setStatus(FIGHT);
-//        List<String> message = new ArrayList<>();
-//        int hitChance = calculateHitChance(enemy);
-//        Random random = new Random();
-//            boolean hits = random.nextInt(80) < hitChance; // Проверка шанса попадания
-//            if (hits) {
-//                if (!sleep) {
-//                    message.add("You hit the enemy.");
-//                    if (enemy.getType() == OGRE && currentAttackHitsCounter % 2 == 0) {
-//                        message = takeDamage(enemy);
-//                        this.enemiesAttackCounter++;
-//                        this.attackCounter++;
-//                        message.add("Ogre counterattacked you.");
-//                        this.currentAttackHitsCounter++;
-//                    } else if (enemy.getType() == VAMPIRE && currentAttackHitsCounter == 0) {
-//                        message.add("You miss attack.");
-//                    } else {
-//                        message = takeDamage(enemy);
-//                        this.currentAttackHitsCounter++;
-//                        this.attackCounter++;
-//                    }
-//                } else {
-//                    message.add("You didn't hit you are sleeping.");
-//                    this.sleep = false;
-//                }
-//            } else {
-//                message.add("You miss attack.");
-//            }
-//            hits = random.nextInt(80) < hitChance; //шанс атаки противника
-//
-//            if (hits){
-//                if (enemy.getType() == VAMPIRE){
-//                    this.maxHealth -= enemy.getStrength();
-//                    this.health -= enemy.getStrength();
-//                    message.add("Vampire increased your health.");
-//                }
-//                else if (enemy.getType() == SNAKE) {
-//                    if (!this.sleep) {
-//                        hits = random.nextInt(10) > 4;
-//                        if (hits) {
-//                            this.sleep = true;
-//                            message.add("You are sleeping");
-//                        }
-//                    }
-//                } else
-//                    if (enemy.getType() == OGRE && currentAttackHitsCounter % 2 != 0) {
-//                        this.health -= enemy.getStrength();
-//                        message.add("Enemy hits you");
-//                        this.enemiesAttackCounter++;
-//                }
-//                if (enemy.getType() != OGRE) {
-//                    message.add("Enemy hit you.");
-//                    this.health -= enemy.getStrength();
-//                    this.enemiesAttackCounter++;
-//                }
-//            }
-//            else message.add("Enemy misses attack.");
-//
-//            return message;
-//    }
 
     public List<String> attack(Entity enemy, int countHitVamp2) {
         enemy.setStatus(FIGHT);
         List<String> message = new ArrayList<>();
         boolean hitChance = calculateHitChance(enemy);
         hitChance = attackVampire(enemy, hitChance);
-//        Random random = new Random();
-//        boolean hits = random.nextInt(100) < BASE_FIGHT_CHANCE; // Проверка шанса попадания
-//        boolean hits=true;
-//        System.out.println("hitChance= " + hitChance);
+
         if (hitChance) { // атака игрока
             if (!sleep) {
                     if (enemy.getType() == OGRE && enemy.getCountHit() % 2 == 0) {//гарантированная атака Огра
@@ -397,7 +334,7 @@ public class Character {
         }
 
         hitChance = calculateHitChance(enemy);
-        if (hitChance) { // атака врага
+        if (hitChance && enemy.getHealth() > 0) { // атака врага
             String sleep = attackSnake(enemy);
             if (!Objects.equals(sleep, " ")) message.add(sleep);
 
@@ -406,13 +343,13 @@ public class Character {
                 this.health -= enemy.getStrength();
                 message.add("Vampire increased your health");
             } else
-                if  (enemy.getType() != OGRE) {
+                if  ((enemy.getType() != OGRE) || ( (enemy.getType() == OGRE && enemy.getCountHit() % 2 == 0))) {
                     message.add((char) enemy.getSymbol() + " hits you");
                     String damage_message = takePlayerDamage(enemy);
                     if (!Objects.equals(damage_message, " ")) message.add(damage_message);
                     this.enemiesAttackCounter++;
                 }
-        }
+        } else message.add((char) enemy.getSymbol() + " misses attack");
 
         return message;
     }
@@ -443,12 +380,10 @@ public class Character {
         while (level.getRoomsSequence(offset).getSector() == -1)
             ++offset;
         for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
-            System.out.println("room_number" + roomNumber);
             for (int i = 0; i < level.getRoomsSequence(j).getEntities_cnt(); i++) {
                 if (level.getRoomsSequence(j).getEntities(i).getStatus() == FIGHT
                 ) {
                     level.getRoomsSequence(j).getEntities(i).setStatus(ON_FIELD);
-                    System.out.println("stop");
                     break;
                 }
             }
