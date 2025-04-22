@@ -197,7 +197,6 @@ public class Room {
                                     entities_cnt--;
                             }
                         }
-                    inventory.print();
                 }
         }
         }
@@ -303,29 +302,5 @@ public class Room {
         };
         return distance;
     }
-
-
-
-//    public void takeDamage(Character p, Enemy enemy) {
-//        p.setHealth(p.getHealth() - enemy.getStrength());
-//        if (p.getHealth() < 0) {
-//            p.setHealth(0);
-//            System.out.println("GAME OVER");
-//        }
-//
-//        enemy.setHealth(enemy.getHealth()-p.getStrength());
-//        if (enemy.getHealth() < 0) {
-//            enemy.setHealth(0);
-//            System.out.println("Enemy dead");
-//        }
-//    }
-//    public boolean isInRange(Position p, Position e) {
-//        return (Math.abs(e.getX() - p.getX()) <= 1 && Math.abs(e.getY() - p.getY()) <= 1);
-//    }
-//
-//    private int calculateHitChance(Character player,Enemy e) {
-//        int baseChance = 50;
-//        return Math.min(baseChance + (player.getAgility()- e.getAgility()), 100);
-//    }
 
 }

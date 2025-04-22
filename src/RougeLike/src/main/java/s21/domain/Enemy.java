@@ -294,13 +294,10 @@ public class Enemy extends Entity {
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
+        System.out.println(distanceForPursuit);
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit)
         {
-            moveToPlayer(playerPosition, room, x, y, 2,false);
-        }
-        if (isValidMove(x, y, room)) {
-            result = true;
-            getPosition().setNew(x, y, false);
+            moveToPlayer(playerPosition, room, x, y, 2,true);
         }
         return result;
     }
@@ -335,7 +332,8 @@ public class Enemy extends Entity {
                 y = y - step;
             }
         if (isValidMove(x, y, room)) {
-            getPosition().setNew(x, y, visible);
+            getPosition().setX(x);
+            getPosition().setY(y);
         }
 
     }

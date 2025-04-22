@@ -20,11 +20,6 @@ public class Inventory {
         items = new ArrayList<>();
     }
 
-//    public void addItem(Entity item) {
-//        if (items.size() <= (MAX_COUNT_TYPE_ITEM )) {
-//            items.add(item);
-//        }
-//    }
 
     public List<Entity> getItemsByType(int itemType) {
         List<Entity> itemsList = items.stream()

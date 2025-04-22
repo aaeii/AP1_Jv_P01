@@ -251,12 +251,17 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
         int count = players.size();
         s21.domain.Character.sortListOfCharacter(players);
         players.stream()
-                .forEach(p-> textGraphics.putString(MAP_WIDTH/2 - 15, MAP_HEIGHT / 2 + players.indexOf(p)-5,
-                        " Gold: " + p.getGold() +
-                                "lvl: " +  p.getEndLevel() +
-                                " Food: " + p.getEatenFoodCounter() +
-                                " Elixirs: " + p.getDrunkElixirCounter() +
-                                " Steps: " + p.getStepCount(),
+                .filter(p -> players.indexOf(p)<15)
+                .forEach(p-> textGraphics.putString(0, MAP_HEIGHT / 2 + players.indexOf(p)-5,
+                        "Gold:" + p.getGold() +
+                                " End lvl:" +  p.getEndLevel() +
+                                " Killed enm:" + p.getKilledEnemies() +
+                                " Food:" + p.getEatenFoodCounter() +
+                                " Elix:" + p.getDrunkElixirCounter() +
+                                " Scr:" + p.getReadScrollCounter() +
+                                " Plr hits:" + p.getAttackCounter() +
+                                " Enm hits:" + p.getEnemiesAttackCounter() +
+                                " Stp:" + p.getStepCount(),
                         SGR.BOLD));
         textGraphics.putString(MAP_WIDTH/2 - 15, MAP_HEIGHT / 2 + count - 4, "Press--Q--to--exit.", SGR.BOLD);
         terminal.flush();
@@ -277,7 +282,7 @@ public void printItemMenu(Terminal terminal, GameSession game, int type) throws 
             textGraphics.setBackgroundColor(TextColor.ANSI.BLUE);
             printGame(terminal, game); // Отрисовываем поле
             messages.stream()
-                    .forEach(m-> textGraphics.putString(MAP_WIDTH/2 - 15, MAP_HEIGHT / 2 + messages.indexOf(m), m,
+                    .forEach(m-> textGraphics.putString(MAP_WIDTH/2 - 15, messages.indexOf(m), m,
                             SGR.BOLD));
         }
     }

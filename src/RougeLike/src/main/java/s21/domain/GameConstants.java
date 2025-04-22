@@ -21,7 +21,7 @@ public class GameConstants {
     public static final int MAX_CORRIDORS_NUMBER  = 12;
     public static final double ROOM_CHANCE = 0.5;
     public static final int MAX_ENEMIES_PER_ROOM = 2;
-    public static final int MAX_ITEMS_PER_ROOM = 5;
+    public static final int MAX_ITEMS_PER_ROOM = 3;
     public static final int MAX_ENTITIES_PER_ROOM = MAX_ENEMIES_PER_ROOM + MAX_ITEMS_PER_ROOM + 2;
     public static final int MAX_ENEMIES_TOTAL = MAX_ENEMIES_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
     public static final int MAX_ITEMS_TOTAL = MAX_ITEMS_PER_ROOM * ROOMS_PER_SIDE * ROOMS_PER_SIDE;
@@ -104,20 +104,6 @@ public class GameConstants {
     //PLAYER CONST
     public static final int VIEW_DISTANCE = 6;
     public static final int VIEW_AREA_SIZE = VIEW_DISTANCE*2+1;
-    public static final float DEFAULT_FOV = 30;
-    public static final float DEFAULT_ANGLE = 0.0f;
-    public static final float MOVEMENT_STEP = 0.2f;
-    public static final float TURN_ANGLE_STEP = 0.03f;
-
-    //ENEMY
-    public static final int VERY_HIGH_LVL = 40;
-    public static final int HIGH_LVL = 30;
-    public static final int MEDIUM_LVL = 15;
-    public static final int LOW_LVL = 5;
-
-
-//            #define IS_OUTER    0
-//            #define IS_INNER    1
-//            #define IS_WALL     2
+    
 
 }
