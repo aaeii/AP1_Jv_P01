@@ -256,7 +256,7 @@ public class Enemy extends Entity {
             visible = true;
             moveToPlayer(playerPosition,room, x, y, 2,visible);
         } else {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 2; i++) {
                 int direction = random.nextInt(4);
                 switch (direction) {
                     case TOP:
@@ -279,7 +279,7 @@ public class Enemy extends Entity {
                         break;
                 }
             if (isValidMove(newX, newY, room)) {
-                getPosition().setNew(newX, newY, false);
+                getPosition().setNew(newX, newY, visible);
                 result = true;
                 }
             }
