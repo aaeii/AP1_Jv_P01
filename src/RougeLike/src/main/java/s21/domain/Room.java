@@ -166,7 +166,7 @@ public class Room {
             if(entities.get(i).getPosition().getX() == player.getPosition().getX()
                     && entities.get(i).getPosition().getY() == player.getPosition().getY()
                     && entities.get(i).getStatus() == ON_FIELD
-                    && entities.get(i).getType() > 7)
+                    && entities.get(i).getType() > MIMIK)
             {
                     if (entities.get(i).getType() == GOLD) {
                         player.setGold(player.getGold() + 1);

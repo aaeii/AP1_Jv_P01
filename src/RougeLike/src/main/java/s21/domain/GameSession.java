@@ -131,7 +131,7 @@ public GameSession() {
                int enemies_cnt = (int) (Math.random() * (MAX_ENEMIES_PER_ROOM) + 1);
                int enemy_type = -1;
                for (int j = 0; j < enemies_cnt; j++) {
-                   enemy_type = (int) (Math.random() * (double) (SNAKE - ZOMBIE + 1) + ZOMBIE);
+                   enemy_type = (int) (Math.random() * (double) (MIMIK - ZOMBIE + 1) + ZOMBIE);
                    Enemy enemy = new Enemy(enemy_type, currentLevelNumber);
                    switch (enemy_type) {
                        case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
@@ -139,6 +139,7 @@ public GameSession() {
                        case GHOST -> enemy.setSymbol(GHOST_CHAR);
                        case OGRE -> enemy.setSymbol(OGRE_CHAR);
                        case SNAKE -> enemy.setSymbol(SNAKE_CHAR);
+                       case MIMIK -> enemy.setSymbol(enemy.mimikType());
                    }
                    Position enemy_pos = new Position();
                    enemy_pos = enemy_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
@@ -367,8 +368,15 @@ public GameSession() {
             if (level.getRoomsSequence(i).getSector()!= UNINITIALIZED){
                 for (int k = 0; k < level.getRoomsSequence(i).getEntities_cnt(); k++) {
                     Entity cur_entity = level.getRoomsSequence(i).getEntities(k);
-                    if (cur_entity.getType() != PLAYER && cur_entity.getPosition().isVisibility() && (cur_entity.getStatus()==ON_FIELD||cur_entity.getStatus()==FIGHT))
-                        field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
+                    if (cur_entity.getType() == MIMIK && cur_entity.getStatus() == FIGHT)
+                    {
+                        field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = MIMIK_CHAR;
+                    } else
+                        if (cur_entity.getType() != PLAYER
+                                && cur_entity.getPosition().isVisibility()
+                                && (cur_entity.getStatus()==ON_FIELD
+                                || cur_entity.getStatus() == FIGHT))
+                            field[cur_entity.getPosition().getY()][cur_entity.getPosition().getX()] = (char) cur_entity.getSymbol();
                 }
             }
         }

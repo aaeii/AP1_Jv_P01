@@ -213,7 +213,10 @@ public class Character {
                 if (field[y - 1][x] == SNAKE_CHAR
                         || field[y - 1][x] == ZOMBIE_CHAR
                         || field[y - 1][x] == VAMPIRE_CHAR
-                        || field[y - 1][x] == GHOST_CHAR) {
+                        || field[y - 1][x] == GHOST_CHAR
+                        || isItMimik(new Position(x, y - 1, true), level))
+                {
+                    System.out.println("mimik tpo");
                     message = fight(new Position(x, y - 1, true), level, countHitVamp);
                     return message;
                 } else if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR) {
@@ -227,7 +230,9 @@ public class Character {
                         || field[y][x + 1] == ZOMBIE_CHAR
                         || field[y][x + 1] == VAMPIRE_CHAR
                         || field[y][x + 1] == GHOST_CHAR
-                        || field[y][x + 1] == OGRE_CHAR) {
+                        || field[y][x + 1] == OGRE_CHAR
+                        || isItMimik(new Position(x + 1, y, true), level))  {
+                    System.out.println("mimik right");
                     message = fight(new Position(x + 1, y, true), level, countHitVamp);
                     return message;
                 } else if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR) {
@@ -242,7 +247,10 @@ public class Character {
                         || field[y + 1][x] == ZOMBIE_CHAR
                         || field[y + 1][x] == VAMPIRE_CHAR
                         || field[y + 1][x] == GHOST_CHAR
-                        || field[y + 1][x] == OGRE_CHAR) {
+                        || field[y + 1][x] == OGRE_CHAR
+                        || isItMimik(new Position(x, y + 1, true), level))
+                {
+                    System.out.println("mimik bot");
                     message = fight(new Position(x, y + 1, true), level, countHitVamp);
                     return message;
                 } else if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR) {
@@ -256,7 +264,9 @@ public class Character {
                         || field[y][x - 1] == ZOMBIE_CHAR
                         || field[y][x - 1] == VAMPIRE_CHAR
                         || field[y][x - 1] == GHOST_CHAR
-                        || field[y][x - 1] == OGRE_CHAR) {
+                        || field[y][x - 1] == OGRE_CHAR
+                        || isItMimik(new Position(x - 1, y, true), level)) {
+                    System.out.println("mimik left");
                     message = fight(new Position(x - 1, y, true), level, countHitVamp);
                     return message;
                 } else if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) {
@@ -304,11 +314,11 @@ public class Character {
 
 
     public List<String> attack(Entity enemy, int countHitVamp2) {
+        System.out.println("fight");
         enemy.setStatus(FIGHT);
         List<String> message = new ArrayList<>();
         boolean hitChance = calculateHitChance(enemy);
         hitChance = attackVampire(enemy, hitChance);
-
         if (hitChance) { // атака игрока
             if (!sleep) {
                 if (enemy.getType() == OGRE && enemy.getCountHit() % 2 == 0) {//гарантированная атака Огра
@@ -510,29 +520,6 @@ public class Character {
         game.getInventory().print();
     }
 
-//    public void printInventary(){
-//        inventory.print();
-//    }
-
-//    public void checkElixirDuration(Inventory inventory){
-//        for (int i=0; i< game.getItemsCount(); i++){
-//            if (getItemFromInventory(i).getType()==ELIXIR) {
-//                getItemFromInventory(i).reduceDuration();
-//                if (getItemFromInventory(i).getDuration() == 0) {
-//                    int newStrength = getStrength() - getItemFromInventory(i).getStrength();
-//                    if (newStrength >= 0) setStrength(newStrength);
-//                    else setStrength(0);
-//                    int newAgility = getAgility() - getItemFromInventory(i).getAgility();
-//                    if (newAgility >= 0) setAgility(newAgility);
-//                    else setAgility(0);
-//                    int newHealth = getHealth() - getItemFromInventory(i).getHealth();
-//                    if (newHealth >= 0) setAgility(newHealth);
-//                    else setAgility(0);
-//                    getAllItems().remove(i);
-//                }
-//            }
-//        }
-//    }
 
     public boolean playerInCorridor(GameSession game) {
         boolean result = true;
@@ -697,8 +684,7 @@ public class Character {
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
                         && players.get(j + 1).getEatenFoodCounter() == players.get(j).getEatenFoodCounter()
                         && players.get(j + 1).getDrunkElixirCounter() == players.get(j).getDrunkElixirCounter()
-                        && players.get(j + 1).getAttackCounter() == players.get(j).getAttackCounter())
-                    if (players.get(j + 1).getEnemiesAttackCounter() > players.get(j).getEnemiesAttackCounter()
+                        && players.get(j + 1).getAttackCounter() == players.get(j).getAttackCounter()
                         && players.get(j + 1).getEnemiesAttackCounter() == players.get(j).getEnemiesAttackCounter())
                     if (players.get(j + 1).getStepCount() > players.get(j).getStepCount()) {
                         Character swap = players.get(j);
@@ -708,4 +694,22 @@ public class Character {
             }
         }
     }
+     public boolean isItMimik(Position position, Level level){
+        boolean result = false;
+         int offset = 0;
+         while (level.getRoomsSequence(offset).getSector() == -1)
+             ++offset;
+         for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
+                for (int k=0; k < level.getRoomsSequence(j).getEntities_cnt(); k++){
+                    if (position.getX() == level.getRoomsSequence(j).getEntities(k).getPosition().getX()
+                            && position.getY() == level.getRoomsSequence(j).getEntities(k).getPosition().getY()
+                            && level.getRoomsSequence(j).getEntities(k).getType() == MIMIK) {
+                        result = true;
+                        return result;
+                    }
+                }
+             }
+         return result;
+         }
+
 }

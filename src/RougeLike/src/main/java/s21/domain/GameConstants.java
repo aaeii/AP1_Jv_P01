@@ -67,20 +67,23 @@ public class GameConstants {
     public static final int OGRE_CHAR = 'O';
     public static final int SNAKE = 7;
     public static final int SNAKE_CHAR = 'S';
+    public static final int MIMIK = 8;
+    public static final int MIMIK_CHAR = 'M';
     public static final int BASE_FIGHT_CHANCE = 50;
 
     //ITEMS
-    public static final int GOLD = 8;
+    public static final int GOLD = 9;
     public static final int GOLD_CHAR = '$';
-    public static final int FOOD = 9;
+    public static final int FOOD = 10;
     public static final int FOOD_CHAR = 'F';
-    public static final int SCROLL = 10;
+    public static final int SCROLL = 11;
     public static final int SCROLL_CHAR = '>';
-    public static final int WEAPON = 11;
+    public static final int WEAPON = 12;
     public static final int WEAPON_CHAR = '%';
-    public static final int ELIXIR = 12;
+    public static final int ELIXIR = 13;
     public static final int ELIXIR_CHAR = '^';
-    public static final int HEALTHKIT = 13;
+    public static final int HEALTHKIT = 14;
+
 
     //TYPE OF ELIXIR
     public static final int HEALTH_ELIXIR = 0;
@@ -104,6 +107,6 @@ public class GameConstants {
     //PLAYER CONST
     public static final int VIEW_DISTANCE = 6;
     public static final int VIEW_AREA_SIZE = VIEW_DISTANCE*2+1;
-    
+
 
 }

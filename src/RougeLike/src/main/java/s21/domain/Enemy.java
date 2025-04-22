@@ -2,6 +2,7 @@ package s21.domain;
 
 import s21.domain.Entity;
 import s21.domain.Position;
+import s21.domain.items.*;
 
 import java.util.List;
 import java.util.Random;
@@ -67,14 +68,35 @@ public class Enemy extends Entity {
                 this.hostility = HIGH_LVL;
                 setSymbol(SNAKE_CHAR);
                 break;
+            case MIMIK:
+                this.health = HIGH_LVL * (level + 1)/2;
+                this.agility = HIGH_LVL;
+                this.strength = LOW_LVL * (level + 1)/2;
+                this.hostility = LOW_LVL;
+                setSymbol(mimikType());
+                break;
             default:
                 break;
         }
     }
 
+    public int mimikType() {
+        int item_type = (int) (Math.random() * (double) (ELIXIR - GOLD + 1) + GOLD);
+        int mimik_symbol = ' ';
+        switch (item_type) {
+            case GOLD -> mimik_symbol = GOLD_CHAR;
+            case FOOD -> mimik_symbol = FOOD_CHAR;
+            case WEAPON -> mimik_symbol = WEAPON_CHAR;
+            case SCROLL -> mimik_symbol = SCROLL_CHAR;
+            case ELIXIR -> mimik_symbol = ELIXIR_CHAR;
+        };
+        return mimik_symbol;
+    }
+
     public int getHealth() {
         return health;
     }
+
  @Override
  public void setHealth(int health) {
      this.health = Math.max(health, 0);
@@ -311,7 +333,6 @@ public class Enemy extends Entity {
             case OGRE -> moveOgre( player.getPosition(), room, getHostility());
             case VAMPIRE -> moveVampire( player.getPosition(), room, getHostility());
             case SNAKE -> moveSnake( player.getPosition(), room, getHostility());
-
         }
     }
 
