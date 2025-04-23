@@ -168,7 +168,7 @@ public class Level {
         Position Top_left = new Position(top_leftX, top_leftY, false);
         room.setTop_left(Top_left);
         int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2-2)) + 3);
-        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2-2)) + 4 );
+        int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2-2)) + 3 );
         Position Bot_right = new Position(bot_rightX, bot_rightY, false);
         room.setBot_right(Bot_right);
     }
@@ -327,7 +327,6 @@ public class Level {
         Position exit_coordinate = new Position();
         exit_coordinate = exit_coordinate.generate_entity_coords(exit_room);
         exit_position.setNew(exit_coordinate.getX(), exit_coordinate.getY(), false);
-        System.out.println();
     }
 
 

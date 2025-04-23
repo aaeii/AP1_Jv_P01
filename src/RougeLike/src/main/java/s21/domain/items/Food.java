@@ -33,11 +33,11 @@ public class Food extends Item {
     }
     @Override
     public int getAgility() {
-        return agility;
+        return 0;
     }
     @Override
     public int getStrength() {
-        return strength;
+        return 0;
     }
     @Override
     public int getHealth() {

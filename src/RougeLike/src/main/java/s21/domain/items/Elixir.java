@@ -66,17 +66,6 @@ public class Elixir extends Item {
         return  getName() + " " + getStatus();
     }
 
-
-
-//    public boolean isExpired() {
-//            return dateStart.getTime() + duration < System.currentTimeMillis();
-//        }
-
-    public Date apply() {
-        dateStart = new Date(System.currentTimeMillis());
-
-        return dateStart;
-    }
     @Override
     public int getAgility() {
         return agility;

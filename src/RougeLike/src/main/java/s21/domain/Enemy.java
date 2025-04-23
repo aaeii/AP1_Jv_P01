@@ -57,7 +57,7 @@ public class Enemy extends Entity {
             case OGRE:
                 this.health = VERY_HIGH_LVL * (level + 1)/2;
                 this.agility = LOW_LVL;
-                this.strength = VERY_HIGH_LVL * (level + 1)/2;
+                this.strength = VERY_HIGH_LVL * (level + 1)/2 - 10;
                 this.hostility = MEDIUM_LVL;
                 setSymbol(OGRE_CHAR);
                 break;
@@ -130,8 +130,7 @@ public class Enemy extends Entity {
     /**
      * Движение по диагонали
      */
-    public boolean moveSnake(Position playerPosition, Room room, int hostilityLevel) {
-        boolean result =false;
+    public void moveSnake(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
         int newX = x, newY = y;
@@ -170,21 +169,18 @@ public class Enemy extends Entity {
                 }
                 if (isValidMove(x, y, room)) {
                     getPosition().setNew(x, y, false);
-                    result = true;
                 } else {
                     initialDirection = (initialDirection + 1) % 4;
                 }
             }
         }
-        return result;
     }
 
 
     /**
      * Движение по вверх-вниз
      */
-    public boolean moveZombie(Position playerPosition, Room room, int hostilityLevel) {
-        boolean result = false;
+    public void moveZombie(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
         int newX = x, newY = y;
@@ -207,20 +203,17 @@ public class Enemy extends Entity {
                 }
                 if (isValidMove(newX, newY, room)) {
                     getPosition().setNew(newX, newY, false);
-                    result = true;
                 } else {
                     initialDirection = (initialDirection + 2) % 4;
                 }
             }
         }
-        return result;
     }
 
     /**
      * Движение по кругу
      */
-    public boolean moveOgre(Position playerPosition, Room room, int hostilityLevel) {
-        boolean result = false;
+    public void moveOgre(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
@@ -253,20 +246,17 @@ public class Enemy extends Entity {
                 }
                 if (isValidMove(newX, newY, room)) {
                     getPosition().setNew(newX, newY, false);
-                    result = true;
                 } else {
                     initialDirection = (initialDirection + 1) % 4;
                 }
             }
         }
-        return result;
     }
 
     /**
      * Рандомное передвижение
      */
-    public boolean moveGhost(Position playerPosition, Room room, int hostilityLevel) {
-        boolean result = false;
+    public void moveGhost(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
         int newX = x, newY = y;
@@ -302,26 +292,21 @@ public class Enemy extends Entity {
                 }
             if (isValidMove(newX, newY, room)) {
                 getPosition().setNew(newX, newY, visible);
-                result = true;
                 }
             }
         }
-        return result;
     }
 
-    public boolean moveVampire(Position playerPosition, Room room, int hostilityLevel) {
-        boolean result = false;
+    public void moveVampire(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
-        System.out.println(distanceForPursuit);
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit)
         {
             moveToPlayer(playerPosition, room, x, y, 2,true);
         }
-        return result;
     }
 
 

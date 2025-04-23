@@ -216,7 +216,6 @@ public class Character {
                         || field[y - 1][x] == GHOST_CHAR
                         || isItMimik(new Position(x, y - 1, true), level))
                 {
-                    System.out.println("mimik tpo");
                     message = fight(new Position(x, y - 1, true), level, countHitVamp);
                     return message;
                 } else if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR) {
@@ -232,7 +231,6 @@ public class Character {
                         || field[y][x + 1] == GHOST_CHAR
                         || field[y][x + 1] == OGRE_CHAR
                         || isItMimik(new Position(x + 1, y, true), level))  {
-                    System.out.println("mimik right");
                     message = fight(new Position(x + 1, y, true), level, countHitVamp);
                     return message;
                 } else if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR) {
@@ -250,7 +248,6 @@ public class Character {
                         || field[y + 1][x] == OGRE_CHAR
                         || isItMimik(new Position(x, y + 1, true), level))
                 {
-                    System.out.println("mimik bot");
                     message = fight(new Position(x, y + 1, true), level, countHitVamp);
                     return message;
                 } else if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR) {
@@ -266,7 +263,6 @@ public class Character {
                         || field[y][x - 1] == GHOST_CHAR
                         || field[y][x - 1] == OGRE_CHAR
                         || isItMimik(new Position(x - 1, y, true), level)) {
-                    System.out.println("mimik left");
                     message = fight(new Position(x - 1, y, true), level, countHitVamp);
                     return message;
                 } else if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) {
@@ -314,7 +310,6 @@ public class Character {
 
 
     public List<String> attack(Entity enemy, int countHitVamp2) {
-        System.out.println("fight");
         enemy.setStatus(FIGHT);
         List<String> message = new ArrayList<>();
         boolean hitChance = calculateHitChance(enemy);
@@ -327,7 +322,7 @@ public class Character {
                     if (!Objects.equals(damage_message, " ")) message.add(damage_message);
                     this.enemiesAttackCounter++;
                     this.attackCounter++;
-                    message.add("Ogre counterattacked you.");
+                    message.add("Ogre counterattacked you");
                     damage_message = takePlayerDamage(enemy);
                     if (!Objects.equals(damage_message, " ")) message.add(damage_message);
                     enemy.setCountHit(enemy.getCountHit() + 1);

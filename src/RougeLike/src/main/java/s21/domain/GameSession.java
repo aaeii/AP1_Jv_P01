@@ -133,14 +133,6 @@ public GameSession() {
                for (int j = 0; j < enemies_cnt; j++) {
                    enemy_type = (int) (Math.random() * (double) (MIMIK - ZOMBIE + 1) + ZOMBIE);
                    Enemy enemy = new Enemy(enemy_type, currentLevelNumber);
-                   switch (enemy_type) {
-                       case ZOMBIE -> enemy.setSymbol(ZOMBIE_CHAR);
-                       case VAMPIRE -> enemy.setSymbol(VAMPIRE_CHAR);
-                       case GHOST -> enemy.setSymbol(GHOST_CHAR);
-                       case OGRE -> enemy.setSymbol(OGRE_CHAR);
-                       case SNAKE -> enemy.setSymbol(SNAKE_CHAR);
-                       case MIMIK -> enemy.setSymbol(enemy.mimikType());
-                   }
                    Position enemy_pos = new Position();
                    enemy_pos = enemy_pos.generate_entity_coords(currentLevel.getRoomsSequence(offset + i));
                    enemy.setPosition(enemy_pos);

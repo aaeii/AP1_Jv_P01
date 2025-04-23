@@ -133,24 +133,14 @@ public class Room {
 
     public boolean checkInRoomEntities(Position position){
             for (int i = 0; i < entities_cnt; i++) {
-//                System.out.println("x " + position.getX() + " y "
-//                        + position.getY() + " e_x" + entities.get(i).getPosition().getX() + " e_y" + entities.get(i).getPosition().getY());
                 if (entities.get(i).getPosition().getX() == position.getX() &&
                         entities.get(i).getPosition().getY() == position.getY()
-//                       && (entities.get(i).getType() <= ZOMBIE && entities.get(i).getType() >= SNAKE)
                 )
                     return true;
             }
         return false;
     }
 
-    public boolean checkIsItExit(Position position){
-        for (int i = 0; i < entities_cnt; i++) {
-            if (entities.get(i).getPosition().getX() == position.getX() && entities.get(i).getPosition().getY() == position.getY() && entities.get(i).getType() == EXIT)
-                return true;
-        }
-        return false;
-    }
 
     public boolean checkPlayerInRoom(Position position){
             if (position.getX() >= top_left.getX()

@@ -24,9 +24,6 @@ public class Gold extends Item {
         this.health = 0;
     }
 
-    public void setStrength(int amount) {
-        this.strength = amount;
-    }
     @Override
     public void setHealth(int health) {
         this.health = health;
@@ -41,15 +38,15 @@ public class Gold extends Item {
     }
     @Override
     public int getAgility() {
-        return agility;
+        return 0;
     }
     @Override
     public int getStrength() {
-        return strength;
+        return 0;
     }
     @Override
     public int getHealth() {
-        return health;
+        return 0;
     }
     }
 
