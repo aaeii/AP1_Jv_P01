@@ -2,11 +2,10 @@ package s21.domain;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Random;
 import java.util.List;
 
 import static s21.domain.GameConstants.*;
-import s21.domain.*;
+
 import s21.domain.items.Inventory;
 
 public class Level {
@@ -35,7 +34,7 @@ public class Level {
                     Position pos = new Position(UNINITIALIZED, UNINITIALIZED, false);
                     rooms[i][j].setDoors(pos, k);
                 }
-                rooms[i][j].setEntities_cnt(0);
+                rooms[i][j].setEntitiesCnt(0);
             }
         roomsSequence = new ArrayList<>();
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
@@ -65,7 +64,7 @@ public class Level {
                     Position pos = new Position(UNINITIALIZED, UNINITIALIZED, false);
                     rooms[i][j].setDoors(pos, k);
                 }
-                rooms[i][j].setEntities_cnt(0);
+                rooms[i][j].setEntitiesCnt(0);
             }
         roomsSequence = new ArrayList<>();
         for (int i = 0; i < MAX_ROOMS_NUMBER; i++){
@@ -154,8 +153,8 @@ public class Level {
                     generate_doors(rooms[i][j]);
                     for (int k = 0; k < roomsSequence.size(); k++){
                         if (roomsSequence.get(k).getSector() == rooms[i][j].getSector()){
-                            roomsSequence.get(k).setBot_right(rooms[i][j].getBot_right());
-                            roomsSequence.get(k).setTop_left(rooms[i][j].getTop_left());
+                            roomsSequence.get(k).setBotRight(rooms[i][j].getBotRight());
+                            roomsSequence.get(k).setTopLeft(rooms[i][j].getTopLeft());
                         }
                     }
                 }
@@ -166,38 +165,38 @@ public class Level {
         int top_leftY = (int) ((Math.random() * (double) (SECTOR_HEIGHT - 6) / 2) + offset_y + 2);
         int top_leftX = (int) ((Math.random() * (double) (SECTOR_WIDTH - 6) / 2) + offset_x + 1);
         Position Top_left = new Position(top_leftX, top_leftY, false);
-        room.setTop_left(Top_left);
+        room.setTopLeft(Top_left);
         int bot_rightY =  top_leftY + (int) ((Math.random() * (double) (SECTOR_HEIGHT - SECTOR_HEIGHT/2-2)) + 3);
         int bot_rightX = top_leftX + (int) ((Math.random() * (double) (SECTOR_WIDTH - SECTOR_WIDTH/2-2)) + 3 );
         Position Bot_right = new Position(bot_rightX, bot_rightY, false);
-        room.setBot_right(Bot_right);
+        room.setBotRight(Bot_right);
     }
 
     public void generate_doors(Room room){
         if (room.getConnections(TOP) != null)
         {
-            int xDoor = (int) (Math.random() * (double) ((room.getBot_right().getX()-room.getTop_left().getX() - 1)) + room.getTop_left().getX()+1);
-            Position doorPos = new Position(xDoor, room.getTop_left().getY(), false);
+            int xDoor = (int) (Math.random() * (double) ((room.getBotRight().getX()-room.getTopLeft().getX() - 1)) + room.getTopLeft().getX()+1);
+            Position doorPos = new Position(xDoor, room.getTopLeft().getY(), false);
             room.setDoors(doorPos, TOP);
         }
 
         if (room.getConnections(RIGHT) != null)
         {
-            int yDoor = (int) (Math.random() * (double) ((room.getBot_right().getY()-room.getTop_left().getY() - 1)) + room.getTop_left().getY()+1);
-            Position doorPos = new Position(room.getBot_right().getX(), yDoor, false);
+            int yDoor = (int) (Math.random() * (double) ((room.getBotRight().getY()-room.getTopLeft().getY() - 1)) + room.getTopLeft().getY()+1);
+            Position doorPos = new Position(room.getBotRight().getX(), yDoor, false);
             room.setDoors(doorPos, RIGHT);
         }
 
         if (room.getConnections(BOTTOM) != null)
         {
-            int xDoor = (int) (Math.random() * (double) ((room.getBot_right().getX()-room.getTop_left().getX() - 1)) + room.getTop_left().getX()+1);
-            Position doorPos = new Position(xDoor, room.getBot_right().getY(), false);
+            int xDoor = (int) (Math.random() * (double) ((room.getBotRight().getX()-room.getTopLeft().getX() - 1)) + room.getTopLeft().getX()+1);
+            Position doorPos = new Position(xDoor, room.getBotRight().getY(), false);
             room.setDoors(doorPos, BOTTOM);
         }
         if (room.getConnections(LEFT) != null)
         {
-            int yDoor = (int) (Math.random() * (double) ((room.getBot_right().getY()-room.getTop_left().getY() - 1)) + room.getTop_left().getY()+1);
-            Position doorPos = new Position(room.getTop_left().getX(), yDoor, false);
+            int yDoor = (int) (Math.random() * (double) ((room.getBotRight().getY()-room.getTopLeft().getY() - 1)) + room.getTopLeft().getY()+1);
+            Position doorPos = new Position(room.getTopLeft().getX(), yDoor, false);
             room.setDoors(doorPos, LEFT);
         }
     }
@@ -309,7 +308,7 @@ public class Level {
             ++offset;
         for (int i = offset; i < roomsSequence.size(); i++) {
             if (roomsSequence.get(i).checkPlayerInRoom(player.getPosition())){
-                for (int j = 0; j < roomsSequence.get(i).getEntities_cnt(); j++) {
+                for (int j = 0; j < roomsSequence.get(i).getEntitiesCnt(); j++) {
                     roomsSequence.get(i).getEntities(j).action(player, roomsSequence.get(i));
                 }
 //                    roomsSequence.get(i).moveEnemiesInRoom(position);

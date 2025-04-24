@@ -5,7 +5,6 @@ import s21.domain.items.Inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static s21.domain.GameConstants.*;
 
@@ -15,12 +14,12 @@ public class Room {
     private  int grid_j;
     private Room[] connections; //4
     private Position[] doors; //4
-    private Position top_left;
-    private Position bot_right;
+    private Position topLeft;
+    private Position botRight;
     private boolean visited;
     private final List  <Entity> entities; //MAX_ENTITIES_PER_ROOM
-    private int entities_cnt;
-    private Position[][] room_points;
+    private int entitiesCnt;
+    private Position[][] roomPoints;
 
     public Room(){
         grid_i = 0;
@@ -28,12 +27,12 @@ public class Room {
         this.sector = -1;
         connections = new Room[4];
         doors = new Position[4];
-        top_left = new Position();
-        bot_right = new Position();
+        topLeft = new Position();
+        botRight = new Position();
         entities = new ArrayList<>();
-        entities_cnt = 0;
+        entitiesCnt = 0;
         visited = false;
-        room_points = new Position[SECTOR_HEIGHT][SECTOR_WIDTH];
+        roomPoints = new Position[SECTOR_HEIGHT][SECTOR_WIDTH];
     }
 
     public Room(int i, int j, int sector){
@@ -49,16 +48,16 @@ public class Room {
             Position currentPosition = new Position();
             doors[k] = currentPosition;
         }
-        room_points = new Position[SECTOR_HEIGHT][SECTOR_WIDTH];
+        roomPoints = new Position[SECTOR_HEIGHT][SECTOR_WIDTH];
         for(int k = 0; k<SECTOR_HEIGHT; k++){
             for(int m=0; m<SECTOR_WIDTH; m++){
-                room_points[k][m]= new Position();
+                roomPoints[k][m]= new Position();
             }
         }
         entities = new ArrayList<>();
-        top_left = new Position();
-        bot_right = new Position();
-        entities_cnt = 0;
+        topLeft = new Position();
+        botRight = new Position();
+        entitiesCnt = 0;
         visited = false;
     }
 
@@ -70,8 +69,8 @@ public class Room {
         return connections[i];
     }
 
-    public int getEntities_cnt(){
-        return entities_cnt;
+    public int getEntitiesCnt(){
+        return entitiesCnt;
     }
 
     public boolean isVisited() {
@@ -82,8 +81,8 @@ public class Room {
         this.visited = visited;
     }
 
-    public void setEntities_cnt(int entities_cnt) {
-        this.entities_cnt = entities_cnt;
+    public void setEntitiesCnt(int entitiesCnt) {
+        this.entitiesCnt = entitiesCnt;
     }
 
     public void setConnections(Room room, int i) {
@@ -100,7 +99,7 @@ public class Room {
 
     public void setEntities(Entity entity) {
         entities.add(entity);
-        this.entities_cnt++;
+        this.entitiesCnt++;
     }
 
     public Entity getEntities(int i) {
@@ -111,28 +110,28 @@ public class Room {
         return entities;
     }
 
-    public void setTop_left(Position position) {
-        this.top_left = position;
+    public void setTopLeft(Position position) {
+        this.topLeft = position;
     }
 
-    public Position getTop_left() {
-        return  top_left;
+    public Position getTopLeft() {
+        return topLeft;
     }
 
     public Position getDoors(int i) {
         return doors[i];
     }
 
-    public void setBot_right (Position position) {
-        this.bot_right = position;
+    public void setBotRight(Position position) {
+        this.botRight = position;
     }
 
-    public Position getBot_right() {
-        return bot_right;
+    public Position getBotRight() {
+        return botRight;
     }
 
     public boolean checkInRoomEntities(Position position){
-            for (int i = 0; i < entities_cnt; i++) {
+            for (int i = 0; i < entitiesCnt; i++) {
                 if (entities.get(i).getPosition().getX() == position.getX() &&
                         entities.get(i).getPosition().getY() == position.getY()
                 )
@@ -143,16 +142,16 @@ public class Room {
 
 
     public boolean checkPlayerInRoom(Position position){
-            if (position.getX() >= top_left.getX()
-                    && position.getX() <= bot_right.getX()
-                    && position.getY() >= top_left.getY()
-                    && position.getY() <= bot_right.getY())
+            if (position.getX() >= topLeft.getX()
+                    && position.getX() <= botRight.getX()
+                    && position.getY() >= topLeft.getY()
+                    && position.getY() <= botRight.getY())
                 return true;
         return false;
     }
 
     public void ckeckIsItItem(Character player, Inventory inventory){
-        for (int i = 0; i < entities_cnt; i++) {
+        for (int i = 0; i < entitiesCnt; i++) {
             if(entities.get(i).getPosition().getX() == player.getPosition().getX()
                     && entities.get(i).getPosition().getY() == player.getPosition().getY()
                     && entities.get(i).getStatus() == ON_FIELD
@@ -161,7 +160,7 @@ public class Room {
                     if (entities.get(i).getType() == GOLD) {
                         player.setGold(player.getGold() + 1);
                         entities.remove(i);
-                        entities_cnt--;
+                        entitiesCnt--;
                     } else {
                         if (entities.get(i).getType() == FOOD) {
                             int newHealth = player.getHealth() + entities.get(i).getHealth();
@@ -170,7 +169,7 @@ public class Room {
                                 player.setHealth(MAX_HEALTH);
                             player.setEatenFoodCounter();
                             entities.remove(i);
-                            entities_cnt--;
+                            entitiesCnt--;
                         }
                         else {
 //                            if (inventory.getSize() < MAX_COUNT_TYPE_ITEM)
@@ -184,7 +183,7 @@ public class Room {
                             if (inventory.addItem(entities.get(i)))
                             {
                                     entities.remove(i);
-                                    entities_cnt--;
+                                    entitiesCnt--;
                             }
                         }
                 }
@@ -194,10 +193,10 @@ public class Room {
 
 
     public boolean checkRoom(Position player_position){
-            if (player_position.getX() >= top_left.getX()
-                    && player_position.getX() <= bot_right.getX()
-                    && player_position.getY() >= top_left.getY()
-                    && player_position.getY() <= bot_right.getY())
+            if (player_position.getX() >= topLeft.getX()
+                    && player_position.getX() <= botRight.getX()
+                    && player_position.getY() >= topLeft.getY()
+                    && player_position.getY() <= botRight.getY())
                 return true;
         return false;
     }
@@ -222,9 +221,9 @@ public class Room {
     }
 
     public void makeVisible (){
-        top_left.setVisibility(true);
-        bot_right.setVisibility(true);
-        for (int i = 0; i < entities_cnt; i++) {
+        topLeft.setVisibility(true);
+        botRight.setVisibility(true);
+        for (int i = 0; i < entitiesCnt; i++) {
             entities.get(i).getPosition().setVisibility(true);
             if (entities.get(i).getType() == GHOST )
                 entities.get(i).getPosition().setVisibility(Math.random() > 0.5);
@@ -232,9 +231,9 @@ public class Room {
     }
 
     public void makeInvisible (){
-        top_left.setVisibility(false);
-        bot_right.setVisibility(false);
-        for (int i = 0; i < entities_cnt; i++) {
+        topLeft.setVisibility(false);
+        botRight.setVisibility(false);
+        for (int i = 0; i < entitiesCnt; i++) {
             entities.get(i).getPosition().setVisibility(false);
         }
     }
@@ -268,14 +267,14 @@ public class Room {
         boolean result = false;
         int x = position.getX();
         int y = position.getY();
-        if (direction == BOTTOM && y > top_left.getY() && y < room.getBot_right().getY()
-                && x > top_left.getX() && x < bot_right.getX() && !checkPlayerInRoom(position)) result = true;
-        if (direction == TOP && y > room.getTop_left().getY() && y < bot_right.getY()
-                && x > top_left.getX() && x < bot_right.getX()) result = true;
-        if (direction == RIGHT && y > top_left.getY() && y < bot_right.getY()
-                && x > bot_right.getX() && x < room.getTop_left().getX()) result = true;
-        if (direction == LEFT && y > top_left.getY() && y < bot_right.getY()
-                && x > room.getBot_right().getX() && x < top_left.getX()) result = true;
+        if (direction == BOTTOM && y > topLeft.getY() && y < room.getBotRight().getY()
+                && x > topLeft.getX() && x < botRight.getX() && !checkPlayerInRoom(position)) result = true;
+        if (direction == TOP && y > room.getTopLeft().getY() && y < botRight.getY()
+                && x > topLeft.getX() && x < botRight.getX()) result = true;
+        if (direction == RIGHT && y > topLeft.getY() && y < botRight.getY()
+                && x > botRight.getX() && x < room.getTopLeft().getX()) result = true;
+        if (direction == LEFT && y > topLeft.getY() && y < botRight.getY()
+                && x > room.getBotRight().getX() && x < topLeft.getX()) result = true;
         return  result;
     }
 
@@ -284,10 +283,10 @@ public class Room {
         int x = position.getX();
         int y = position.getY();
         distance = switch (direction) {
-            case TOP -> y - bot_right.getY();
-            case BOTTOM -> top_left.getY() - y;
-            case LEFT -> x - bot_right.getX();
-            case RIGHT -> top_left.getX() - x;
+            case TOP -> y - botRight.getY();
+            case BOTTOM -> topLeft.getY() - y;
+            case LEFT -> x - botRight.getX();
+            case RIGHT -> topLeft.getX() - x;
             default -> distance;
         };
         return distance;

@@ -1,10 +1,5 @@
 package s21.domain;
 
-import com.googlecode.lanterna.SGR;
-import s21.domain.items.Inventory;
-import s21.domain.items.Item;
-import s21.domain.items.Weapon;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -206,7 +201,6 @@ public class Character {
         List<String> message = new ArrayList<>();
         int x = position.getX();
         int y = position.getY();
-        int countHitVamp = 0;
         moveDirection = direction;
         switch (direction) {
             case (TOP):
@@ -214,9 +208,8 @@ public class Character {
                         || field[y - 1][x] == ZOMBIE_CHAR
                         || field[y - 1][x] == VAMPIRE_CHAR
                         || field[y - 1][x] == GHOST_CHAR
-                        || isItMimik(new Position(x, y - 1, true), level))
-                {
-                    message = fight(new Position(x, y - 1, true), level, countHitVamp);
+                        || isItMimik(new Position(x, y - 1, true), level)) {
+                    message = fight(new Position(x, y - 1, true), level);
                     return message;
                 } else if (field[y - 1][x] != WALL_CHAR && field[y - 1][x] != OUTER_AREA_CHAR) {
                     stopAttack(level);
@@ -230,8 +223,8 @@ public class Character {
                         || field[y][x + 1] == VAMPIRE_CHAR
                         || field[y][x + 1] == GHOST_CHAR
                         || field[y][x + 1] == OGRE_CHAR
-                        || isItMimik(new Position(x + 1, y, true), level))  {
-                    message = fight(new Position(x + 1, y, true), level, countHitVamp);
+                        || isItMimik(new Position(x + 1, y, true), level)) {
+                    message = fight(new Position(x + 1, y, true), level);
                     return message;
                 } else if (field[y][x + 1] != WALL_CHAR && field[y][x + 1] != OUTER_AREA_CHAR) {
                     stopAttack(level);
@@ -246,9 +239,8 @@ public class Character {
                         || field[y + 1][x] == VAMPIRE_CHAR
                         || field[y + 1][x] == GHOST_CHAR
                         || field[y + 1][x] == OGRE_CHAR
-                        || isItMimik(new Position(x, y + 1, true), level))
-                {
-                    message = fight(new Position(x, y + 1, true), level, countHitVamp);
+                        || isItMimik(new Position(x, y + 1, true), level)) {
+                    message = fight(new Position(x, y + 1, true), level);
                     return message;
                 } else if (field[y + 1][x] != WALL_CHAR && field[y + 1][x] != OUTER_AREA_CHAR) {
                     stopAttack(level);
@@ -263,7 +255,7 @@ public class Character {
                         || field[y][x - 1] == GHOST_CHAR
                         || field[y][x - 1] == OGRE_CHAR
                         || isItMimik(new Position(x - 1, y, true), level)) {
-                    message = fight(new Position(x - 1, y, true), level, countHitVamp);
+                    message = fight(new Position(x - 1, y, true), level);
                     return message;
                 } else if (field[y][x - 1] != WALL_CHAR && field[y][x - 1] != OUTER_AREA_CHAR) {
                     position.setNew(x - 1, y, true);
@@ -275,7 +267,7 @@ public class Character {
         return message;
     }
 
-    public List<String> fight(Position enemyPos, Level level, int countHitVamp) {
+    public List<String> fight(Position enemyPos, Level level) {
         int offset = 0, roomNumber = 0;
         List<String> message = new ArrayList<>();
         while (level.getRoomsSequence(offset).getSector() == -1)
@@ -286,30 +278,30 @@ public class Character {
                 break;
             }
         }
-        int entity_num = -1;
-        for (int i = 0; i < level.getRoomsSequence(roomNumber).getEntities_cnt(); i++) {
+        int entityNum = -1;
+        for (int i = 0; i < level.getRoomsSequence(roomNumber).getEntitiesCnt(); i++) {
             if (enemyPos.getX() == level.getRoomsSequence(roomNumber).getEntities(i).getPosition().getX()
                     && enemyPos.getY() == level.getRoomsSequence(roomNumber).getEntities(i).getPosition().getY()
             ) {
-                entity_num = i;
+                entityNum = i;
                 break;
             }
         }
-        if (entity_num != UNINITIALIZED) {
-            message = attack(level.getRoomsSequence(roomNumber).getEntities(entity_num), countHitVamp);
-            if (level.getRoomsSequence(roomNumber).getEntities(entity_num).getHealth() == 0) {
-                level.getRoomsSequence(roomNumber).throwGold(level.getRoomsSequence(roomNumber).getEntities(entity_num), level.getRoomsSequence(roomNumber));
+        if (entityNum != UNINITIALIZED) {
+            message = attack(level.getRoomsSequence(roomNumber).getEntities(entityNum));
+            if (level.getRoomsSequence(roomNumber).getEntities(entityNum).getHealth() == 0) {
+                level.getRoomsSequence(roomNumber).throwGold(level.getRoomsSequence(roomNumber).getEntities(entityNum), level.getRoomsSequence(roomNumber));
                 stopAttack(level);
-                level.getRoomsSequence(roomNumber).getEntities().remove(entity_num);
-                int Entities_cnt = level.getRoomsSequence(roomNumber).getEntities_cnt() - 1;
-                level.getRoomsSequence(roomNumber).setEntities_cnt(Entities_cnt);
+                level.getRoomsSequence(roomNumber).getEntities().remove(entityNum);
+                int EntitiesCnt = level.getRoomsSequence(roomNumber).getEntitiesCnt() - 1;
+                level.getRoomsSequence(roomNumber).setEntitiesCnt(EntitiesCnt);
             }
         }
         return message;
     }
 
 
-    public List<String> attack(Entity enemy, int countHitVamp2) {
+    public List<String> attack(Entity enemy) {
         enemy.setStatus(FIGHT);
         List<String> message = new ArrayList<>();
         boolean hitChance = calculateHitChance(enemy);
@@ -318,18 +310,18 @@ public class Character {
             if (!sleep) {
                 if (enemy.getType() == OGRE && enemy.getCountHit() % 2 == 0) {//гарантированная атака Огра
                     message.add("You hit the enemy " + (char) enemy.getSymbol());
-                    String damage_message = takeEnemyDamage(enemy);
-                    if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                    String damageMessage = takeEnemyDamage(enemy);
+                    if (!Objects.equals(damageMessage, " ")) message.add(damageMessage);
                     this.enemiesAttackCounter++;
                     this.attackCounter++;
                     message.add("Ogre counterattacked you");
-                    damage_message = takePlayerDamage(enemy);
-                    if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                    damageMessage = takePlayerDamage(enemy);
+                    if (!Objects.equals(damageMessage, " ")) message.add(damageMessage);
                     enemy.setCountHit(enemy.getCountHit() + 1);
                 } else {
                     message.add("You hit the enemy " + (char) enemy.getSymbol());
-                    String damage_message = takeEnemyDamage(enemy);
-                    if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                    String damageMessage = takeEnemyDamage(enemy);
+                    if (!Objects.equals(damageMessage, " ")) message.add(damageMessage);
                     this.attackCounter++;
                 }
             } else {
@@ -351,8 +343,8 @@ public class Character {
                 message.add("Vampire increased your health");
             } else if ((enemy.getType() != OGRE) || ((enemy.getType() == OGRE && enemy.getCountHit() % 2 == 0))) {
                 message.add((char) enemy.getSymbol() + " hits you");
-                String damage_message = takePlayerDamage(enemy);
-                if (!Objects.equals(damage_message, " ")) message.add(damage_message);
+                String damageMessage = takePlayerDamage(enemy);
+                if (!Objects.equals(damageMessage, " ")) message.add(damageMessage);
                 this.enemiesAttackCounter++;
             }
         } else message.add((char) enemy.getSymbol() + " misses attack");
@@ -381,12 +373,12 @@ public class Character {
 
 
     public void stopAttack(Level level) {
-        int offset = 0, roomNumber = 0;
+        int offset = 0;
         this.currentAttackHitsCounter = 0;
         while (level.getRoomsSequence(offset).getSector() == -1)
             ++offset;
         for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
-            for (int i = 0; i < level.getRoomsSequence(j).getEntities_cnt(); i++) {
+            for (int i = 0; i < level.getRoomsSequence(j).getEntitiesCnt(); i++) {
                 if (level.getRoomsSequence(j).getEntities(i).getStatus() == FIGHT
                 ) {
                     level.getRoomsSequence(j).getEntities(i).setStatus(ON_FIELD);
@@ -404,8 +396,8 @@ public class Character {
 
     public String takeEnemyDamage(Entity enemy) {
         String message = " ";
-        int enemy_health = enemy.getHealth() - strength;
-        enemy.setHealth(enemy_health);
+        int enemyHealth = enemy.getHealth() - strength;
+        enemy.setHealth(enemyHealth);
         if (enemy.getHealth() == 0) {
             message = "You kill enemy " + (char) enemy.getSymbol();
             killedEnemies++;
@@ -426,17 +418,17 @@ public class Character {
     public void useItem(int number, GameSession game, int type) {
         int count = 0;
         for (int i = 0; i < game.getItemsCount(); i++) {
-            Entity cur_entity = game.getItemFromInventory(i);
-            if (cur_entity.getType() == type
-                    && cur_entity.getStatus() == IN_INVENTORY) {
+            Entity curEntity = game.getItemFromInventory(i);
+            if (curEntity.getType() == type
+                    && curEntity.getStatus() == IN_INVENTORY) {
                 count++;
                 if (number == (count - 1)) {
                     setNewCharacters(i, game);
                 }
             }
             if (type == HEALTHKIT
-                    && cur_entity.getStatus() == IN_INVENTORY
-                    && cur_entity.getHealth() > 0) {
+                    && curEntity.getStatus() == IN_INVENTORY
+                    && curEntity.getHealth() > 0) {
                 count++;
                 if (number == (count - 1)) {
                     setNewCharacters(i, game);
@@ -444,13 +436,13 @@ public class Character {
             }
         }
         for (int i = 0; i < game.getItemsCount(); i++) {
-            Entity cur_entity = game.getItemFromInventory(i);
-            if ((cur_entity.getType() == WEAPON
-                    && cur_entity.getStatus() == ON_FIELD)
-                    || (cur_entity.getType() == type
-                    && cur_entity.getStatus() == USED
-                    && cur_entity.getType() != WEAPON
-                    && cur_entity.getType() != ELIXIR)) {
+            Entity curEntity = game.getItemFromInventory(i);
+            if ((curEntity.getType() == WEAPON
+                    && curEntity.getStatus() == ON_FIELD)
+                    || (curEntity.getType() == type
+                    && curEntity.getStatus() == USED
+                    && curEntity.getType() != WEAPON
+                    && curEntity.getType() != ELIXIR)) {
                 game.getAllItems().remove(i);
             }
         }
@@ -466,29 +458,42 @@ public class Character {
         }
         game.getItemFromInventory(i).setStatus(USED);
         int newStrength = getStrength() + game.getItemFromInventory(i).getStrength();
-        if (newStrength >= 0) setStrength(newStrength);
-        else setStrength(0);
+        if (newStrength >= 0) {
+            setStrength(newStrength);
+        } else {
+            setStrength(0);
+        }
         int newAgility = getAgility() + game.getItemFromInventory(i).getAgility();
-        if (newAgility >= 0) setAgility(newAgility);
-        else setAgility(0);
+        if (newAgility >= 0) {
+            setAgility(newAgility);
+        } else {
+            setAgility(0);
+        }
         int newHealth = getHealth() + game.getItemFromInventory(i).getHealth();
-        if (newHealth <= MAX_HEALTH) setHealth(newHealth);
-        else setHealth(MAX_HEALTH);
-        if (game.getItemFromInventory(i).getType() == ELIXIR) drunkElixirCounter++;
-        if (game.getItemFromInventory(i).getType() == SCROLL) setReadScrollCounter();
+        if (newHealth <= MAX_HEALTH) {
+            setHealth(newHealth);
+        } else {
+            setHealth(MAX_HEALTH);
+        }
+        if (game.getItemFromInventory(i).getType() == ELIXIR) {
+            drunkElixirCounter++;
+        }
+        if (game.getItemFromInventory(i).getType() == SCROLL) {
+            setReadScrollCounter();
+        }
     }
 
     public void freeCurrentWeapon(GameSession game) {
         for (int i = 0; i < game.getItemsCount(); i++) {
-            Entity cur_entity = game.getItemFromInventory(i);
-            if (cur_entity.getType() == WEAPON
-                    && cur_entity.getStatus() == USED) {
+            Entity curEntity = game.getItemFromInventory(i);
+            if (curEntity.getType() == WEAPON
+                    && curEntity.getStatus() == USED) {
                 int offset = 0;
                 while (game.currentLevel.getRoomsSequence(offset).getSector() == -1)
                     ++offset;
                 for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
-                    Room current_room = game.currentLevel.getRoomsSequence(j);
-                    if (current_room.checkRoom(position)) {
+                    Room currentRoom = game.currentLevel.getRoomsSequence(j);
+                    if (currentRoom.checkRoom(position)) {
                         Position newWeaponPos = new Position();
                         do {
                             int x = position.getX();
@@ -502,16 +507,16 @@ public class Character {
                             }
                             newWeaponPos.setNew(x, y, false);
                         }
-                        while ((newWeaponPos.check_unoccupied(current_room, newWeaponPos) == OCCUPIED) && (newWeaponPos.check_walls(current_room, newWeaponPos) == OCCUPIED));
-                        cur_entity.setStatus(ON_FIELD);
-                        cur_entity.setPosition(newWeaponPos);
-                        current_room.setEntities(cur_entity);
+                        while ((newWeaponPos.check_unoccupied(currentRoom, newWeaponPos) == OCCUPIED) && (newWeaponPos.check_walls(currentRoom, newWeaponPos) == OCCUPIED));
+                        curEntity.setStatus(ON_FIELD);
+                        curEntity.setPosition(newWeaponPos);
+                        currentRoom.setEntities(curEntity);
                     }
                 }
                 setStrength(getStrength() - game.getItemFromInventory(i).getStrength());
             }
         }
-        game.level_to_field(game.currentLevel);
+        game.levelToField(game.currentLevel);
         game.getInventory().print();
     }
 
@@ -545,17 +550,16 @@ public class Character {
     }
 
     public static void sortByGold(List<Character> players) {
-        for(int i = 0; i<players.size()-1;i++)
-        {
-        for (int j = 0; j < players.size() - 1 - i; j++) {
-            if (players.get(j + 1).getGold() > players.get(j).getGold()) {
-                Character swap = players.get(j);
-                players.set(j, players.get(j + 1));
-                players.set(j + 1, swap);
+        for (int i = 0; i < players.size() - 1; i++) {
+            for (int j = 0; j < players.size() - 1 - i; j++) {
+                if (players.get(j + 1).getGold() > players.get(j).getGold()) {
+                    Character swap = players.get(j);
+                    players.set(j, players.get(j + 1));
+                    players.set(j + 1, swap);
+                }
             }
         }
     }
-}
 
     public static void sortByLevel(List<Character> players) {
         for (int i = 0; i < players.size() - 1; i++) {
@@ -584,11 +588,11 @@ public class Character {
         }
     }
 
-    public static void sortByFood(List<Character> players){
-        for ( int i = 0; i < players.size()-1; i++) {
+    public static void sortByFood(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getKilledEnemies() == players.get(j).getKilledEnemies()
-                        &&(players.get(j + 1).getGold() == players.get(j).getGold())
+                        && (players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel()))
                     if (players.get(j + 1).getEatenFoodCounter() > players.get(j).getEatenFoodCounter()) {
                         Character swap = players.get(j);
@@ -599,11 +603,11 @@ public class Character {
         }
     }
 
-    public static void sortByElixir(List<Character> players){
-        for ( int i = 0; i < players.size()-1; i++) {
+    public static void sortByElixir(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getKilledEnemies() == players.get(j).getKilledEnemies()
-                        &&(players.get(j + 1).getGold() == players.get(j).getGold())
+                        && (players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
                         && players.get(j + 1).getEatenFoodCounter() == players.get(j).getEatenFoodCounter())
                     if (players.get(j + 1).getDrunkElixirCounter() > players.get(j).getDrunkElixirCounter()) {
@@ -615,11 +619,11 @@ public class Character {
         }
     }
 
-    public static void sortByScroll(List<Character> players){
-        for ( int i = 0; i < players.size()-1; i++) {
+    public static void sortByScroll(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getKilledEnemies() == players.get(j).getKilledEnemies()
-                        &&(players.get(j + 1).getGold() == players.get(j).getGold())
+                        && (players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
                         && players.get(j + 1).getEatenFoodCounter() == players.get(j).getEatenFoodCounter()
                         && players.get(j + 1).getDrunkElixirCounter() == players.get(j).getDrunkElixirCounter())
@@ -633,12 +637,12 @@ public class Character {
     }
 
 
-    public static void sortByPlayerHits(List<Character> players){
-        for ( int i = 0; i < players.size()-1; i++) {
+    public static void sortByPlayerHits(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getReadScrollCounter() == players.get(j).getReadScrollCounter()
                         && players.get(j + 1).getKilledEnemies() == players.get(j).getKilledEnemies()
-                        &&(players.get(j + 1).getGold() == players.get(j).getGold())
+                        && (players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
                         && players.get(j + 1).getEatenFoodCounter() == players.get(j).getEatenFoodCounter()
                         && players.get(j + 1).getDrunkElixirCounter() == players.get(j).getDrunkElixirCounter())
@@ -651,12 +655,12 @@ public class Character {
         }
     }
 
-    public static void sortByEnemyHits(List<Character> players){
-        for ( int i = 0; i < players.size()-1; i++) {
+    public static void sortByEnemyHits(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getReadScrollCounter() == players.get(j).getReadScrollCounter()
                         && players.get(j + 1).getKilledEnemies() == players.get(j).getKilledEnemies()
-                        &&(players.get(j + 1).getGold() == players.get(j).getGold())
+                        && (players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
                         && players.get(j + 1).getEatenFoodCounter() == players.get(j).getEatenFoodCounter()
                         && players.get(j + 1).getDrunkElixirCounter() == players.get(j).getDrunkElixirCounter()
@@ -670,12 +674,12 @@ public class Character {
         }
     }
 
-    public static void sortBySteps(List<Character> players){
-        for ( int i = 0; i < players.size()-1; i++) {
+    public static void sortBySteps(List<Character> players) {
+        for (int i = 0; i < players.size() - 1; i++) {
             for (int j = 0; j < players.size() - 1 - i; j++) {
                 if (players.get(j + 1).getReadScrollCounter() == players.get(j).getReadScrollCounter()
                         && players.get(j + 1).getKilledEnemies() == players.get(j).getKilledEnemies()
-                        &&(players.get(j + 1).getGold() == players.get(j).getGold())
+                        && (players.get(j + 1).getGold() == players.get(j).getGold())
                         && (players.get(j + 1).getEndLevel() == players.get(j).getEndLevel())
                         && players.get(j + 1).getEatenFoodCounter() == players.get(j).getEatenFoodCounter()
                         && players.get(j + 1).getDrunkElixirCounter() == players.get(j).getDrunkElixirCounter()
@@ -689,22 +693,23 @@ public class Character {
             }
         }
     }
-     public boolean isItMimik(Position position, Level level){
+
+    public boolean isItMimik(Position position, Level level) {
         boolean result = false;
-         int offset = 0;
-         while (level.getRoomsSequence(offset).getSector() == -1)
-             ++offset;
-         for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
-                for (int k=0; k < level.getRoomsSequence(j).getEntities_cnt(); k++){
-                    if (position.getX() == level.getRoomsSequence(j).getEntities(k).getPosition().getX()
-                            && position.getY() == level.getRoomsSequence(j).getEntities(k).getPosition().getY()
-                            && level.getRoomsSequence(j).getEntities(k).getType() == MIMIK) {
-                        result = true;
-                        return result;
-                    }
+        int offset = 0;
+        while (level.getRoomsSequence(offset).getSector() == -1)
+            ++offset;
+        for (int j = offset; j < MAX_ROOMS_NUMBER; j++) {
+            for (int k = 0; k < level.getRoomsSequence(j).getEntitiesCnt(); k++) {
+                if (position.getX() == level.getRoomsSequence(j).getEntities(k).getPosition().getX()
+                        && position.getY() == level.getRoomsSequence(j).getEntities(k).getPosition().getY()
+                        && level.getRoomsSequence(j).getEntities(k).getType() == MIMIK) {
+                    result = true;
+                    return result;
                 }
-             }
-         return result;
-         }
+            }
+        }
+        return result;
+    }
 
 }

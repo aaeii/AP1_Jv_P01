@@ -53,8 +53,8 @@ public class Position {
     public Position generate_entity_coords(Room room){
         Position pos  = new Position();
         do {
-            int x = (int) ((Math.random() * (room.getBot_right().getX() - room.getTop_left().getX() - 1)) + room.getTop_left().getX() + 1);
-            int y = (int) ((Math.random() * (room.getBot_right().getY() - room.getTop_left().getY() - 1)) + room.getTop_left().getY() + 1);
+            int x = (int) ((Math.random() * (room.getBotRight().getX() - room.getTopLeft().getX() - 1)) + room.getTopLeft().getX() + 1);
+            int y = (int) ((Math.random() * (room.getBotRight().getY() - room.getTopLeft().getY() - 1)) + room.getTopLeft().getY() + 1);
             pos.setNew(x, y, false);
         }
         while (check_unoccupied(room, pos) == OCCUPIED);
@@ -65,7 +65,7 @@ public class Position {
     {
         int status = UNOCCUPIED;
 
-        for (int i = 0; i < room.getEntities_cnt() && status == UNOCCUPIED; i++)
+        for (int i = 0; i < room.getEntitiesCnt() && status == UNOCCUPIED; i++)
             if (room.getEntities(i).getPosition().getX() == pos.getX() && room.getEntities(i).getPosition().getY() == pos.getY())
                 status = OCCUPIED;
         return status;
@@ -74,11 +74,11 @@ public class Position {
     public int check_walls(Room room, Position pos)
     {
         int status = UNOCCUPIED;
-        for (int i = 0; i < room.getEntities_cnt() && status == UNOCCUPIED; i++)
-            if (room.getTop_left().getX() == pos.getX() ||
-                    room.getBot_right().getX() == pos.getX() ||
-                    room.getTop_left().getY() == pos.getY() ||
-                    room.getBot_right().getY() == pos.getY())
+        for (int i = 0; i < room.getEntitiesCnt() && status == UNOCCUPIED; i++)
+            if (room.getTopLeft().getX() == pos.getX() ||
+                    room.getBotRight().getX() == pos.getX() ||
+                    room.getTopLeft().getY() == pos.getY() ||
+                    room.getBotRight().getY() == pos.getY())
                 status = OCCUPIED;
         return status;
     }
