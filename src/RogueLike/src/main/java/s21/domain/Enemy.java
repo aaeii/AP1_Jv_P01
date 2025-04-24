@@ -172,37 +172,50 @@ public class Enemy extends Entity {
 
 
     /**
-     * Движение вверх-вниз
+     * Движение вверх-вниз/влево-вправо
      */
     public void moveZombie(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
-        int newX = x, newY = y;
         int distanceToPlayerX = Math.abs(x - playerPosition.getX());
         int distanceToPlayerY = Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
-            moveToPlayer(playerPosition, room, newX, newY, 1, false);
+            moveToPlayer(playerPosition, room, x, y, 1, false);
         } else {
-            for (int i = 0; i < 4; i++) {
-                switch (initialDirection) {
-                    case TOP:
-                        newY = y - 1;
-                        break;
-                    case BOTTOM:
-                        newY = y + 1;
-                        break;
-                    default:
-                        break;
+            for (int i = 0; i < 1; i++) {
+                if (room.roomPoints.length > room.roomPoints[0].length) {
+                    switch (initialDirection) {
+                        case TOP:
+                            y--;
+                            break;
+                        case BOTTOM:
+                            y++;
+                            break;
+                        default:
+                            return;
+                    }
+                } else {
+                    switch (initialDirection) {
+                        case TOP:
+                            x--;
+                            break;
+                        case BOTTOM:
+                            x++;
+                            break;
+                        default:
+                            return;
+                    }
                 }
-                if (isValidMove(newX, newY, room)) {
-                    getPosition().setNew(newX, newY, false);
+                if (isValidMove(x, y, room)) {
+                    getPosition().setNew(x, y, false);
                 } else {
                     initialDirection = (initialDirection + 2) % 4;
                 }
             }
         }
     }
+
 
     /**
      * Движение по кругу
@@ -216,30 +229,26 @@ public class Enemy extends Entity {
         if (distanceToPlayerX <= distanceForPursuit && distanceToPlayerY <= distanceForPursuit) {
             moveToPlayer(playerPosition, room, x, y, 2, false);
         } else {
-            int newX = UNINITIALIZED, newY = UNINITIALIZED;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 2; i++) {
                 switch (initialDirection) {
                     case TOP:
-                        newX = x;
-                        newY = y - 2;
+                        y = y - 2;
                         break;
                     case RIGHT:
-                        newX = x + 2;
-                        newY = y;
+                        x = x + 2;
                         break;
                     case BOTTOM:
-                        newX = x;
-                        newY = y + 2;
+                        y = y + 2;
                         break;
                     case LEFT:
-                        newX = x - 2;
-                        newY = y;
+                        x = x - 2;
                         break;
                     default:
-                        break;
+                        return;
                 }
-                if (isValidMove(newX, newY, room)) {
-                    getPosition().setNew(newX, newY, false);
+                if (isValidMove(x, y, room)) {
+                    getPosition().setNew(x, y, false);
+
                 } else {
                     initialDirection = (initialDirection + 1) % 4;
                 }
@@ -247,49 +256,47 @@ public class Enemy extends Entity {
         }
     }
 
+
     /**
      * Рандомное передвижение
      */
     public void moveGhost(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();
         int y = getPosition().getY();
-        int newX = x, newY = y;
         Random random = new Random();
-        boolean visible = Math.random() > 0.6;
+        boolean visible;
         int distanceToPlayer = Math.abs(x - playerPosition.getX()) + Math.abs(y - playerPosition.getY());
         int distanceForPursuit = getDistanceForPursuit(hostilityLevel);
         if (distanceToPlayer <= distanceForPursuit) {
-            visible = true;
+            visible = false;//призрак виден при приближении
             moveToPlayer(playerPosition, room, x, y, 1, visible);
         } else {
-            for (int i = 0; i < 2; i++) {
+            visible = Math.random() > 0.6;
+            for (int i = 0; i < 4; i++) {
                 int direction = random.nextInt(4);
                 switch (direction) {
                     case TOP:
-                        newY = y - 1;
-                        newX = x;
+                        y = y - 1;
                         break;
                     case RIGHT:
-                        newX = x + 1;
-                        newY = y;
+                        x = x + 1;
                         break;
                     case BOTTOM:
-                        newY = y + 1;
-                        newX = x;
+                        y = y + 1;
                         break;
                     case LEFT:
-                        newX = x - 1;
-                        newY = y;
+                        x = x - 1;
                         break;
                     default:
-                        break;
+                        return;
                 }
-                if (isValidMove(newX, newY, room)) {
-                    getPosition().setNew(newX, newY, visible);
+                if (isValidMove(x, y, room)) {
+                    getPosition().setNew(x, y, visible);
                 }
             }
         }
     }
+
 
     public void moveVampire(Position playerPosition, Room room, int hostilityLevel) {
         int x = getPosition().getX();

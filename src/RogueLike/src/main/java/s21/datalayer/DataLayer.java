@@ -12,7 +12,7 @@ import s21.domain.Character;
 import com.google.gson.reflect.TypeToken;
 
 public class DataLayer {
-    private static final String SAVE_FILE = "game_progress.json";
+    private static final String SAVE_FILE = "src/RogueLike/src/game_progress.json";
 
     public static void saveProgress(Character player) {
 //        Gson gson = new Gson();

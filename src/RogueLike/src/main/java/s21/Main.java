@@ -6,7 +6,6 @@ import s21.datalayer.DataLayer;
 import s21.domain.GameSession;
 import s21.presentation.Print;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {

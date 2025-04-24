@@ -19,7 +19,7 @@ public class Room {
     private boolean visited;
     private final List  <Entity> entities; //MAX_ENTITIES_PER_ROOM
     private int entitiesCnt;
-    private Position[][] roomPoints;
+    public Position[][] roomPoints;
 
     public Room(){
         grid_i = 0;
